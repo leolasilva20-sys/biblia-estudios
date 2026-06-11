@@ -1,4 +1,4 @@
-import { useEffect, useState, createContext, useContext, type ReactNode } from "react";
+import { useEffect, useState, createContext, useContext, useCallback, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase, type Profile } from "@/lib/supabase";
 
@@ -8,7 +8,7 @@ type AuthCtx = {
   profile: Profile | null;
   loading: boolean;
   signOut: () => Promise<void>;
-  refreshProfile: () => Promise<void>;
+  refreshProfile: () => Promise<Profile | null>;
 };
 
 const Ctx = createContext<AuthCtx | null>(null);
@@ -18,33 +18,56 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const loadProfile = async (userId: string) => {
-    const { data } = await supabase
+  const loadProfile = useCallback(async (userId: string): Promise<Profile | null> => {
+    const { data, error } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", userId)
       .maybeSingle();
-    setProfile((data as Profile) ?? null);
-  };
+    if (error) {
+      console.warn("[auth] loadProfile error:", error.message);
+      return null;
+    }
+    const p = (data as Profile) ?? null;
+    setProfile(p);
+    return p;
+  }, []);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_evt, s) => {
+    let mounted = true;
+
+    const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
+      if (!mounted) return;
       setSession(s);
       if (s?.user) {
-        setTimeout(() => loadProfile(s.user.id), 0);
+        // Defer to avoid deadlock with Supabase internal lock
+        setTimeout(() => {
+          if (mounted) loadProfile(s.user.id).finally(() => mounted && setLoading(false));
+        }, 0);
       } else {
+        setProfile(null);
+        setLoading(false);
+      }
+      if (event === "SIGNED_OUT") {
         setProfile(null);
       }
     });
 
     supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return;
       setSession(data.session);
-      if (data.session?.user) loadProfile(data.session.user.id).finally(() => setLoading(false));
-      else setLoading(false);
+      if (data.session?.user) {
+        loadProfile(data.session.user.id).finally(() => mounted && setLoading(false));
+      } else {
+        setLoading(false);
+      }
     });
 
-    return () => sub.subscription.unsubscribe();
-  }, []);
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
+  }, [loadProfile]);
 
   const value: AuthCtx = {
     session,
@@ -53,9 +76,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading,
     signOut: async () => {
       await supabase.auth.signOut();
+      setSession(null);
+      setProfile(null);
     },
     refreshProfile: async () => {
-      if (session?.user) await loadProfile(session.user.id);
+      if (session?.user) return loadProfile(session.user.id);
+      return null;
     },
   };
 
