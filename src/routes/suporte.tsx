@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { sendSupportEmail } from "@/lib/support.functions";
 
 export const Route = createFileRoute("/suporte")({
   head: () => ({ meta: [{ title: "Suporte — Bíblia Estúdios" }] }),
@@ -34,15 +35,27 @@ function Suporte() {
       return toast.error("Preencha todos os campos");
     }
     setLoading(true);
-    const { error } = await supabase.from("support_messages").insert({
-      user_id: user?.id ?? null,
+    const payload = {
       nome: nome.trim(),
       email: email.trim(),
       mensagem: mensagem.trim(),
+    };
+    const { error } = await supabase.from("support_messages").insert({
+      user_id: user?.id ?? null,
+      ...payload,
       status: "pendente",
     });
+    if (error) {
+      setLoading(false);
+      return toast.error(error.message);
+    }
+    try {
+      await sendSupportEmail({ data: payload });
+    } catch (err) {
+      console.error(err);
+      // mensagem foi salva mesmo se email falhar
+    }
     setLoading(false);
-    if (error) return toast.error(error.message);
     toast.success("Mensagem enviada! Responderemos em breve.");
     setMensagem("");
   };
