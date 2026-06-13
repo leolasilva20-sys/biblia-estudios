@@ -13,12 +13,14 @@ export const Route = createFileRoute("/apostila/$id")({
 
 function ApostilaViewer() {
   const { id } = Route.useParams();
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !user) navigate({ to: "/login" });
-  }, [user, loading, navigate]);
+    if (loading) return;
+    if (!user) { navigate({ to: "/login" }); return; }
+    if (profile && !profile.acesso_liberado) navigate({ to: "/complete-profile" });
+  }, [user, profile, loading, navigate]);
 
   const apostila = getApostila(id);
 
