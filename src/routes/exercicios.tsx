@@ -54,7 +54,7 @@ function Exercicios() {
     toast.success("Respostas enviadas para revisão!");
   };
 
-  if (!user) return null;
+  if (!user || !profile?.acesso_liberado) return null;
 
   if (submitted) {
     return (
