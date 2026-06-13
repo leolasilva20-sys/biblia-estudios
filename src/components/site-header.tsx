@@ -2,6 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { BookOpen, LogOut, Shield } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export function SiteHeader() {
   const { user, profile, signOut } = useAuth();
@@ -11,6 +12,8 @@ export function SiteHeader() {
     await signOut();
     navigate({ to: "/" });
   };
+
+  const initial = (profile?.full_name ?? user?.email ?? "?").trim().charAt(0).toUpperCase();
 
   return (
     <header className="border-b border-border/60 bg-background/80 backdrop-blur sticky top-0 z-50">
@@ -37,6 +40,10 @@ export function SiteHeader() {
                   </Button>
                 </Link>
               )}
+              <Avatar className="h-8 w-8 border border-border/60">
+                {profile?.avatar_url && <AvatarImage src={profile.avatar_url} alt={profile?.full_name ?? ""} />}
+                <AvatarFallback className="text-xs">{initial}</AvatarFallback>
+              </Avatar>
               <Button variant="outline" size="sm" onClick={handleLogout}>
                 <LogOut className="h-4 w-4 mr-1" /> Sair
               </Button>

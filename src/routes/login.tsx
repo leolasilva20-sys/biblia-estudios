@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { BookOpen } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,45 +15,32 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const navigate = useNavigate();
+  const { user, profile, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  // Pós-OAuth: se Google logou alguém SEM perfil, deslogar e avisar.
+  // Quando o auth state estiver carregado e tiver sessão, roteia:
+  // - acesso_liberado=true → dashboard
+  // - acesso_liberado=false → /complete-profile (item C do fluxo)
   useEffect(() => {
-    const check = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) return;
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("id", session.user.id)
-        .maybeSingle();
-      if (!profile) {
-        await supabase.auth.signOut();
-        toast.error("Conta não encontrada. Cadastre-se primeiro com um código de convite.");
-      } else {
-        navigate({ to: "/dashboard" });
-      }
-    };
-    // Pequeno delay para o detectSessionInUrl processar o hash
-    const t = setTimeout(check, 300);
-    return () => clearTimeout(t);
-  }, [navigate]);
+    if (loading) return;
+    if (!user) return;
+    if (profile?.acesso_liberado) navigate({ to: "/dashboard" });
+    else if (profile) navigate({ to: "/complete-profile" });
+  }, [user, profile, loading, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setSubmitting(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
+    setSubmitting(false);
     if (error) return toast.error(error.message);
     toast.success("Bem-vindo de volta!");
-    navigate({ to: "/dashboard" });
+    // o useEffect cuida do redirect
   };
 
   const handleGoogle = async () => {
-    // Marca que estamos em fluxo de LOGIN (não cadastro)
-    sessionStorage.setItem("oauth_intent", "login");
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: `${window.location.origin}/login` },
@@ -99,8 +87,8 @@ function LoginPage() {
               </div>
               <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
-            <Button type="submit" disabled={loading} className="w-full bg-gold text-primary-foreground hover:opacity-90">
-              {loading ? "Entrando..." : "Entrar"}
+            <Button type="submit" disabled={submitting} className="w-full bg-gold text-primary-foreground hover:opacity-90">
+              {submitting ? "Entrando..." : "Entrar"}
             </Button>
           </form>
 

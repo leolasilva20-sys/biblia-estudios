@@ -20,7 +20,10 @@ export type Profile = {
   id: string;
   full_name: string | null;
   email: string | null;
+  whatsapp: string | null;
+  avatar_url: string | null;
   is_admin: boolean;
+  acesso_liberado: boolean;
   created_at: string;
 };
 
