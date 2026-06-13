@@ -24,7 +24,7 @@ function ApostilaViewer() {
 
   const apostila = getApostila(id);
 
-  if (!user) return null;
+  if (!user || !profile?.acesso_liberado) return null;
 
   if (!apostila) {
     return (
