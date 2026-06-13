@@ -24,10 +24,12 @@ function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !user) navigate({ to: "/login" });
-  }, [user, loading, navigate]);
+    if (loading) return;
+    if (!user) return navigate({ to: "/login" });
+    if (profile && !profile.acesso_liberado) navigate({ to: "/complete-profile" });
+  }, [user, profile, loading, navigate]);
 
-  if (loading || !user) {
+  if (loading || !user || !profile?.acesso_liberado) {
     return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Carregando...</div>;
   }
 
