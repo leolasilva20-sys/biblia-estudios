@@ -23,15 +23,17 @@ const PERGUNTAS = [
 ];
 
 function Exercicios() {
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
   const [respostas, setRespostas] = useState<string[]>(Array(5).fill(""));
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    if (!loading && !user) navigate({ to: "/login" });
-  }, [user, loading, navigate]);
+    if (loading) return;
+    if (!user) { navigate({ to: "/login" }); return; }
+    if (profile && !profile.acesso_liberado) navigate({ to: "/complete-profile" });
+  }, [user, profile, loading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
