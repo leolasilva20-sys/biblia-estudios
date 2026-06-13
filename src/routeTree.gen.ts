@@ -15,6 +15,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ExerciciosRouteImport } from './routes/exercicios'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApostilaIdRouteImport } from './routes/apostila.$id'
@@ -49,6 +50,11 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CompleteProfileRoute = CompleteProfileRouteImport.update({
+  id: '/complete-profile',
+  path: '/complete-profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -68,6 +74,7 @@ const ApostilaIdRoute = ApostilaIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/complete-profile': typeof CompleteProfileRoute
   '/dashboard': typeof DashboardRoute
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/complete-profile': typeof CompleteProfileRoute
   '/dashboard': typeof DashboardRoute
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/complete-profile': typeof CompleteProfileRoute
   '/dashboard': typeof DashboardRoute
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/complete-profile'
     | '/dashboard'
     | '/exercicios'
     | '/login'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/complete-profile'
     | '/dashboard'
     | '/exercicios'
     | '/login'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/complete-profile'
     | '/dashboard'
     | '/exercicios'
     | '/login'
@@ -138,6 +150,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  CompleteProfileRoute: typeof CompleteProfileRoute
   DashboardRoute: typeof DashboardRoute
   ExerciciosRoute: typeof ExerciciosRoute
   LoginRoute: typeof LoginRoute
@@ -191,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/complete-profile': {
+      id: '/complete-profile'
+      path: '/complete-profile'
+      fullPath: '/complete-profile'
+      preLoaderRoute: typeof CompleteProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -218,6 +238,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  CompleteProfileRoute: CompleteProfileRoute,
   DashboardRoute: DashboardRoute,
   ExerciciosRoute: ExerciciosRoute,
   LoginRoute: LoginRoute,
@@ -229,3 +250,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
