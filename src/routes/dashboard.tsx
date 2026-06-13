@@ -25,7 +25,7 @@ function Dashboard() {
 
   useEffect(() => {
     if (loading) return;
-    if (!user) return navigate({ to: "/login" });
+    if (!user) { navigate({ to: "/login" }); return; }
     if (profile && !profile.acesso_liberado) navigate({ to: "/complete-profile" });
   }, [user, profile, loading, navigate]);
 
