@@ -11,14 +11,15 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SuporteRouteImport } from './routes/suporte'
 import { Route as SignupRouteImport } from './routes/signup'
-import { Route as ResponderRouteImport } from './routes/responder'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ResponderRouteImport } from './routes/responder'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ExerciciosRouteImport } from './routes/exercicios'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ResponderApostilaIdRouteImport } from './routes/responder.$apostilaId'
 import { Route as ApostilaIdRouteImport } from './routes/apostila.$id'
 
 const SuporteRoute = SuporteRouteImport.update({
@@ -31,14 +32,14 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResponderRoute = ResponderRouteImport.update({
-  id: '/responder',
-  path: '/responder',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResponderRoute = ResponderRouteImport.update({
+  id: '/responder',
+  path: '/responder',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -71,6 +72,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResponderApostilaIdRoute = ResponderApostilaIdRouteImport.update({
+  id: '/responder/$apostilaId',
+  path: '/responder/$apostilaId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApostilaIdRoute = ApostilaIdRouteImport.update({
   id: '/apostila/$id',
   path: '/apostila/$id',
@@ -84,11 +90,12 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/responder': typeof ResponderRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
   '/apostila/$id': typeof ApostilaIdRoute
+  '/responder/$apostilaId': typeof ResponderApostilaIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -97,11 +104,12 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/responder': typeof ResponderRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
   '/apostila/$id': typeof ApostilaIdRoute
+  '/responder/$apostilaId': typeof ResponderApostilaIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -111,11 +119,12 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/responder': typeof ResponderRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
   '/apostila/$id': typeof ApostilaIdRoute
+  '/responder/$apostilaId': typeof ResponderApostilaIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -126,11 +135,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/exercicios'
     | '/login'
-    | '/reset-password'
     | '/responder'
+    | '/reset-password'
     | '/signup'
     | '/suporte'
     | '/apostila/$id'
+    | '/responder/$apostilaId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -139,11 +149,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/exercicios'
     | '/login'
-    | '/reset-password'
     | '/responder'
+    | '/reset-password'
     | '/signup'
     | '/suporte'
     | '/apostila/$id'
+    | '/responder/$apostilaId'
   id:
     | '__root__'
     | '/'
@@ -152,11 +163,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/exercicios'
     | '/login'
-    | '/reset-password'
     | '/responder'
+    | '/reset-password'
     | '/signup'
     | '/suporte'
     | '/apostila/$id'
+    | '/responder/$apostilaId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -166,11 +178,12 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   ExerciciosRoute: typeof ExerciciosRoute
   LoginRoute: typeof LoginRoute
-  ResetPasswordRoute: typeof ResetPasswordRoute
   ResponderRoute: typeof ResponderRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
   SuporteRoute: typeof SuporteRoute
   ApostilaIdRoute: typeof ApostilaIdRoute
+  ResponderApostilaIdRoute: typeof ResponderApostilaIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -189,18 +202,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/responder': {
-      id: '/responder'
-      path: '/responder'
-      fullPath: '/responder'
-      preLoaderRoute: typeof ResponderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/responder': {
+      id: '/responder'
+      path: '/responder'
+      fullPath: '/responder'
+      preLoaderRoute: typeof ResponderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -245,6 +258,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/responder/$apostilaId': {
+      id: '/responder/$apostilaId'
+      path: '/responder/$apostilaId'
+      fullPath: '/responder/$apostilaId'
+      preLoaderRoute: typeof ResponderApostilaIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/apostila/$id': {
       id: '/apostila/$id'
       path: '/apostila/$id'
@@ -262,12 +282,23 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   ExerciciosRoute: ExerciciosRoute,
   LoginRoute: LoginRoute,
-  ResetPasswordRoute: ResetPasswordRoute,
   ResponderRoute: ResponderRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
   SuporteRoute: SuporteRoute,
   ApostilaIdRoute: ApostilaIdRoute,
+  ResponderApostilaIdRoute: ResponderApostilaIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
