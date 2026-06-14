@@ -163,7 +163,7 @@ function UsuariosList() {
   );
 }
 
-function RespostasList() {
+function RespostasList({ readOnly = false }: { readOnly?: boolean }) {
   const qc = useQueryClient();
   const [feedback, setFeedback] = useState<Record<string, string>>({});
 
@@ -201,7 +201,7 @@ function RespostasList() {
           </div>
           <p className="font-serif text-gold mb-1">{r.pergunta}</p>
           <p className="text-sm text-foreground/90 whitespace-pre-wrap mb-3">{r.resposta}</p>
-          {r.status === "pendente" && (
+          {r.status === "pendente" && !readOnly && (
             <div className="space-y-2">
               <Textarea
                 placeholder="Feedback opcional..."
