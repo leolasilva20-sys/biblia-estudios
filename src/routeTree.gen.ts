@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SuporteRouteImport } from './routes/suporte'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ResponderRouteImport } from './routes/responder'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ExerciciosRouteImport } from './routes/exercicios'
@@ -18,6 +19,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ResponderApostilaIdRouteImport } from './routes/responder.$apostilaId'
 import { Route as ApostilaIdRouteImport } from './routes/apostila.$id'
 
 const SuporteRoute = SuporteRouteImport.update({
@@ -28,6 +30,11 @@ const SuporteRoute = SuporteRouteImport.update({
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResponderRoute = ResponderRouteImport.update({
+  id: '/responder',
+  path: '/responder',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -65,6 +72,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResponderApostilaIdRoute = ResponderApostilaIdRouteImport.update({
+  id: '/$apostilaId',
+  path: '/$apostilaId',
+  getParentRoute: () => ResponderRoute,
+} as any)
 const ApostilaIdRoute = ApostilaIdRouteImport.update({
   id: '/apostila/$id',
   path: '/apostila/$id',
@@ -79,9 +91,11 @@ export interface FileRoutesByFullPath {
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responder': typeof ResponderRouteWithChildren
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
   '/apostila/$id': typeof ApostilaIdRoute
+  '/responder/$apostilaId': typeof ResponderApostilaIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -91,9 +105,11 @@ export interface FileRoutesByTo {
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responder': typeof ResponderRouteWithChildren
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
   '/apostila/$id': typeof ApostilaIdRoute
+  '/responder/$apostilaId': typeof ResponderApostilaIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -104,9 +120,11 @@ export interface FileRoutesById {
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responder': typeof ResponderRouteWithChildren
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
   '/apostila/$id': typeof ApostilaIdRoute
+  '/responder/$apostilaId': typeof ResponderApostilaIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -118,9 +136,11 @@ export interface FileRouteTypes {
     | '/exercicios'
     | '/login'
     | '/reset-password'
+    | '/responder'
     | '/signup'
     | '/suporte'
     | '/apostila/$id'
+    | '/responder/$apostilaId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -130,9 +150,11 @@ export interface FileRouteTypes {
     | '/exercicios'
     | '/login'
     | '/reset-password'
+    | '/responder'
     | '/signup'
     | '/suporte'
     | '/apostila/$id'
+    | '/responder/$apostilaId'
   id:
     | '__root__'
     | '/'
@@ -142,9 +164,11 @@ export interface FileRouteTypes {
     | '/exercicios'
     | '/login'
     | '/reset-password'
+    | '/responder'
     | '/signup'
     | '/suporte'
     | '/apostila/$id'
+    | '/responder/$apostilaId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -155,6 +179,7 @@ export interface RootRouteChildren {
   ExerciciosRoute: typeof ExerciciosRoute
   LoginRoute: typeof LoginRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ResponderRoute: typeof ResponderRouteWithChildren
   SignupRoute: typeof SignupRoute
   SuporteRoute: typeof SuporteRoute
   ApostilaIdRoute: typeof ApostilaIdRoute
@@ -174,6 +199,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/responder': {
+      id: '/responder'
+      path: '/responder'
+      fullPath: '/responder'
+      preLoaderRoute: typeof ResponderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -225,6 +257,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/responder/$apostilaId': {
+      id: '/responder/$apostilaId'
+      path: '/$apostilaId'
+      fullPath: '/responder/$apostilaId'
+      preLoaderRoute: typeof ResponderApostilaIdRouteImport
+      parentRoute: typeof ResponderRoute
+    }
     '/apostila/$id': {
       id: '/apostila/$id'
       path: '/apostila/$id'
@@ -235,6 +274,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ResponderRouteChildren {
+  ResponderApostilaIdRoute: typeof ResponderApostilaIdRoute
+}
+
+const ResponderRouteChildren: ResponderRouteChildren = {
+  ResponderApostilaIdRoute: ResponderApostilaIdRoute,
+}
+
+const ResponderRouteWithChildren = ResponderRoute._addFileChildren(
+  ResponderRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
@@ -243,6 +294,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExerciciosRoute: ExerciciosRoute,
   LoginRoute: LoginRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ResponderRoute: ResponderRouteWithChildren,
   SignupRoute: SignupRoute,
   SuporteRoute: SuporteRoute,
   ApostilaIdRoute: ApostilaIdRoute,
