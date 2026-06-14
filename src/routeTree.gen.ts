@@ -11,8 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SuporteRouteImport } from './routes/suporte'
 import { Route as SignupRouteImport } from './routes/signup'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ResponderRouteImport } from './routes/responder'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ExerciciosRouteImport } from './routes/exercicios'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -32,14 +32,14 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ResponderRoute = ResponderRouteImport.update({
   id: '/responder',
   path: '/responder',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -73,9 +73,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResponderApostilaIdRoute = ResponderApostilaIdRouteImport.update({
-  id: '/responder/$apostilaId',
-  path: '/responder/$apostilaId',
-  getParentRoute: () => rootRouteImport,
+  id: '/$apostilaId',
+  path: '/$apostilaId',
+  getParentRoute: () => ResponderRoute,
 } as any)
 const ApostilaIdRoute = ApostilaIdRouteImport.update({
   id: '/apostila/$id',
@@ -90,8 +90,8 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
-  '/responder': typeof ResponderRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responder': typeof ResponderRouteWithChildren
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
   '/apostila/$id': typeof ApostilaIdRoute
@@ -104,8 +104,8 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
-  '/responder': typeof ResponderRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responder': typeof ResponderRouteWithChildren
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
   '/apostila/$id': typeof ApostilaIdRoute
@@ -119,8 +119,8 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
-  '/responder': typeof ResponderRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responder': typeof ResponderRouteWithChildren
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
   '/apostila/$id': typeof ApostilaIdRoute
@@ -135,8 +135,8 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/exercicios'
     | '/login'
-    | '/responder'
     | '/reset-password'
+    | '/responder'
     | '/signup'
     | '/suporte'
     | '/apostila/$id'
@@ -149,8 +149,8 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/exercicios'
     | '/login'
-    | '/responder'
     | '/reset-password'
+    | '/responder'
     | '/signup'
     | '/suporte'
     | '/apostila/$id'
@@ -163,8 +163,8 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/exercicios'
     | '/login'
-    | '/responder'
     | '/reset-password'
+    | '/responder'
     | '/signup'
     | '/suporte'
     | '/apostila/$id'
@@ -178,12 +178,11 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   ExerciciosRoute: typeof ExerciciosRoute
   LoginRoute: typeof LoginRoute
-  ResponderRoute: typeof ResponderRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ResponderRoute: typeof ResponderRouteWithChildren
   SignupRoute: typeof SignupRoute
   SuporteRoute: typeof SuporteRoute
   ApostilaIdRoute: typeof ApostilaIdRoute
-  ResponderApostilaIdRoute: typeof ResponderApostilaIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -202,18 +201,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/responder': {
       id: '/responder'
       path: '/responder'
       fullPath: '/responder'
       preLoaderRoute: typeof ResponderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -260,10 +259,10 @@ declare module '@tanstack/react-router' {
     }
     '/responder/$apostilaId': {
       id: '/responder/$apostilaId'
-      path: '/responder/$apostilaId'
+      path: '/$apostilaId'
       fullPath: '/responder/$apostilaId'
       preLoaderRoute: typeof ResponderApostilaIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ResponderRoute
     }
     '/apostila/$id': {
       id: '/apostila/$id'
@@ -275,6 +274,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ResponderRouteChildren {
+  ResponderApostilaIdRoute: typeof ResponderApostilaIdRoute
+}
+
+const ResponderRouteChildren: ResponderRouteChildren = {
+  ResponderApostilaIdRoute: ResponderApostilaIdRoute,
+}
+
+const ResponderRouteWithChildren = ResponderRoute._addFileChildren(
+  ResponderRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
@@ -282,23 +293,12 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   ExerciciosRoute: ExerciciosRoute,
   LoginRoute: LoginRoute,
-  ResponderRoute: ResponderRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ResponderRoute: ResponderRouteWithChildren,
   SignupRoute: SignupRoute,
   SuporteRoute: SuporteRoute,
   ApostilaIdRoute: ApostilaIdRoute,
-  ResponderApostilaIdRoute: ResponderApostilaIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
