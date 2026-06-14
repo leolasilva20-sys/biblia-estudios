@@ -33,7 +33,7 @@ export function SiteHeader() {
               <Link to="/suporte">
                 <Button variant="ghost" size="sm">Suporte</Button>
               </Link>
-              {profile?.is_admin && (
+              {profile?.nivel_admin && profile.nivel_admin !== "nenhum" && (
                 <Link to="/admin">
                   <Button variant="ghost" size="sm" className="text-gold">
                     <Shield className="h-4 w-4 mr-1" /> Admin

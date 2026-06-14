@@ -14,7 +14,7 @@ type AuthCtx = {
 const Ctx = createContext<AuthCtx | null>(null);
 
 const PROFILE_COLUMNS =
-  "id, full_name, email, whatsapp, avatar_url, is_admin, acesso_liberado, created_at";
+  "id, full_name, email, whatsapp, avatar_url, is_admin, nivel_admin, acesso_liberado, created_at";
 
 async function ensureProfileFromUser(user: User): Promise<void> {
   // Tenta criar perfil mínimo caso ainda não exista (trigger pode falhar para alguns providers)

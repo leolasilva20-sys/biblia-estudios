@@ -21,13 +21,16 @@ type TabKey = "overview" | "usuarios" | "respostas" | "suporte";
 function AdminPanel() {
   const { user, profile, loading, signOut } = useAuth();
   const navigate = useNavigate();
+  const nivel = profile?.nivel_admin ?? "nenhum";
+  const hasAccess = nivel !== "nenhum";
+  const isFullAdmin = nivel === "admin";
   const [tab, setTab] = useState<TabKey>("overview");
 
   useEffect(() => {
     if (loading) return;
     if (!user) navigate({ to: "/login" });
-    else if (profile && !profile.is_admin) navigate({ to: "/dashboard" });
-  }, [user, profile, loading, navigate]);
+    else if (profile && nivel === "nenhum") navigate({ to: "/dashboard" });
+  }, [user, profile, nivel, loading, navigate]);
 
   const { data: stats } = useQuery({
     queryKey: ["admin", "stats"],
@@ -43,12 +46,22 @@ function AdminPanel() {
         suporte: s.count ?? 0,
       };
     },
-    enabled: !!profile?.is_admin,
+    enabled: hasAccess,
   });
 
-  if (loading || !profile?.is_admin) {
+  if (loading || !hasAccess) {
     return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Verificando acesso...</div>;
   }
+
+  const allTabs = [
+    { k: "overview" as TabKey, label: "Resumo", icon: BookOpen },
+    { k: "usuarios" as TabKey, label: "Usuários", icon: Users },
+    { k: "respostas" as TabKey, label: "Respostas", icon: FileQuestion },
+    { k: "suporte" as TabKey, label: "Suporte", icon: LifeBuoy },
+  ];
+  const visibleTabs = isFullAdmin
+    ? allTabs
+    : allTabs.filter((t) => t.k === "overview" || t.k === "respostas");
 
   return (
     <div className="min-h-screen bg-[#0E0C0A]">
@@ -57,7 +70,7 @@ function AdminPanel() {
         <div className="container mx-auto max-w-7xl px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="px-3 py-1 rounded-md bg-gold text-primary-foreground text-xs font-bold tracking-widest uppercase shadow-[0_0_20px_oklch(0.74_0.12_82/0.4)]">
-              <Shield className="h-3 w-3 inline mr-1" /> ADMIN
+              <Shield className="h-3 w-3 inline mr-1" /> {isFullAdmin ? "ADMIN" : "JUNIOR"}
             </div>
             <span className="font-serif text-lg text-gold">Painel de Controle</span>
           </div>
@@ -75,12 +88,7 @@ function AdminPanel() {
       <div className="container mx-auto max-w-7xl px-6 py-8 grid lg:grid-cols-[220px_1fr] gap-8">
         {/* Sidebar */}
         <aside className="space-y-1">
-          {[
-            { k: "overview" as TabKey, label: "Resumo", icon: BookOpen },
-            { k: "usuarios" as TabKey, label: "Usuários", icon: Users },
-            { k: "respostas" as TabKey, label: "Respostas", icon: FileQuestion },
-            { k: "suporte" as TabKey, label: "Suporte", icon: LifeBuoy },
-          ].map((t) => (
+          {visibleTabs.map((t) => (
             <button
               key={t.k}
               onClick={() => setTab(t.k)}
@@ -101,9 +109,9 @@ function AdminPanel() {
               <StatCard icon={LifeBuoy} label="Suporte pendente" value={stats?.suporte ?? 0} />
             </div>
           )}
-          {tab === "usuarios" && <UsuariosList />}
-          {tab === "respostas" && <RespostasList />}
-          {tab === "suporte" && <SuporteList />}
+          {tab === "usuarios" && isFullAdmin && <UsuariosList />}
+          {tab === "respostas" && <RespostasList readOnly={!isFullAdmin} />}
+          {tab === "suporte" && isFullAdmin && <SuporteList />}
         </main>
       </div>
     </div>
@@ -155,7 +163,7 @@ function UsuariosList() {
   );
 }
 
-function RespostasList() {
+function RespostasList({ readOnly = false }: { readOnly?: boolean }) {
   const qc = useQueryClient();
   const [feedback, setFeedback] = useState<Record<string, string>>({});
 
@@ -193,7 +201,7 @@ function RespostasList() {
           </div>
           <p className="font-serif text-gold mb-1">{r.pergunta}</p>
           <p className="text-sm text-foreground/90 whitespace-pre-wrap mb-3">{r.resposta}</p>
-          {r.status === "pendente" && (
+          {r.status === "pendente" && !readOnly && (
             <div className="space-y-2">
               <Textarea
                 placeholder="Feedback opcional..."

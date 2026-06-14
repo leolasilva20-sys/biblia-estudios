@@ -23,6 +23,7 @@ export type Profile = {
   whatsapp: string | null;
   avatar_url: string | null;
   is_admin: boolean;
+  nivel_admin: "nenhum" | "junior" | "admin" | string;
   acesso_liberado: boolean;
   created_at: string;
 };
