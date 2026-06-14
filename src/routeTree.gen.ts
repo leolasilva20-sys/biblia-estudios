@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SuporteRouteImport } from './routes/suporte'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ResponderRouteImport } from './routes/responder'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ExerciciosRouteImport } from './routes/exercicios'
@@ -28,6 +29,11 @@ const SuporteRoute = SuporteRouteImport.update({
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResponderRoute = ResponderRouteImport.update({
+  id: '/responder',
+  path: '/responder',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responder': typeof ResponderRoute
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
   '/apostila/$id': typeof ApostilaIdRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responder': typeof ResponderRoute
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
   '/apostila/$id': typeof ApostilaIdRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responder': typeof ResponderRoute
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
   '/apostila/$id': typeof ApostilaIdRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/exercicios'
     | '/login'
     | '/reset-password'
+    | '/responder'
     | '/signup'
     | '/suporte'
     | '/apostila/$id'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/exercicios'
     | '/login'
     | '/reset-password'
+    | '/responder'
     | '/signup'
     | '/suporte'
     | '/apostila/$id'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/exercicios'
     | '/login'
     | '/reset-password'
+    | '/responder'
     | '/signup'
     | '/suporte'
     | '/apostila/$id'
@@ -155,6 +167,7 @@ export interface RootRouteChildren {
   ExerciciosRoute: typeof ExerciciosRoute
   LoginRoute: typeof LoginRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ResponderRoute: typeof ResponderRoute
   SignupRoute: typeof SignupRoute
   SuporteRoute: typeof SuporteRoute
   ApostilaIdRoute: typeof ApostilaIdRoute
@@ -174,6 +187,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/responder': {
+      id: '/responder'
+      path: '/responder'
+      fullPath: '/responder'
+      preLoaderRoute: typeof ResponderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -243,6 +263,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExerciciosRoute: ExerciciosRoute,
   LoginRoute: LoginRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ResponderRoute: ResponderRoute,
   SignupRoute: SignupRoute,
   SuporteRoute: SuporteRoute,
   ApostilaIdRoute: ApostilaIdRoute,
@@ -250,13 +271,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
