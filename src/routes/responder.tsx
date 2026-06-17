@@ -44,10 +44,10 @@ function ResponderList() {
 
       const { data: apostilas } = await supabase
         .from("apostilas")
-        .select("id, titulo")
+        .select("id, title")
         .in("id", ids);
       const titulos = new Map<number, string>();
-      (apostilas ?? []).forEach((a: any) => titulos.set(a.id, a.titulo));
+      (apostilas ?? []).forEach((a: any) => titulos.set(a.id, a.title));
 
       const { data: respostas } = await supabase
         .from("respostas")

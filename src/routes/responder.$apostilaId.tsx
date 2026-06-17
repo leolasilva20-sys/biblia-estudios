@@ -79,10 +79,10 @@ function ResponderProva() {
 
       const { data: ap } = await supabase
         .from("apostilas")
-        .select("titulo")
+        .select("title")
         .eq("id", apId)
         .maybeSingle();
-      setTitulo((ap as any)?.titulo ?? `Apostila #${apId}`);
+      setTitulo((ap as any)?.title ?? `Apostila #${apId}`);
 
       const { data: rs } = await supabase
         .from("respostas")
