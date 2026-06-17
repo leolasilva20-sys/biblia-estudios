@@ -110,6 +110,15 @@ function ResponderProva() {
     return licoes.every((l) => respostas[l.id]?.status === "corrigida");
   }, [licoes, respostas]);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <SiteHeader />
+        <main className="flex-1 container mx-auto max-w-3xl px-6 py-10 text-muted-foreground">Carregando...</main>
+      </div>
+    );
+  }
+
   if (!user || !profile?.acesso_liberado) return null;
 
   if (licoes === null) {
