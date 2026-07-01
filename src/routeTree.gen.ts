@@ -17,6 +17,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ExerciciosRouteImport } from './routes/exercicios'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
+import { Route as AudiolivrosRouteImport } from './routes/audiolivros'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ResponderApostilaIdRouteImport } from './routes/responder.$apostilaId'
@@ -62,6 +63,11 @@ const CompleteProfileRoute = CompleteProfileRouteImport.update({
   path: '/complete-profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AudiolivrosRoute = AudiolivrosRouteImport.update({
+  id: '/audiolivros',
+  path: '/audiolivros',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -86,6 +92,7 @@ const ApostilaIdRoute = ApostilaIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/audiolivros': typeof AudiolivrosRoute
   '/complete-profile': typeof CompleteProfileRoute
   '/dashboard': typeof DashboardRoute
   '/exercicios': typeof ExerciciosRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/audiolivros': typeof AudiolivrosRoute
   '/complete-profile': typeof CompleteProfileRoute
   '/dashboard': typeof DashboardRoute
   '/exercicios': typeof ExerciciosRoute
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/audiolivros': typeof AudiolivrosRoute
   '/complete-profile': typeof CompleteProfileRoute
   '/dashboard': typeof DashboardRoute
   '/exercicios': typeof ExerciciosRoute
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/audiolivros'
     | '/complete-profile'
     | '/dashboard'
     | '/exercicios'
@@ -145,6 +155,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/audiolivros'
     | '/complete-profile'
     | '/dashboard'
     | '/exercicios'
@@ -159,6 +170,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/audiolivros'
     | '/complete-profile'
     | '/dashboard'
     | '/exercicios'
@@ -174,6 +186,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  AudiolivrosRoute: typeof AudiolivrosRoute
   CompleteProfileRoute: typeof CompleteProfileRoute
   DashboardRoute: typeof DashboardRoute
   ExerciciosRoute: typeof ExerciciosRoute
@@ -243,6 +256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompleteProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/audiolivros': {
+      id: '/audiolivros'
+      path: '/audiolivros'
+      fullPath: '/audiolivros'
+      preLoaderRoute: typeof AudiolivrosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -289,6 +309,7 @@ const ResponderRouteWithChildren = ResponderRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  AudiolivrosRoute: AudiolivrosRoute,
   CompleteProfileRoute: CompleteProfileRoute,
   DashboardRoute: DashboardRoute,
   ExerciciosRoute: ExerciciosRoute,
@@ -302,3 +323,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

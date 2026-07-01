@@ -25,6 +25,7 @@ function AudioPlayer({ driveFileId, title }: { driveFileId: string; title: strin
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [current, setCurrent] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const src = `https://drive.google.com/uc?export=download&id=${driveFileId}&confirm=t`;
@@ -36,6 +37,7 @@ function AudioPlayer({ driveFileId, title }: { driveFileId: string; title: strin
   };
 
   const fmt = (s: number) => {
+    if (!isFinite(s)) return "0:00";
     const m = Math.floor(s / 60);
     const sec = Math.floor(s % 60);
     return `${m}:${sec.toString().padStart(2, "0")}`;
@@ -47,22 +49,27 @@ function AudioPlayer({ driveFileId, title }: { driveFileId: string; title: strin
         ref={audioRef}
         src={src}
         onLoadedMetadata={(e) => { setDuration((e.target as HTMLAudioElement).duration); setLoading(false); }}
-        onTimeUpdate={(e) => { const t = e.target as HTMLAudioElement; setProgress(t.currentTime / t.duration * 100); }}
+        onTimeUpdate={(e) => {
+          const t = e.target as HTMLAudioElement;
+          setCurrent(t.currentTime);
+          setProgress((t.currentTime / t.duration) * 100);
+        }}
         onEnded={() => setPlaying(false)}
         preload="metadata"
-        controlsList="nodownload"
         onContextMenu={(e) => e.preventDefault()}
       />
       <div className="flex items-center gap-4">
         <button
           onClick={togglePlay}
           disabled={loading}
-          className="w-12 h-12 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center hover:bg-gold/30 transition-colors disabled:opacity-40"
+          className="w-12 h-12 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center hover:bg-gold/30 transition-colors disabled:opacity-40 flex-shrink-0"
         >
           {playing ? <Pause className="h-5 w-5 text-gold" /> : <Play className="h-5 w-5 text-gold ml-0.5" />}
         </button>
-        <div className="flex-1">
-          <p className="text-xs text-muted-foreground mb-2">{loading ? "Carregando..." : `${fmt(audioRef.current?.currentTime ?? 0)} / ${fmt(duration)}`}</p>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs text-muted-foreground mb-2">
+            {loading ? "Carregando..." : `${fmt(current)} / ${fmt(duration)}`}
+          </p>
           <div className="w-full h-1.5 bg-border/40 rounded-full overflow-hidden">
             <div className="h-full bg-gold/70 rounded-full transition-all" style={{ width: `${progress}%` }} />
           </div>
@@ -74,21 +81,6 @@ function AudioPlayer({ driveFileId, title }: { driveFileId: string; title: strin
     </div>
   );
 }
-
-export const Route = createFileRoute("/audiolivros")({
-  head: () => ({ meta: [{ title: "Áudio Livros — Bíblia Estúdios" }] }),
-  component: AudioLivros,
-});
-
-type Audiobook = {
-  id: number;
-  title: string;
-  description: string | null;
-  drive_file_id: string;
-  order_index: number;
-  admin_only: boolean;
-  is_new: boolean;
-};
 
 function AudioLivros() {
   const { user, profile, loading } = useAuth();
@@ -122,7 +114,11 @@ function AudioLivros() {
   };
 
   if (loading || !user || !profile?.acesso_liberado) {
-    return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Carregando...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center text-muted-foreground">
+        Carregando...
+      </div>
+    );
   }
 
   return (
@@ -140,8 +136,8 @@ function AudioLivros() {
         {selected && temAcesso(selected) && (
           <div className="mb-10 rounded-xl border border-gold/30 bg-card/60 overflow-hidden">
             <div className="p-5 border-b border-border/40">
-              <div className="flex items-center justify-between">
-                <div>
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
                   {selected.is_new && (
                     <span className="text-xs font-semibold bg-gold/20 text-gold border border-gold/30 px-2 py-0.5 rounded-full mr-2">
                       Novidade
@@ -151,7 +147,7 @@ function AudioLivros() {
                 </div>
                 <button
                   onClick={() => setSelected(null)}
-                  className="text-xs text-muted-foreground hover:text-gold transition-colors"
+                  className="text-xs text-muted-foreground hover:text-gold transition-colors flex-shrink-0"
                 >
                   Fechar
                 </button>
@@ -208,7 +204,9 @@ function AudioLivros() {
                     )}
                   </div>
                   {acesso && (
-                    <span className="text-muted-foreground group-hover:text-gold transition-colors text-lg flex-shrink-0">▶</span>
+                    <span className="text-muted-foreground group-hover:text-gold transition-colors text-lg flex-shrink-0">
+                      ▶
+                    </span>
                   )}
                 </div>
               );
