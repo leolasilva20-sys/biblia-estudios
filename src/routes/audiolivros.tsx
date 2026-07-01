@@ -1,9 +1,79 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Music, Lock } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Music, Lock, Play, Pause } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
 import { SiteHeader } from "@/components/site-header";
+
+export const Route = createFileRoute("/audiolivros")({
+  head: () => ({ meta: [{ title: "Áudio Livros — Bíblia Estúdios" }] }),
+  component: AudioLivros,
+});
+
+type Audiobook = {
+  id: number;
+  title: string;
+  description: string | null;
+  drive_file_id: string;
+  order_index: number;
+  admin_only: boolean;
+  is_new: boolean;
+};
+
+function AudioPlayer({ driveFileId, title }: { driveFileId: string; title: string }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const src = `https://drive.google.com/uc?export=download&id=${driveFileId}&confirm=t`;
+
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+    if (playing) { audioRef.current.pause(); setPlaying(false); }
+    else { audioRef.current.play(); setPlaying(true); }
+  };
+
+  const fmt = (s: number) => {
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${m}:${sec.toString().padStart(2, "0")}`;
+  };
+
+  return (
+    <div className="p-5 bg-background/40">
+      <audio
+        ref={audioRef}
+        src={src}
+        onLoadedMetadata={(e) => { setDuration((e.target as HTMLAudioElement).duration); setLoading(false); }}
+        onTimeUpdate={(e) => { const t = e.target as HTMLAudioElement; setProgress(t.currentTime / t.duration * 100); }}
+        onEnded={() => setPlaying(false)}
+        preload="metadata"
+        controlsList="nodownload"
+        onContextMenu={(e) => e.preventDefault()}
+      />
+      <div className="flex items-center gap-4">
+        <button
+          onClick={togglePlay}
+          disabled={loading}
+          className="w-12 h-12 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center hover:bg-gold/30 transition-colors disabled:opacity-40"
+        >
+          {playing ? <Pause className="h-5 w-5 text-gold" /> : <Play className="h-5 w-5 text-gold ml-0.5" />}
+        </button>
+        <div className="flex-1">
+          <p className="text-xs text-muted-foreground mb-2">{loading ? "Carregando..." : `${fmt(audioRef.current?.currentTime ?? 0)} / ${fmt(duration)}`}</p>
+          <div className="w-full h-1.5 bg-border/40 rounded-full overflow-hidden">
+            <div className="h-full bg-gold/70 rounded-full transition-all" style={{ width: `${progress}%` }} />
+          </div>
+        </div>
+      </div>
+      <p className="text-xs text-muted-foreground/50 mt-3 text-center select-none">
+        © Bíblia Estúdios — conteúdo protegido
+      </p>
+    </div>
+  );
+}
 
 export const Route = createFileRoute("/audiolivros")({
   head: () => ({ meta: [{ title: "Áudio Livros — Bíblia Estúdios" }] }),
@@ -90,16 +160,7 @@ function AudioLivros() {
                 <p className="text-sm text-muted-foreground mt-2">{selected.description}</p>
               )}
             </div>
-            <div className="relative w-full" style={{ paddingBottom: "80px" }}>
-              <iframe
-                src={`https://drive.google.com/file/d/${selected.drive_file_id}/preview`}
-                title={selected.title}
-                className="absolute inset-0 w-full h-full"
-                style={{ height: "80px", border: "none" }}
-                allow="autoplay"
-                sandbox="allow-scripts allow-same-origin allow-popups"
-              />
-            </div>
+            <AudioPlayer driveFileId={selected.drive_file_id} title={selected.title} />
           </div>
         )}
 
