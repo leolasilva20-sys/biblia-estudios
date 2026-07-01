@@ -95,6 +95,12 @@ function LoginPage() {
           <p className="text-sm text-center text-muted-foreground mt-6">
             Não tem conta? <Link to="/signup" className="text-gold hover:underline">Criar conta</Link>
           </p>
+          <p className="text-xs text-center text-muted-foreground/70 mt-4 leading-relaxed">
+            Ao continuar, você concorda com os nossos{" "}
+            <Link to="/termos" className="text-gold hover:underline">Termos de Serviço</Link>{" "}
+            e nossa{" "}
+            <Link to="/privacidade" className="text-gold hover:underline">Política de Privacidade</Link>.
+          </p>
         </div>
       </div>
     </div>

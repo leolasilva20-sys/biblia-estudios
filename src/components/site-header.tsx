@@ -46,10 +46,12 @@ export function SiteHeader() {
                   </Button>
                 </Link>
               )}
-              <Avatar className="h-8 w-8 border border-border/60">
-                {profile?.avatar_url && <AvatarImage src={profile.avatar_url} alt={profile?.full_name ?? ""} />}
-                <AvatarFallback className="text-xs">{initial}</AvatarFallback>
-              </Avatar>
+              <Link to="/perfil" title="Meu perfil">
+                <Avatar className="h-8 w-8 border border-border/60 hover:border-gold/60 transition-colors">
+                  {profile?.avatar_url && <AvatarImage src={profile.avatar_url} alt={profile?.full_name ?? ""} />}
+                  <AvatarFallback className="text-xs">{initial}</AvatarFallback>
+                </Avatar>
+              </Link>
               <Button variant="outline" size="sm" onClick={handleLogout}>
                 <LogOut className="h-4 w-4 mr-1" /> Sair
               </Button>

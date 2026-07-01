@@ -9,10 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermosRouteImport } from './routes/termos'
 import { Route as SuporteRouteImport } from './routes/suporte'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResponderRouteImport } from './routes/responder'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
+import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ExerciciosRouteImport } from './routes/exercicios'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -23,6 +26,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ResponderApostilaIdRouteImport } from './routes/responder.$apostilaId'
 import { Route as ApostilaIdRouteImport } from './routes/apostila.$id'
 
+const TermosRoute = TermosRouteImport.update({
+  id: '/termos',
+  path: '/termos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SuporteRoute = SuporteRouteImport.update({
   id: '/suporte',
   path: '/suporte',
@@ -41,6 +49,16 @@ const ResponderRoute = ResponderRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PerfilRoute = PerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -97,10 +115,13 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
+  '/perfil': typeof PerfilRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/reset-password': typeof ResetPasswordRoute
   '/responder': typeof ResponderRouteWithChildren
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
+  '/termos': typeof TermosRoute
   '/apostila/$id': typeof ApostilaIdRoute
   '/responder/$apostilaId': typeof ResponderApostilaIdRoute
 }
@@ -112,10 +133,13 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
+  '/perfil': typeof PerfilRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/reset-password': typeof ResetPasswordRoute
   '/responder': typeof ResponderRouteWithChildren
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
+  '/termos': typeof TermosRoute
   '/apostila/$id': typeof ApostilaIdRoute
   '/responder/$apostilaId': typeof ResponderApostilaIdRoute
 }
@@ -128,10 +152,13 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
+  '/perfil': typeof PerfilRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/reset-password': typeof ResetPasswordRoute
   '/responder': typeof ResponderRouteWithChildren
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
+  '/termos': typeof TermosRoute
   '/apostila/$id': typeof ApostilaIdRoute
   '/responder/$apostilaId': typeof ResponderApostilaIdRoute
 }
@@ -145,10 +172,13 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/exercicios'
     | '/login'
+    | '/perfil'
+    | '/privacidade'
     | '/reset-password'
     | '/responder'
     | '/signup'
     | '/suporte'
+    | '/termos'
     | '/apostila/$id'
     | '/responder/$apostilaId'
   fileRoutesByTo: FileRoutesByTo
@@ -160,10 +190,13 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/exercicios'
     | '/login'
+    | '/perfil'
+    | '/privacidade'
     | '/reset-password'
     | '/responder'
     | '/signup'
     | '/suporte'
+    | '/termos'
     | '/apostila/$id'
     | '/responder/$apostilaId'
   id:
@@ -175,10 +208,13 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/exercicios'
     | '/login'
+    | '/perfil'
+    | '/privacidade'
     | '/reset-password'
     | '/responder'
     | '/signup'
     | '/suporte'
+    | '/termos'
     | '/apostila/$id'
     | '/responder/$apostilaId'
   fileRoutesById: FileRoutesById
@@ -191,15 +227,25 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   ExerciciosRoute: typeof ExerciciosRoute
   LoginRoute: typeof LoginRoute
+  PerfilRoute: typeof PerfilRoute
+  PrivacidadeRoute: typeof PrivacidadeRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ResponderRoute: typeof ResponderRouteWithChildren
   SignupRoute: typeof SignupRoute
   SuporteRoute: typeof SuporteRoute
+  TermosRoute: typeof TermosRoute
   ApostilaIdRoute: typeof ApostilaIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/termos': {
+      id: '/termos'
+      path: '/termos'
+      fullPath: '/termos'
+      preLoaderRoute: typeof TermosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/suporte': {
       id: '/suporte'
       path: '/suporte'
@@ -226,6 +272,20 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/perfil': {
+      id: '/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof PerfilRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -314,10 +374,13 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   ExerciciosRoute: ExerciciosRoute,
   LoginRoute: LoginRoute,
+  PerfilRoute: PerfilRoute,
+  PrivacidadeRoute: PrivacidadeRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ResponderRoute: ResponderRouteWithChildren,
   SignupRoute: SignupRoute,
   SuporteRoute: SuporteRoute,
+  TermosRoute: TermosRoute,
   ApostilaIdRoute: ApostilaIdRoute,
 }
 export const routeTree = rootRouteImport
