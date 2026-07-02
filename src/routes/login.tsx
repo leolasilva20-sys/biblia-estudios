@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Fingerprint } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
@@ -47,6 +47,24 @@ function LoginPage() {
     });
   };
 
+  const [passkeyLoading, setPasskeyLoading] = useState(false);
+
+  const handlePasskey = async () => {
+    setPasskeyLoading(true);
+    try {
+      const { error } = await (supabase.auth as any).signInWithPasskey();
+      if (error) {
+        toast.error("Não foi possível entrar com passkey. Tente e-mail e senha.");
+        return;
+      }
+      toast.success("Bem-vindo de volta!");
+    } catch {
+      toast.error("Passkey não disponível neste dispositivo.");
+    } finally {
+      setPasskeyLoading(false);
+    }
+  };
+
   const handleReset = async () => {
     if (!email) return toast.error("Digite seu email primeiro");
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -67,8 +85,19 @@ function LoginPage() {
           <h1 className="font-serif text-2xl text-center mb-1">Entrar</h1>
           <p className="text-sm text-muted-foreground text-center mb-6">Acesse sua conta para continuar</p>
 
-          <Button variant="outline" onClick={handleGoogle} className="w-full mb-4">
+          <Button variant="outline" onClick={handleGoogle} className="w-full mb-3">
             <GoogleIcon /> Continuar com Google
+          </Button>
+
+          <Button
+            variant="outline"
+            onClick={handlePasskey}
+            disabled={passkeyLoading}
+            className="w-full mb-4 border-gold/30 hover:border-gold/60"
+          >
+            <Fingerprint className="h-4 w-4 mr-2 text-gold" />
+            {passkeyLoading ? "Verificando..." : "Continuar com Passkey"}
+            <span className="text-[10px] ml-1.5 text-muted-foreground">(beta)</span>
           </Button>
 
           <div className="ornament-divider my-6 text-xs">ou</div>

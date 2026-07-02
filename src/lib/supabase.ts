@@ -14,6 +14,10 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     autoRefreshToken: true,
     detectSessionInUrl: true,
   },
+  // @ts-expect-error - opcao experimental de passkeys ainda nao tipada no pacote instalado
+  experimental: {
+    passkey: true,
+  },
 });
 
 export type Profile = {
