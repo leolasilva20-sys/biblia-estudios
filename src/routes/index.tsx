@@ -59,8 +59,14 @@ function Landing() {
           ))}
         </section>
       </main>
-      <footer className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground">
-        © Bíblia Estúdios — Estudo bíblico em profundidade
+      <footer className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground space-x-3">
+        <span>© Bíblia Estúdios — Estudo bíblico em profundidade</span>
+        <span>·</span>
+        <Link to="/documentacao" className="hover:text-gold transition-colors">Documentação</Link>
+        <span>·</span>
+        <Link to="/termos" className="hover:text-gold transition-colors">Termos</Link>
+        <span>·</span>
+        <Link to="/privacidade" className="hover:text-gold transition-colors">Privacidade</Link>
       </footer>
     </div>
   );
