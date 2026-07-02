@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export function SiteHeader() {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, loading, signOut } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -25,7 +25,9 @@ export function SiteHeader() {
           </span>
         </Link>
         <nav className="flex items-center gap-2">
-          {user ? (
+          {loading ? (
+            <div className="h-8 w-8 rounded-full bg-muted/40 animate-pulse" />
+          ) : user ? (
             <>
               <Link to="/dashboard">
                 <Button variant="ghost" size="sm">Dashboard</Button>

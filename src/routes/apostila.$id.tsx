@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { ArrowLeft, PenLine } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { SiteHeader } from "@/components/site-header";
+import { AppSidebar } from "@/components/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { getApostila, buildDriveEmbedUrl } from "@/lib/apostilas";
 
@@ -29,7 +29,7 @@ function ApostilaViewer() {
   if (!apostila) {
     return (
       <div className="min-h-screen flex flex-col">
-        <SiteHeader />
+        <AppSidebar />
         <main className="flex-1 container mx-auto max-w-3xl px-6 py-16 text-center">
           <h1 className="font-serif text-2xl text-gold">Apostila não encontrada</h1>
           <Link to="/dashboard"><Button variant="outline" className="mt-6">Voltar ao dashboard</Button></Link>
@@ -40,7 +40,7 @@ function ApostilaViewer() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <SiteHeader />
+      <AppSidebar />
       <main className="flex-1 container mx-auto max-w-6xl px-6 py-6">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <Link to="/dashboard">

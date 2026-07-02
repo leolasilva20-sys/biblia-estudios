@@ -1,9 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Music, Lock, Play, Pause } from "lucide-react";
+import { BookMarked, ChevronRight, ChevronLeft, Play, Pause, Lock } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
-import { SiteHeader } from "@/components/site-header";
+import { AppSidebar } from "@/components/app-sidebar";
 
 export const Route = createFileRoute("/audiolivros")({
   head: () => ({ meta: [{ title: "Áudio Livros — Bíblia Estúdios" }] }),
@@ -20,15 +20,18 @@ type Audiobook = {
   is_new: boolean;
 };
 
-function AudioPlayer({ driveFileId, title }: { driveFileId: string; title: string }) {
+const FUNCTION_URL = "https://phguxgdqwrysvjdkzzxn.supabase.co/functions/v1/audio-stream";
+
+function AudioPlayer({ driveFileId }: { driveFileId: string }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [current, setCurrent] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [errored, setErrored] = useState(false);
 
-  const src = `https://drive.google.com/uc?export=download&id=${driveFileId}&confirm=t`;
+  const src = `${FUNCTION_URL}?fileId=${driveFileId}`;
 
   const togglePlay = () => {
     if (!audioRef.current) return;
@@ -44,7 +47,7 @@ function AudioPlayer({ driveFileId, title }: { driveFileId: string; title: strin
   };
 
   return (
-    <div className="p-5 bg-background/40">
+    <div className="p-5 bg-background/40 rounded-xl border border-border/40">
       <audio
         ref={audioRef}
         src={src}
@@ -55,26 +58,33 @@ function AudioPlayer({ driveFileId, title }: { driveFileId: string; title: strin
           setProgress((t.currentTime / t.duration) * 100);
         }}
         onEnded={() => setPlaying(false)}
+        onError={() => { setErrored(true); setLoading(false); }}
         preload="metadata"
         onContextMenu={(e) => e.preventDefault()}
       />
-      <div className="flex items-center gap-4">
-        <button
-          onClick={togglePlay}
-          disabled={loading}
-          className="w-12 h-12 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center hover:bg-gold/30 transition-colors disabled:opacity-40 flex-shrink-0"
-        >
-          {playing ? <Pause className="h-5 w-5 text-gold" /> : <Play className="h-5 w-5 text-gold ml-0.5" />}
-        </button>
-        <div className="flex-1 min-w-0">
-          <p className="text-xs text-muted-foreground mb-2">
-            {loading ? "Carregando..." : `${fmt(current)} / ${fmt(duration)}`}
-          </p>
-          <div className="w-full h-1.5 bg-border/40 rounded-full overflow-hidden">
-            <div className="h-full bg-gold/70 rounded-full transition-all" style={{ width: `${progress}%` }} />
+      {errored ? (
+        <p className="text-sm text-destructive text-center py-2">
+          Não foi possível carregar este áudio. Verifique se a chave da API do Google Drive está configurada.
+        </p>
+      ) : (
+        <div className="flex items-center gap-4">
+          <button
+            onClick={togglePlay}
+            disabled={loading}
+            className="w-12 h-12 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center hover:bg-gold/30 transition-colors disabled:opacity-40 flex-shrink-0"
+          >
+            {playing ? <Pause className="h-5 w-5 text-gold" /> : <Play className="h-5 w-5 text-gold ml-0.5" />}
+          </button>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-muted-foreground mb-2">
+              {loading ? "Carregando..." : `${fmt(current)} / ${fmt(duration)}`}
+            </p>
+            <div className="w-full h-1.5 bg-border/40 rounded-full overflow-hidden">
+              <div className="h-full bg-gold/70 rounded-full transition-all" style={{ width: `${progress}%` }} />
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <p className="text-xs text-muted-foreground/50 mt-3 text-center select-none">
         © Bíblia Estúdios — conteúdo protegido
       </p>
@@ -85,35 +95,32 @@ function AudioPlayer({ driveFileId, title }: { driveFileId: string; title: strin
 function AudioLivros() {
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
-  const [audiobooks, setAudiobooks] = useState<Audiobook[]>([]);
+  const [capitulos, setCapitulos] = useState<Audiobook[]>([]);
   const [selected, setSelected] = useState<Audiobook | null>(null);
   const [loadingAudio, setLoadingAudio] = useState(true);
+
+  const isAdmin = !!profile?.nivel_admin && profile.nivel_admin !== "nenhum";
 
   useEffect(() => {
     if (loading) return;
     if (!user) { navigate({ to: "/login" }); return; }
-    if (profile && !profile.acesso_liberado) navigate({ to: "/complete-profile" });
-  }, [user, profile, loading, navigate]);
+    if (profile && !profile.acesso_liberado) { navigate({ to: "/complete-profile" }); return; }
+    if (profile && !isAdmin) { navigate({ to: "/dashboard" }); return; }
+  }, [user, profile, loading, isAdmin, navigate]);
 
   useEffect(() => {
-    if (!user || !profile?.acesso_liberado) return;
+    if (!user || !isAdmin) return;
     (async () => {
       const { data, error } = await supabase
         .from("audiobooks")
         .select("*")
         .order("order_index", { ascending: true });
-      if (!error && data) setAudiobooks(data as Audiobook[]);
+      if (!error && data) setCapitulos(data as Audiobook[]);
       setLoadingAudio(false);
     })();
-  }, [user, profile]);
+  }, [user, isAdmin]);
 
-  const temAcesso = (ab: Audiobook) => {
-    if (!ab.admin_only) return true;
-    const nivel = profile?.nivel_admin;
-    return nivel === "admin" || nivel === "junior";
-  };
-
-  if (loading || !user || !profile?.acesso_liberado) {
+  if (loading || !user || !profile?.acesso_liberado || !isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center text-muted-foreground">
         Carregando...
@@ -122,97 +129,79 @@ function AudioLivros() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <SiteHeader />
-      <main className="flex-1 container mx-auto max-w-4xl px-6 py-12">
-        <div className="mb-10">
-          <p className="text-sm text-gold uppercase tracking-widest">Bíblia Estúdios</p>
-          <h1 className="font-serif text-4xl gold-text-gradient mt-2">Áudio Livros</h1>
-          <p className="text-muted-foreground mt-3 font-serif italic">
-            Ouça a Palavra narrada com profundidade e trilha sonora original.
-          </p>
-        </div>
-
-        {selected && temAcesso(selected) && (
-          <div className="mb-10 rounded-xl border border-gold/30 bg-card/60 overflow-hidden">
-            <div className="p-5 border-b border-border/40">
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  {selected.is_new && (
-                    <span className="text-xs font-semibold bg-gold/20 text-gold border border-gold/30 px-2 py-0.5 rounded-full mr-2">
-                      Novidade
-                    </span>
-                  )}
-                  <span className="font-serif text-lg">{selected.title}</span>
-                </div>
-                <button
-                  onClick={() => setSelected(null)}
-                  className="text-xs text-muted-foreground hover:text-gold transition-colors flex-shrink-0"
-                >
-                  Fechar
-                </button>
+    <div className="min-h-screen flex">
+      <AppSidebar />
+      <main className="flex-1 px-6 py-12 overflow-y-auto">
+        <div className="max-w-3xl mx-auto">
+          {!selected ? (
+            <>
+              <div className="mb-10">
+                <p className="text-sm text-gold uppercase tracking-widest">Bíblia Estúdios</p>
+                <h1 className="font-serif text-4xl gold-text-gradient mt-2">Áudio Livros</h1>
+                <p className="text-muted-foreground mt-3 font-serif italic">
+                  Acesso restrito — visível apenas para administradores.
+                </p>
               </div>
-              {selected.description && (
-                <p className="text-sm text-muted-foreground mt-2">{selected.description}</p>
-              )}
-            </div>
-            <AudioPlayer driveFileId={selected.drive_file_id} title={selected.title} />
-          </div>
-        )}
 
-        {loadingAudio ? (
-          <p className="text-muted-foreground">Carregando áudio livros...</p>
-        ) : audiobooks.length === 0 ? (
-          <p className="text-muted-foreground">Nenhum áudio livro disponível ainda.</p>
-        ) : (
-          <div className="space-y-4">
-            {audiobooks.map((ab) => {
-              const acesso = temAcesso(ab);
-              return (
-                <div
-                  key={ab.id}
-                  onClick={() => acesso && setSelected(ab)}
-                  className={`group rounded-xl border p-5 flex items-center gap-5 transition-all ${
-                    acesso
-                      ? "border-border/60 bg-card/60 hover:border-gold/60 cursor-pointer"
-                      : "border-border/30 bg-card/30 opacity-60 cursor-default"
-                  }`}
-                >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full border border-gold/40 flex items-center justify-center">
-                    {acesso ? (
-                      <Music className="h-5 w-5 text-gold" />
-                    ) : (
-                      <Lock className="h-5 w-5 text-muted-foreground" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {ab.is_new && acesso && (
-                        <span className="text-xs font-semibold bg-gold/20 text-gold border border-gold/30 px-2 py-0.5 rounded-full">
-                          Novidade
-                        </span>
+              <div
+                className="group rounded-xl border border-border/60 bg-card/60 p-6 flex items-center gap-5 hover:border-gold/60 transition-all cursor-pointer"
+                onClick={() => capitulos.length > 0 && setSelected(capitulos[0])}
+              >
+                <div className="flex-shrink-0 w-14 h-14 rounded-full border border-gold/40 flex items-center justify-center bg-gold/5">
+                  <BookMarked className="h-6 w-6 text-gold" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h2 className="font-serif text-xl">Gênesis — A Criação e a Queda</h2>
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    {loadingAudio ? "Carregando..." : `${capitulos.length} capítulo${capitulos.length !== 1 ? "s" : ""} disponível`}
+                  </p>
+                </div>
+                <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-gold transition-colors flex-shrink-0" />
+              </div>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => setSelected(null)}
+                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-gold transition-colors mb-6"
+              >
+                <ChevronLeft className="h-4 w-4" /> Gênesis — A Criação e a Queda
+              </button>
+
+              <div className="space-y-3">
+                {capitulos.map((cap) => (
+                  <div key={cap.id}>
+                    <div
+                      className={`rounded-xl border p-5 transition-all ${
+                        selected.id === cap.id
+                          ? "border-gold/60 bg-card/70"
+                          : "border-border/50 bg-card/40 hover:border-gold/30 cursor-pointer"
+                      }`}
+                      onClick={() => setSelected(cap)}
+                    >
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        {cap.is_new && (
+                          <span className="text-xs font-semibold bg-gold/20 text-gold border border-gold/30 px-2 py-0.5 rounded-full">
+                            Novidade
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="font-serif text-lg">{cap.title}</h3>
+                      {cap.description && (
+                        <p className="text-sm text-muted-foreground mt-0.5">{cap.description}</p>
                       )}
-                      {!acesso && (
-                        <span className="text-xs bg-muted/40 text-muted-foreground border border-border/40 px-2 py-0.5 rounded-full">
-                          Em breve
-                        </span>
+                      {selected.id === cap.id && (
+                        <div className="mt-4">
+                          <AudioPlayer driveFileId={cap.drive_file_id} />
+                        </div>
                       )}
                     </div>
-                    <h3 className="font-serif text-xl mt-1 truncate">{ab.title}</h3>
-                    {ab.description && (
-                      <p className="text-sm text-muted-foreground mt-0.5 truncate">{ab.description}</p>
-                    )}
                   </div>
-                  {acesso && (
-                    <span className="text-muted-foreground group-hover:text-gold transition-colors text-lg flex-shrink-0">
-                      ▶
-                    </span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
+                ))}
+              </div>
+            </>
+          )}
+        </div>
       </main>
     </div>
   );

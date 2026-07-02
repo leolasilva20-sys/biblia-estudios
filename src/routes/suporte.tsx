@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { LifeBuoy } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
-import { SiteHeader } from "@/components/site-header";
+import { AppSidebar } from "@/components/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -62,7 +62,7 @@ function Suporte() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <SiteHeader />
+      <AppSidebar />
       <main className="flex-1 container mx-auto max-w-2xl px-6 py-12">
         <div className="text-center mb-10">
           <LifeBuoy className="h-10 w-10 text-gold mx-auto mb-4" />

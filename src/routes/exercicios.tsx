@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
-import { SiteHeader } from "@/components/site-header";
+import { AppSidebar } from "@/components/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -59,7 +59,7 @@ function Exercicios() {
   if (submitted) {
     return (
       <div className="min-h-screen flex flex-col">
-        <SiteHeader />
+        <AppSidebar />
         <main className="flex-1 container mx-auto max-w-2xl px-6 py-20 text-center">
           <CheckCircle2 className="h-16 w-16 text-gold mx-auto mb-6" />
           <h1 className="font-serif text-3xl gold-text-gradient mb-3">Respostas enviadas</h1>
@@ -74,7 +74,7 @@ function Exercicios() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <SiteHeader />
+      <AppSidebar />
       <main className="flex-1 container mx-auto max-w-3xl px-6 py-10">
         <Link to="/dashboard">
           <Button variant="ghost" size="sm" className="mb-6"><ArrowLeft className="h-4 w-4 mr-1" /> Voltar</Button>

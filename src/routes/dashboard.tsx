@@ -1,8 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { BookOpen, ChevronRight, FileText, GraduationCap, Crown, Sparkles, Clock, Film, BookMarked } from "lucide-react";
+import { BookOpen, ChevronRight, FileText, GraduationCap, Crown, Sparkles, Clock, Film } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { SiteHeader } from "@/components/site-header";
+import { AppSidebar } from "@/components/app-sidebar";
 import { MODULO_1_APOSTILAS, type Nivel } from "@/lib/apostilas";
 import { Button } from "@/components/ui/button";
 
@@ -36,9 +36,10 @@ function Dashboard() {
   const nome = profile?.full_name?.split(" ")[0] ?? "leitor";
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <SiteHeader />
-      <main className="flex-1 container mx-auto max-w-5xl px-6 py-12">
+    <div className="min-h-screen flex">
+      <AppSidebar />
+      <main className="flex-1 px-6 py-12 overflow-y-auto">
+        <div className="max-w-5xl mx-auto">
         <div className="mb-12">
           <p className="text-sm text-gold uppercase tracking-widest">Bem-vindo</p>
           <h1 className="font-serif text-4xl md:text-5xl gold-text-gradient mt-2">Olá, {nome}</h1>
@@ -93,15 +94,9 @@ function Dashboard() {
           <div className="grid sm:grid-cols-2 gap-4">
             <ComingCard
               icon={BookOpen}
-              eta="30 de junho"
+              eta="Em breve"
               title="Módulos 2 a 6 — Gênesis"
               desc="Continuação completa do livro de Gênesis em cinco níveis."
-            />
-            <ComingCard
-              icon={BookMarked}
-              eta="Em breve"
-              title="Livro: Gênesis — A Criação e a Queda"
-              desc="Edição impressa com toda a profundidade dos estudos."
             />
             <ComingCard
               icon={Film}
@@ -117,6 +112,7 @@ function Dashboard() {
             />
           </div>
         </section>
+        </div>
       </main>
     </div>
   );

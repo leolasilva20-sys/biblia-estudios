@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, ClipboardList, CheckCircle2, Clock } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
-import { SiteHeader } from "@/components/site-header";
+import { AppSidebar } from "@/components/app-sidebar";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/responder")({
@@ -80,7 +80,7 @@ function ResponderList() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <SiteHeader />
+      <AppSidebar />
       <main className="flex-1 container mx-auto max-w-3xl px-6 py-10">
         <Link to="/dashboard">
           <Button variant="ghost" size="sm" className="mb-6">

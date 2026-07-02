@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { ArrowLeft, ChevronLeft, ChevronRight, Send, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
-import { SiteHeader } from "@/components/site-header";
+import { AppSidebar } from "@/components/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -113,7 +113,7 @@ function ResponderProva() {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
-        <SiteHeader />
+        <AppSidebar />
         <main className="flex-1 container mx-auto max-w-3xl px-6 py-10 text-muted-foreground">Carregando...</main>
       </div>
     );
@@ -124,7 +124,7 @@ function ResponderProva() {
   if (licoes === null) {
     return (
       <div className="min-h-screen flex flex-col">
-        <SiteHeader />
+        <AppSidebar />
         <main className="flex-1 container mx-auto max-w-3xl px-6 py-10 text-muted-foreground">Carregando prova...</main>
       </div>
     );
@@ -133,7 +133,7 @@ function ResponderProva() {
   if (licoes.length === 0) {
     return (
       <div className="min-h-screen flex flex-col">
-        <SiteHeader />
+        <AppSidebar />
         <main className="flex-1 container mx-auto max-w-3xl px-6 py-10">
           <Link to="/responder"><Button variant="ghost" size="sm" className="mb-6"><ArrowLeft className="h-4 w-4 mr-1" /> Voltar</Button></Link>
           <p className="text-muted-foreground">Nenhuma pergunta cadastrada para esta apostila.</p>
@@ -146,7 +146,7 @@ function ResponderProva() {
   if (allEnviada) {
     return (
       <div className="min-h-screen flex flex-col">
-        <SiteHeader />
+        <AppSidebar />
         <main className="flex-1 container mx-auto max-w-3xl px-6 py-10">
           <Link to="/responder"><Button variant="ghost" size="sm" className="mb-6"><ArrowLeft className="h-4 w-4 mr-1" /> Voltar</Button></Link>
           <div className="mb-8">
@@ -264,7 +264,7 @@ function ResponderProva() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <SiteHeader />
+      <AppSidebar />
       <main className="flex-1 container mx-auto max-w-3xl px-6 py-10">
         <Link to="/responder">
           <Button variant="ghost" size="sm" className="mb-6">
