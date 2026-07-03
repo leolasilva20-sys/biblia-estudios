@@ -75,11 +75,27 @@ function AudioPlayer({ driveFileId }: { driveFileId: string }) {
       ) : (
         <div className="flex items-center gap-4">
           <button
+            onClick={() => skip(-15)}
+            disabled={loading}
+            aria-label="Voltar 15 segundos"
+            className="w-10 h-10 rounded-full border border-border/60 flex items-center justify-center hover:border-gold/40 hover:text-gold transition-colors disabled:opacity-40 flex-shrink-0"
+          >
+            <SkipBack className="h-4 w-4" />
+          </button>
+          <button
             onClick={togglePlay}
             disabled={loading}
             className="w-12 h-12 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center hover:bg-gold/30 transition-colors disabled:opacity-40 flex-shrink-0"
           >
             {playing ? <Pause className="h-5 w-5 text-gold" /> : <Play className="h-5 w-5 text-gold ml-0.5" />}
+          </button>
+          <button
+            onClick={() => skip(15)}
+            disabled={loading}
+            aria-label="Avançar 15 segundos"
+            className="w-10 h-10 rounded-full border border-border/60 flex items-center justify-center hover:border-gold/40 hover:text-gold transition-colors disabled:opacity-40 flex-shrink-0"
+          >
+            <SkipForward className="h-4 w-4" />
           </button>
           <div className="flex-1 min-w-0">
             <p className="text-xs text-muted-foreground mb-2">
