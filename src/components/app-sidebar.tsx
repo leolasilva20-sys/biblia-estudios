@@ -4,7 +4,6 @@ import {
   BookOpen,
   FileText,
   Music,
-  Settings,
   Shield,
   X,
   Menu,
@@ -75,12 +74,10 @@ export function AppSidebar() {
       </nav>
 
       <div className="px-2 pb-3 border-t border-border/40 pt-3">
-        <NavLink to="/configuracoes" label="Configurações" icon={Settings} />
-
         <Link
           to="/perfil"
           onClick={() => setMobileOpen(false)}
-          className="flex items-center gap-3 px-3 py-2.5 mt-2 rounded-lg hover:bg-muted/40 transition-colors"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/40 transition-colors"
         >
           <Avatar className="h-7 w-7 border border-border/60">
             {profile?.avatar_url && <AvatarImage src={profile.avatar_url} alt="" />}

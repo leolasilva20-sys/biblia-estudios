@@ -20,7 +20,6 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ExerciciosRouteImport } from './routes/exercicios'
 import { Route as DocumentacaoRouteImport } from './routes/documentacao'
 import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
 import { Route as AudiolivrosRouteImport } from './routes/audiolivros'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -85,11 +84,6 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
-  id: '/configuracoes',
-  path: '/configuracoes',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CompleteProfileRoute = CompleteProfileRouteImport.update({
   id: '/complete-profile',
   path: '/complete-profile',
@@ -136,7 +130,6 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/audiolivros': typeof AudiolivrosRouteWithChildren
   '/complete-profile': typeof CompleteProfileRoute
-  '/configuracoes': typeof ConfiguracoesRoute
   '/dashboard': typeof DashboardRoute
   '/documentacao': typeof DocumentacaoRoute
   '/exercicios': typeof ExerciciosRoute
@@ -158,7 +151,6 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/audiolivros': typeof AudiolivrosRouteWithChildren
   '/complete-profile': typeof CompleteProfileRoute
-  '/configuracoes': typeof ConfiguracoesRoute
   '/dashboard': typeof DashboardRoute
   '/documentacao': typeof DocumentacaoRoute
   '/exercicios': typeof ExerciciosRoute
@@ -181,7 +173,6 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/audiolivros': typeof AudiolivrosRouteWithChildren
   '/complete-profile': typeof CompleteProfileRoute
-  '/configuracoes': typeof ConfiguracoesRoute
   '/dashboard': typeof DashboardRoute
   '/documentacao': typeof DocumentacaoRoute
   '/exercicios': typeof ExerciciosRoute
@@ -205,7 +196,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/audiolivros'
     | '/complete-profile'
-    | '/configuracoes'
     | '/dashboard'
     | '/documentacao'
     | '/exercicios'
@@ -227,7 +217,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/audiolivros'
     | '/complete-profile'
-    | '/configuracoes'
     | '/dashboard'
     | '/documentacao'
     | '/exercicios'
@@ -249,7 +238,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/audiolivros'
     | '/complete-profile'
-    | '/configuracoes'
     | '/dashboard'
     | '/documentacao'
     | '/exercicios'
@@ -272,7 +260,6 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AudiolivrosRoute: typeof AudiolivrosRouteWithChildren
   CompleteProfileRoute: typeof CompleteProfileRoute
-  ConfiguracoesRoute: typeof ConfiguracoesRoute
   DashboardRoute: typeof DashboardRoute
   DocumentacaoRoute: typeof DocumentacaoRoute
   ExerciciosRoute: typeof ExerciciosRoute
@@ -364,13 +351,6 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/configuracoes': {
-      id: '/configuracoes'
-      path: '/configuracoes'
-      fullPath: '/configuracoes'
-      preLoaderRoute: typeof ConfiguracoesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/complete-profile': {
@@ -472,7 +452,6 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AudiolivrosRoute: AudiolivrosRouteWithChildren,
   CompleteProfileRoute: CompleteProfileRoute,
-  ConfiguracoesRoute: ConfiguracoesRoute,
   DashboardRoute: DashboardRoute,
   DocumentacaoRoute: DocumentacaoRoute,
   ExerciciosRoute: ExerciciosRoute,
