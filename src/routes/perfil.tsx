@@ -52,12 +52,14 @@ function Perfil() {
   const handleAddPasskey = async () => {
     setPasskeyLoading(true);
     try {
-      const auth = supabase.auth as unknown as { enrollPasskey?: () => Promise<{ error: unknown }> };
-      if (!auth.enrollPasskey) {
-        toast.error("Passkeys não são suportadas neste navegador.");
+      const auth = supabase.auth as unknown as {
+        passkey?: { add: () => Promise<{ data: unknown; error: unknown }> };
+      };
+      if (!auth.passkey?.add) {
+        toast.error("Passkeys não são suportadas neste navegador ou biblioteca desatualizada.");
         return;
       }
-      const { error } = await auth.enrollPasskey();
+      const { error } = await auth.passkey.add();
       if (error) {
         toast.error("Não foi possível cadastrar a passkey neste dispositivo.");
         return;
