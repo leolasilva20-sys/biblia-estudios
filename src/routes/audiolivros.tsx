@@ -96,6 +96,7 @@ function AudioLivros() {
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
   const [capitulos, setCapitulos] = useState<Audiobook[]>([]);
+  const [livroAberto, setLivroAberto] = useState(false);
   const [selected, setSelected] = useState<Audiobook | null>(null);
   const [loadingAudio, setLoadingAudio] = useState(true);
 
@@ -133,7 +134,7 @@ function AudioLivros() {
       <AppSidebar />
       <main className="flex-1 px-6 py-12 overflow-y-auto">
         <div className="max-w-3xl mx-auto">
-          {!selected ? (
+          {!livroAberto ? (
             <>
               <div className="mb-10">
                 <p className="text-sm text-gold uppercase tracking-widest">Bíblia Estúdios</p>
@@ -145,7 +146,7 @@ function AudioLivros() {
 
               <div
                 className="group rounded-xl border border-border/60 bg-card/60 p-6 flex items-center gap-5 hover:border-gold/60 transition-all cursor-pointer"
-                onClick={() => capitulos.length > 0 && setSelected(capitulos[0])}
+                onClick={() => setLivroAberto(true)}
               >
                 <div className="flex-shrink-0 w-14 h-14 rounded-full border border-gold/40 flex items-center justify-center bg-gold/5">
                   <BookMarked className="h-6 w-6 text-gold" />
@@ -162,43 +163,49 @@ function AudioLivros() {
           ) : (
             <>
               <button
-                onClick={() => setSelected(null)}
+                onClick={() => { setLivroAberto(false); setSelected(null); }}
                 className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-gold transition-colors mb-6"
               >
                 <ChevronLeft className="h-4 w-4" /> Gênesis — A Criação e a Queda
               </button>
 
-              <div className="space-y-3">
-                {capitulos.map((cap) => (
-                  <div key={cap.id}>
-                    <div
-                      className={`rounded-xl border p-5 transition-all ${
-                        selected.id === cap.id
-                          ? "border-gold/60 bg-card/70"
-                          : "border-border/50 bg-card/40 hover:border-gold/30 cursor-pointer"
-                      }`}
-                      onClick={() => setSelected(cap)}
-                    >
-                      <div className="flex items-center gap-2 flex-wrap mb-1">
-                        {cap.is_new && (
-                          <span className="text-xs font-semibold bg-gold/20 text-gold border border-gold/30 px-2 py-0.5 rounded-full">
-                            Novidade
-                          </span>
+              {loadingAudio ? (
+                <p className="text-muted-foreground">Carregando capítulos...</p>
+              ) : capitulos.length === 0 ? (
+                <p className="text-muted-foreground">Nenhum capítulo disponível ainda.</p>
+              ) : (
+                <div className="space-y-3">
+                  {capitulos.map((cap) => (
+                    <div key={cap.id}>
+                      <div
+                        className={`rounded-xl border p-5 transition-all cursor-pointer ${
+                          selected?.id === cap.id
+                            ? "border-gold/60 bg-card/70"
+                            : "border-border/50 bg-card/40 hover:border-gold/30"
+                        }`}
+                        onClick={() => setSelected(selected?.id === cap.id ? null : cap)}
+                      >
+                        <div className="flex items-center gap-2 flex-wrap mb-1">
+                          {cap.is_new && (
+                            <span className="text-xs font-semibold bg-gold/20 text-gold border border-gold/30 px-2 py-0.5 rounded-full">
+                              Novidade
+                            </span>
+                          )}
+                        </div>
+                        <h3 className="font-serif text-lg">{cap.title}</h3>
+                        {cap.description && (
+                          <p className="text-sm text-muted-foreground mt-0.5">{cap.description}</p>
+                        )}
+                        {selected?.id === cap.id && (
+                          <div className="mt-4" onClick={(e) => e.stopPropagation()}>
+                            <AudioPlayer driveFileId={cap.drive_file_id} />
+                          </div>
                         )}
                       </div>
-                      <h3 className="font-serif text-lg">{cap.title}</h3>
-                      {cap.description && (
-                        <p className="text-sm text-muted-foreground mt-0.5">{cap.description}</p>
-                      )}
-                      {selected.id === cap.id && (
-                        <div className="mt-4">
-                          <AudioPlayer driveFileId={cap.drive_file_id} />
-                        </div>
-                      )}
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </>
           )}
         </div>
