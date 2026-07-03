@@ -120,6 +120,8 @@ function AudioLivros() {
   const [capitulos, setCapitulos] = useState<Audiobook[]>([]);
   const [selected, setSelected] = useState<Audiobook | null>(null);
   const [loadingAudio, setLoadingAudio] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [bookOpen, setBookOpen] = useState(false);
 
   const isAdmin = !!profile?.nivel_admin && profile.nivel_admin !== "nenhum";
 
@@ -137,7 +139,12 @@ function AudioLivros() {
         .from("audiobooks")
         .select("*")
         .order("order_index", { ascending: true });
-      if (!error && data) setCapitulos(data as Audiobook[]);
+      if (error) {
+        console.error("[audiolivros] load error:", error);
+        setLoadError(error.message);
+      } else if (data) {
+        setCapitulos(data as Audiobook[]);
+      }
       setLoadingAudio(false);
     })();
   }, [user, isAdmin]);
