@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { BookMarked, ChevronRight, ChevronLeft, Play, Pause, Lock } from "lucide-react";
+import { BookMarked, ChevronRight, ChevronLeft, Play, Pause, Lock, SkipBack, SkipForward } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
 import { AppSidebar } from "@/components/app-sidebar";
