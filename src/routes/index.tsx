@@ -16,6 +16,26 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
+  const { user, profile, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (loading || !user) return;
+    if (profile && !profile.acesso_liberado) {
+      navigate({ to: "/complete-profile", replace: true });
+    } else {
+      navigate({ to: "/dashboard", replace: true });
+    }
+  }, [user, profile, loading, navigate]);
+
+  if (!loading && user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-muted-foreground">
+        Redirecionando...
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <SiteHeader />
