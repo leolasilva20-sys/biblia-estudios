@@ -39,6 +39,12 @@ function AudioPlayer({ driveFileId }: { driveFileId: string }) {
     else { audioRef.current.play(); setPlaying(true); }
   };
 
+  const skip = (seconds: number) => {
+    if (!audioRef.current) return;
+    const next = Math.max(0, Math.min((audioRef.current.duration || 0), audioRef.current.currentTime + seconds));
+    audioRef.current.currentTime = next;
+  };
+
   const fmt = (s: number) => {
     if (!isFinite(s)) return "0:00";
     const m = Math.floor(s / 60);
