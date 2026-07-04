@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Outlet, useMatches } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { BookMarked, ChevronRight } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
@@ -12,8 +12,11 @@ export const Route = createFileRoute("/audiolivros")({
 function AudioLivros() {
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
+  const matches = useMatches();
 
   const isAdmin = !!profile?.nivel_admin && profile.nivel_admin !== "nenhum";
+
+  const isExactAudiolivros = matches[matches.length - 1]?.routeId === "/audiolivros";
 
   useEffect(() => {
     if (loading) return;
@@ -28,6 +31,11 @@ function AudioLivros() {
         Carregando...
       </div>
     );
+  }
+
+  if (!isExactAudiolivros) {
+    // Rota filha (lista de capítulos ou player) assume a tela inteira
+    return <Outlet />;
   }
 
   return (
