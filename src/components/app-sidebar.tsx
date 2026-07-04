@@ -42,13 +42,14 @@ export function AppSidebar() {
     <Link
       to={to}
       onClick={() => setMobileOpen(false)}
-      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+      aria-label={label}
+      className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-base transition-colors ${
         isActive(to)
           ? "bg-gold/15 text-gold font-medium"
           : "text-foreground/70 hover:text-foreground hover:bg-muted/40"
       }`}
     >
-      <Icon className="h-4 w-4 flex-shrink-0" />
+      <Icon className="h-5 w-5 flex-shrink-0" />
       {label}
     </Link>
   );
@@ -77,15 +78,14 @@ export function AppSidebar() {
         <Link
           to="/perfil"
           onClick={() => setMobileOpen(false)}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/40 transition-colors"
+          className="flex items-center gap-3 px-4 py-4 rounded-lg hover:bg-muted/40 transition-colors border border-border/40"
+          aria-label="Ir para meu perfil"
         >
-          <Avatar className="h-7 w-7 border border-border/60">
+          <Avatar className="h-9 w-9 border border-border/60 flex-shrink-0">
             {profile?.avatar_url && <AvatarImage src={profile.avatar_url} alt="" />}
-            <AvatarFallback className="text-xs">{initial}</AvatarFallback>
+            <AvatarFallback className="text-sm">{initial}</AvatarFallback>
           </Avatar>
-          <span className="text-sm text-foreground/80 truncate">
-            {profile?.full_name ?? user?.email}
-          </span>
+          <span className="text-base font-medium text-foreground">Perfil</span>
         </Link>
       </div>
     </div>
@@ -99,8 +99,12 @@ export function AppSidebar() {
           <BookOpen className="h-5 w-5 text-gold" />
           <span className="font-serif text-lg gold-text-gradient">Bíblia Estúdios</span>
         </Link>
-        <button onClick={() => setMobileOpen(true)} aria-label="Abrir menu">
-          <Menu className="h-5 w-5" />
+        <button
+          onClick={() => setMobileOpen(true)}
+          aria-label="Abrir menu de navegação"
+          className="p-2 -mr-2 rounded-lg hover:bg-muted/40"
+        >
+          <Menu className="h-7 w-7" />
         </button>
       </div>
 
