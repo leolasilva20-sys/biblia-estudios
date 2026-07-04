@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Outlet, useMatches } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { BookMarked, ChevronRight } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
@@ -12,11 +12,8 @@ export const Route = createFileRoute("/audiolivros")({
 function AudioLivros() {
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
-  const matches = useMatches();
 
   const isAdmin = !!profile?.nivel_admin && profile.nivel_admin !== "nenhum";
-
-  const isExactAudiolivros = matches[matches.length - 1]?.routeId === "/audiolivros";
 
   useEffect(() => {
     if (loading) return;
@@ -33,11 +30,6 @@ function AudioLivros() {
     );
   }
 
-  if (!isExactAudiolivros) {
-    // Rota filha (lista de capítulos ou player) assume a tela inteira
-    return <Outlet />;
-  }
-
   return (
     <div className="min-h-screen flex">
       <AppSidebar />
@@ -51,9 +43,9 @@ function AudioLivros() {
             </p>
           </div>
 
-          <div
-            className="group rounded-xl border border-border/60 bg-card/60 p-6 flex items-center gap-5 hover:border-gold/60 transition-all cursor-pointer"
-            onClick={() => navigate({ to: "/audiolivros/genesis" })}
+          <Link
+            to="/audiolivros/genesis"
+            className="group flex items-center gap-5 rounded-xl border border-border/60 bg-card/60 p-6 hover:border-gold/60 transition-all"
           >
             <div className="flex-shrink-0 w-14 h-14 rounded-full border border-gold/40 flex items-center justify-center bg-gold/5">
               <BookMarked className="h-6 w-6 text-gold" />
@@ -63,7 +55,7 @@ function AudioLivros() {
               <p className="text-sm text-muted-foreground mt-0.5">Ver capítulos</p>
             </div>
             <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-gold transition-colors flex-shrink-0" />
-          </div>
+          </Link>
         </div>
       </main>
     </div>
