@@ -49,22 +49,74 @@ function Perfil() {
     refreshProfile();
   };
 
+  const describeError = (e: unknown) => {
+    if (!e || typeof e !== "object") return { raw: String(e) };
+    const anyErr = e as Record<string, unknown>;
+    return {
+      name: anyErr.name,
+      code: anyErr.code,
+      message: anyErr.message,
+      status: anyErr.status,
+      cause: anyErr.cause,
+      stack: anyErr.stack,
+      raw: e,
+    };
+  };
+
   const handleAddPasskey = async () => {
+    // Pre-flight: contexto seguro / iframe / suporte a WebAuthn
+    if (typeof window === "undefined") return;
+    if (!window.isSecureContext) {
+      console.error("Passkey bloqueada: contexto não seguro (não é HTTPS).");
+      toast.error("Passkeys exigem HTTPS. Abra o site em https:// e tente novamente.");
+      return;
+    }
+    if (window.top !== window.self) {
+      console.error("Passkey bloqueada: página está dentro de um iframe.");
+      toast.error("Abra https://biblia-estudios.lovable.app/perfil em uma aba normal (fora do editor/preview) para cadastrar a passkey.");
+      return;
+    }
+    if (!("credentials" in navigator) || typeof window.PublicKeyCredential === "undefined") {
+      console.error("Passkey bloqueada: navegador sem suporte a WebAuthn.", {
+        hasCredentials: "credentials" in navigator,
+        hasPublicKeyCredential: typeof window.PublicKeyCredential,
+        userAgent: navigator.userAgent,
+      });
+      toast.error("Este navegador não suporta passkeys. Tente no Chrome/Safari mais recente.");
+      return;
+    }
+    console.log("[passkey] pre-flight OK", {
+      origin: window.location.origin,
+      host: window.location.host,
+      isSecureContext: window.isSecureContext,
+      isTopLevel: window.top === window.self,
+      userAgent: navigator.userAgent,
+    });
+
     setPasskeyLoading(true);
     try {
       const auth = supabase.auth as unknown as {
-        registerPasskey: () => Promise<{ data: unknown; error: { message?: string } | null }>;
+        registerPasskey: () => Promise<{ data: unknown; error: unknown }>;
       };
-      const { error } = await auth.registerPasskey();
+      const { data, error } = await auth.registerPasskey();
+      console.log("[passkey] resultado:", { data, error });
       if (error) {
-        console.error("Erro ao cadastrar passkey:", error);
-        toast.error(error.message || "Não foi possível cadastrar a passkey neste dispositivo.");
+        console.error("[passkey] erro detalhado:", describeError(error));
+        const msg = (error as { message?: string })?.message
+          || (error as { name?: string })?.name
+          || "Não foi possível cadastrar a passkey neste dispositivo.";
+        toast.error(msg);
         return;
       }
       toast.success("Passkey cadastrada com sucesso!");
     } catch (err) {
-      console.error("Exceção ao cadastrar passkey:", err);
-      const message = err instanceof Error ? err.message : "Erro desconhecido";
+      console.error("[passkey] exceção detalhada:", describeError(err));
+      const message =
+        (err as { name?: string })?.name && (err as { message?: string })?.message
+          ? `${(err as { name?: string }).name}: ${(err as { message?: string }).message}`
+          : err instanceof Error
+            ? err.message
+            : "Erro desconhecido";
       toast.error(`Erro: ${message}`);
     } finally {
       setPasskeyLoading(false);
