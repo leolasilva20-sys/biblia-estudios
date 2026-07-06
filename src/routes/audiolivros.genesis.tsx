@@ -126,15 +126,16 @@ function GenesisAudiolivro() {
   const [playerAberto, setPlayerAberto] = useState<Record<number, boolean>>({});
 
   const isAdmin = !!profile?.nivel_admin && profile.nivel_admin !== "nenhum";
+  const profileReady = profile !== null && profile !== undefined;
 
   useEffect(() => {
     if (loading) return;
     if (!user) { navigate({ to: "/login" }); return; }
-    if (profile && !isAdmin) { navigate({ to: "/dashboard" }); return; }
-  }, [user, profile, loading, isAdmin, navigate]);
+    if (profileReady && !isAdmin) { navigate({ to: "/dashboard" }); return; }
+  }, [user, profile, profileReady, loading, isAdmin, navigate]);
 
   useEffect(() => {
-    if (!user || !isAdmin) return;
+    if (!user || !profileReady || !isAdmin) return;
     (async () => {
       const { data, error } = await supabase
         .from("audiobooks")
@@ -144,9 +145,9 @@ function GenesisAudiolivro() {
       else if (data) setCapitulos(data as Audiobook[]);
       setLoadingAudio(false);
     })();
-  }, [user, isAdmin]);
+  }, [user, isAdmin, profileReady]);
 
-  if (loading || !user || !isAdmin) {
+  if (loading || !user || !profileReady) {
     return (
       <div className="min-h-screen flex items-center justify-center text-muted-foreground">
         Carregando...
