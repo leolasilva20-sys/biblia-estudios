@@ -22,6 +22,7 @@ function Perfil() {
   const [saving, setSaving] = useState(false);
   const [loginsOpen, setLoginsOpen] = useState(false);
   const [passkeyLoading, setPasskeyLoading] = useState(false);
+  const [passkeyErrorDetail, setPasskeyErrorDetail] = useState<string | null>(null);
 
   useEffect(() => {
     if (loading) return;
@@ -63,26 +64,66 @@ function Perfil() {
     };
   };
 
+  // Traduz os erros mais comuns de WebAuthn/Passkey do inglês técnico para português simples.
+  const traduzirErroPasskey = (name?: string, message?: string): string => {
+    const msgLower = (message || "").toLowerCase();
+
+    if (name === "NotAllowedError" || msgLower.includes("not allowed")) {
+      return "O cadastro foi cancelado ou não foi permitido pelo navegador. Isso costuma acontecer quando você fecha a janela de biometria antes de confirmar, ou quando o navegador nega a operação por segurança (por exemplo, se a página não estiver no formato esperado).";
+    }
+    if (name === "SecurityError" || msgLower.includes("security")) {
+      return "Erro de segurança: o site precisa estar em uma conexão segura (https) e não pode estar dentro de outra página (iframe) para cadastrar a passkey.";
+    }
+    if (name === "NotSupportedError" || msgLower.includes("not supported")) {
+      return "Este navegador ou dispositivo não tem suporte para passkeys no momento.";
+    }
+    if (name === "AbortError" || msgLower.includes("abort")) {
+      return "A operação foi interrompida antes de terminar. Tente novamente.";
+    }
+    if (name === "InvalidStateError" || msgLower.includes("invalid state")) {
+      return "Este dispositivo já possui uma passkey cadastrada para esta conta.";
+    }
+    if (name === "ConstraintError" || msgLower.includes("constraint")) {
+      return "O dispositivo não conseguiu atender aos requisitos de segurança pedidos pelo servidor.";
+    }
+    if (msgLower.includes("relying party") || msgLower.includes("rpid") || msgLower.includes("origin")) {
+      return "O endereço deste site não bate com o endereço configurado para passkeys no servidor (Relying Party ID/Origem). É preciso ajustar essa configuração no painel do Supabase.";
+    }
+    if (msgLower.includes("not a function") || msgLower.includes("undefined")) {
+      return "A função de passkey não foi encontrada nesta versão do sistema. Pode ser necessário atualizar a página ou o aplicativo.";
+    }
+
+    // Se não reconhecer o erro, mostra o texto original em inglês como apoio.
+    return `Erro não reconhecido automaticamente. Texto original: ${name ? name + ": " : ""}${message || "sem mensagem"}`;
+  };
+
   const handleAddPasskey = async () => {
+    setPasskeyErrorDetail(null);
     // Pre-flight: contexto seguro / iframe / suporte a WebAuthn
     if (typeof window === "undefined") return;
     if (!window.isSecureContext) {
-      console.error("Passkey bloqueada: contexto não seguro (não é HTTPS).");
-      toast.error("Passkeys exigem HTTPS. Abra o site em https:// e tente novamente.");
+      const msg = "Bloqueado: contexto não é HTTPS seguro.";
+      console.error(msg);
+      toast.error(msg);
+      setPasskeyErrorDetail(msg);
       return;
     }
     if (window.top !== window.self) {
-      console.error("Passkey bloqueada: página está dentro de um iframe.");
-      toast.error("Abra https://biblia-estudios.lovable.app/perfil em uma aba normal (fora do editor/preview) para cadastrar a passkey.");
+      const msg = "Bloqueado: a página está sendo carregada dentro de um iframe (não é uma aba de navegador normal).";
+      console.error(msg);
+      toast.error(msg);
+      setPasskeyErrorDetail(msg);
       return;
     }
     if (!("credentials" in navigator) || typeof window.PublicKeyCredential === "undefined") {
-      console.error("Passkey bloqueada: navegador sem suporte a WebAuthn.", {
+      const msg = "Bloqueado: este navegador não tem suporte a passkeys (WebAuthn/PublicKeyCredential ausente).";
+      console.error(msg, {
         hasCredentials: "credentials" in navigator,
         hasPublicKeyCredential: typeof window.PublicKeyCredential,
         userAgent: navigator.userAgent,
       });
-      toast.error("Este navegador não suporta passkeys. Tente no Chrome/Safari mais recente.");
+      toast.error(msg);
+      setPasskeyErrorDetail(msg);
       return;
     }
     console.log("[passkey] pre-flight OK", {
@@ -102,22 +143,22 @@ function Perfil() {
       console.log("[passkey] resultado:", { data, error });
       if (error) {
         console.error("[passkey] erro detalhado:", describeError(error));
-        const msg = (error as { message?: string })?.message
-          || (error as { name?: string })?.name
-          || "Não foi possível cadastrar a passkey neste dispositivo.";
-        toast.error(msg);
+        const errObj = error as { message?: string; name?: string; code?: string | number; status?: number };
+        const msgTraduzida = traduzirErroPasskey(errObj?.name, errObj?.message);
+        const detail = `${msgTraduzida}\n\n(Detalhe técnico: Nome: ${errObj?.name ?? "—"} | Código: ${errObj?.code ?? "—"} | Status: ${errObj?.status ?? "—"} | Mensagem original: ${errObj?.message ?? "—"})`;
+        toast.error(msgTraduzida);
+        setPasskeyErrorDetail(detail);
         return;
       }
       toast.success("Passkey cadastrada com sucesso!");
+      setPasskeyErrorDetail(null);
     } catch (err) {
       console.error("[passkey] exceção detalhada:", describeError(err));
-      const message =
-        (err as { name?: string })?.name && (err as { message?: string })?.message
-          ? `${(err as { name?: string }).name}: ${(err as { message?: string }).message}`
-          : err instanceof Error
-            ? err.message
-            : "Erro desconhecido";
-      toast.error(`Erro: ${message}`);
+      const errObj = err as { name?: string; message?: string; code?: string | number };
+      const msgTraduzida = traduzirErroPasskey(errObj?.name, errObj?.message || String(err));
+      const detail = `${msgTraduzida}\n\n(Detalhe técnico: Nome: ${errObj?.name ?? "—"} | Código: ${errObj?.code ?? "—"} | Mensagem original: ${errObj?.message ?? String(err)})`;
+      toast.error(msgTraduzida);
+      setPasskeyErrorDetail(detail);
     } finally {
       setPasskeyLoading(false);
     }
@@ -208,6 +249,24 @@ function Perfil() {
                 <Button variant="outline" onClick={handleAddPasskey} disabled={passkeyLoading} className="w-full">
                   {passkeyLoading ? "Cadastrando..." : "Cadastrar passkey neste dispositivo"}
                 </Button>
+                {passkeyErrorDetail && (
+                  <div
+                    role="alert"
+                    aria-live="assertive"
+                    className="mt-4 p-4 rounded-lg border border-destructive/40 bg-destructive/10 text-sm whitespace-pre-line"
+                  >
+                    <p className="font-medium text-destructive mb-1">Não foi possível cadastrar a passkey:</p>
+                    <p>{passkeyErrorDetail}</p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="mt-2"
+                      onClick={() => setPasskeyErrorDetail(null)}
+                    >
+                      Fechar mensagem
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
           </div>
