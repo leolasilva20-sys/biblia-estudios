@@ -1,27 +1,54 @@
-## Diagnóstico
 
-Confirmado: o `package.json` **não contém mais** `@lovable.dev/vite-tanstack-config`. Também foi adicionado `@netlify/vite-plugin-tanstack-start` em `devDependencies` (provável artefato do teste de deploy no Vercel/Netlify).
+Entendi a frustração — são vários pedidos grandes de uma vez. Vou propor um plano em fases pra não quebrar nada, e preciso de algumas confirmações antes.
 
-Outras observações:
-- `bunfig.toml` ainda lista `@lovable.dev/vite-tanstack-config` em `minimumReleaseAgeExcludes` — confirma que o pacote deveria estar presente.
-- `vite.config.ts` **não** importa `@lovable.dev/vite-tanstack-config` diretamente hoje (usa `tanstackStart`, `cloudflare`, `viteReact`, `tailwindcss`, `tsConfigPaths`). Ou seja, o build atual pode até rodar sem ele, mas essa é a configuração padrão que a Lovable espera para preview/build gerenciados.
-- Não encontrei referência a `nitro` / `nitro-nightly` no `package.json` atual — se estava antes, foi como dependência transitiva de `@lovable.dev/vite-tanstack-config`, não como entrada direta.
+## O que você pediu (resumido)
 
-## Plano de restauração (somente infra, zero mudança de rotas/componentes)
+1. **Bug audiolivros**: em `/audiolivros/genesis` os capítulos e o player não aparecem.
+2. **Agente de suporte com OpenRouter**: um agente que tenta resolver, e se não conseguir, te envia email automaticamente.
+3. **Nova interface do dashboard**: abas Apostilas / Audiolivros / Audiodramas, com título clicável em vez de link.
+4. **Player customizado dos audiodramas**: ao clicar no capítulo, abre player interno (sem link do Google Drive visível).
+5. **Sistema de créditos "ebook credits"**: 10 créditos totais, check-in diário dá 10, cada capítulo consome, admin (você) ilimitado, assinatura para mais.
 
-1. **Reinstalar** `@lovable.dev/vite-tanstack-config` na versão que o projeto usava antes (`^2.3.2`, conforme o histórico do próprio projeto e a entrada preservada no `bunfig.toml`):
-   ```
-   bun add -d @lovable.dev/vite-tanstack-config@^2.3.2
-   ```
-   Isso deve trazer de volta o `nitro-nightly` como dependência transitiva pinada pelo próprio pacote (não precisamos declarar `nitro` manualmente).
+## Fase 1 — Diagnóstico dos itens já parcialmente prontos (agora)
 
-2. **Opcional (sugerido, aguardo confirmação)**: remover `@netlify/vite-plugin-tanstack-start` de `devDependencies`, já que foi adicionado no teste de deploy externo e não é usado pelo `vite.config.ts` atual. Se preferir manter por segurança, deixamos.
+Antes de construir coisa nova, preciso ver o estado real do banco. Vou:
+- Listar tabelas existentes (`audiobooks`, `support_conversations`, etc).
+- Verificar se `audiobooks` tem linhas e se a policy RLS deixa admin ler — é o motivo mais provável da tela vazia.
+- Ver se existe tabela de audiodramas separada ou se são os próprios `audiobooks`.
 
-3. **Não tocar** em: `vite.config.ts`, `src/start.ts`, `src/router.tsx`, nem qualquer rota (`dashboard`, `audiolivros`, `perfil`, `admin`, `login`, `index`, `responder.*`) ou componentes.
+## Fase 2 — Corrigir /audiolivros/genesis (rápido)
 
-4. **Verificação**: após o `bun add`, o dev server reinicia sozinho. Vou apenas conferir que não há erros de resolução no build (`tsgo` + observar console/preview). Sem alterações de código.
+Depende do que a Fase 1 achar. Provavelmente é RLS ou tabela vazia. Corrijo isso primeiro, sem mexer em interface, pra você ver os capítulos e o player funcionando.
 
-## Ponto que preciso confirmar antes de agir
+## Fase 3 — Agente de suporte (médio)
 
-- Confirma versão `^2.3.2` para `@lovable.dev/vite-tanstack-config`? (é a que o histórico do projeto indica)
-- Remover ou manter `@netlify/vite-plugin-tanstack-start`?
+Já existe `supabase/functions/support-agent` usando OpenRouter e a rota `/suporte`. Você disse "nem adicionei OPENROUTER_API_KEY". Então:
+- Adiciono o secret `OPENROUTER_API_KEY` via formulário seguro.
+- Adiciono lógica de escalonamento por email (usando Resend, que já está configurado) quando o agente marca `[ESCALATE]`.
+- Alimento o system prompt do agente com info real do site (rotas, funcionalidades) pra ele "conhecer tudo".
+
+## Fase 4 — Nova aba Audiodramas no dashboard
+
+- Adiciono abas no `/dashboard`: Apostilas | Audiolivros | Audiodramas.
+- Cada card tem título clicável → abre página do audiodrama com lista de capítulos + player customizado inline (já existe base em `audiolivros.genesis.tsx`, generalizo).
+
+## Fase 5 — Sistema de créditos ebook
+
+Isso é o maior. Envolve:
+- Nova tabela `ebook_credits (user_id, balance, updated_at)`.
+- Tabela `daily_checkins (user_id, date)`.
+- Tabela `credit_transactions` (audit).
+- UI: mostrar saldo em `/perfil`, botão "Check-in" (uma vez por dia = +10), consumo ao tocar capítulo.
+- Bypass total pra admin.
+- Placeholder "Assinar" (sem gateway de pagamento ativo ainda — precisa Stripe/Paddle).
+
+---
+
+## Perguntas antes de começar
+
+1. **Ordem**: você concorda em fazer nessa ordem (bug audiolivros → agente → abas → créditos)? Ou quer priorizar diferente?
+2. **Audiodramas vs Audiolivros**: são a mesma tabela `audiobooks` ou você quer uma tabela separada `audiodramas`?
+3. **Créditos — assinatura**: qual gateway você quer usar (Stripe? Paddle?) ou deixo como "em breve" por enquanto?
+4. **OpenRouter key**: confirma que quer que eu já abra o formulário pra você colar a chave da OpenRouter agora?
+
+Assim que você responder, começo pela Fase 1 + 2 imediatamente (o bug do player).
