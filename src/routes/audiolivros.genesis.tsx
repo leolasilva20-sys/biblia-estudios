@@ -118,42 +118,44 @@ function AudioPlayer({ driveFileId }: { driveFileId: string }) {
 }
 
 function GenesisAudiolivro() {
-  const { user, profile, loading } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [capitulos, setCapitulos] = useState<Audiobook[]>([]);
   const [loadingAudio, setLoadingAudio] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [playerAberto, setPlayerAberto] = useState<Record<number, boolean>>({});
 
-  const isAdmin = !!profile?.nivel_admin && profile.nivel_admin !== "nenhum";
-  const profileReady = profile !== null && profile !== undefined;
-
   useEffect(() => {
     if (loading) return;
     if (!user) { navigate({ to: "/login" }); return; }
-    if (profileReady && !isAdmin) { navigate({ to: "/dashboard" }); return; }
-  }, [user, profile, profileReady, loading, isAdmin, navigate]);
+  }, [user, loading, navigate]);
 
   useEffect(() => {
-    if (!user || !profileReady || !isAdmin) return;
+    if (!user) return;
     (async () => {
       const { data, error } = await supabase
         .from("audiobooks")
         .select("*")
         .order("order_index", { ascending: true });
-      if (error) setLoadError(error.message);
-      else if (data) setCapitulos(data as Audiobook[]);
+      if (error) {
+        console.error("[audiobooks] query error:", error);
+        setLoadError(`${error.code ?? ""} ${error.message}`.trim());
+      } else if (data) {
+        console.log("[audiobooks] rows retornadas:", data.length);
+        setCapitulos(data as Audiobook[]);
+      }
       setLoadingAudio(false);
     })();
-  }, [user, isAdmin, profileReady]);
+  }, [user]);
 
-  if (loading || !user || !profileReady) {
+  if (loading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center text-muted-foreground">
         Carregando...
       </div>
     );
   }
+
 
   return (
     <div className="min-h-screen flex">
