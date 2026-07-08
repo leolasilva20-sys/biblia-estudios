@@ -166,7 +166,7 @@ function GenesisAudiolivro() {
             to="/audiolivros"
             className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-gold transition-colors mb-6"
           >
-            <ArrowLeft className="h-4 w-4" /> Áudio Livros
+            <ArrowLeft className="h-4 w-4" /> Áudio Dramas
           </Link>
 
           <div className="mb-8">
