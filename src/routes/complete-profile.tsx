@@ -93,8 +93,9 @@ function CompleteProfilePage() {
         <div className="rounded-xl border border-border/60 bg-card/70 backdrop-blur p-8">
           <h1 className="font-serif text-2xl text-center mb-1">Complete seu cadastro</h1>
           <p className="text-sm text-muted-foreground text-center mb-6">
-            Falta pouco — informe o código de convite para liberar seu acesso.
+            Só falta confirmar seu nome pra continuar.
           </p>
+
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
