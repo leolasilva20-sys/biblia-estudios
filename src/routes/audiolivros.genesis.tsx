@@ -123,7 +123,6 @@ function GenesisAudiolivro() {
   const [capitulos, setCapitulos] = useState<Audiobook[]>([]);
   const [loadingAudio, setLoadingAudio] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [playerAberto, setPlayerAberto] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     if (loading) return;
@@ -206,19 +205,7 @@ function GenesisAudiolivro() {
                   <p className="text-sm text-muted-foreground mt-0.5">{cap.description}</p>
                 )}
 
-                {!playerAberto[cap.id] ? (
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="mt-4 w-full sm:w-auto text-base py-6"
-                    aria-label={`Reproduzir: ${cap.title}`}
-                    onClick={() => setPlayerAberto((prev) => ({ ...prev, [cap.id]: true }))}
-                  >
-                    <Play className="h-5 w-5 mr-2" /> Reproduzir {cap.title}
-                  </Button>
-                ) : (
-                  <AudioPlayer driveFileId={cap.drive_file_id} />
-                )}
+                <AudioPlayer driveFileId={cap.drive_file_id} />
               </div>
             ))}
           </div>
