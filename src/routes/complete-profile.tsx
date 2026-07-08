@@ -116,24 +116,14 @@ function CompleteProfilePage() {
                 placeholder="(11) 99999-9999"
               />
             </div>
-            <div>
-              <Label htmlFor="invite">Código de convite *</Label>
-              <Input
-                id="invite"
-                required
-                value={invite}
-                onChange={(e) => setInvite(e.target.value)}
-                placeholder="Ex.: AMOR2026"
-                style={{ textTransform: "uppercase" }}
-              />
-            </div>
             <Button
               type="submit"
               disabled={submitting}
               className="w-full bg-gold text-primary-foreground hover:opacity-90"
             >
-              {submitting ? "Validando..." : "Liberar acesso"}
+              {submitting ? "Salvando..." : "Entrar"}
             </Button>
+
           </form>
 
           <div className="ornament-divider my-6 text-xs">ou</div>
