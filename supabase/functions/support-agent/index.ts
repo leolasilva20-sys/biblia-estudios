@@ -1,25 +1,28 @@
 // Supabase Edge Function: support-agent
 // Recebe uma mensagem do usuário, consulta contexto relevante no banco (somente leitura),
 // chama a API do OpenRouter com um modelo gratuito, e retorna a resposta.
-// Se o agente não conseguir resolver, marca a conversa como "escalated" para o admin revisar.
+// Se o agente não conseguir resolver ([ESCALATE]), envia email ao admin via Resend
+// e marca a conversa como "escalated" para revisão.
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const SYSTEM_PROMPT = `Você é o assistente de suporte do Bíblia Estúdios, uma plataforma de estudo bíblico.
+const SYSTEM_PROMPT = `Você é o assistente de suporte do Bíblia Estúdios, uma plataforma de estudo bíblico em português.
 
 Sobre a plataforma:
-- Oferece apostilas em 5 níveis (iniciante, intermediário, avançado, especialista, consolidação) sobre o livro de Gênesis
-- Tem um sistema de exercícios de fixação na apostila de consolidação
-- Login pode ser feito com e-mail/senha, Google, ou Passkey (biometria, ainda em fase beta)
-- É uma plataforma em fase beta, com acesso por convite
-- Administradores têm acesso a uma seção extra de "Áudio Livros"
+- Oferece apostilas em 5 níveis (iniciante, intermediário, avançado, especialista, consolidação) sobre o livro de Gênesis, acessíveis em /dashboard e /apostila/:id
+- Tem exercícios de fixação na apostila de consolidação (rotas /responder e /responder/:apostilaId)
+- Áudio dramas em /audiolivros (dramatizações em áudio das narrativas bíblicas), disponíveis para todos os usuários logados
+- Login pode ser feito com email/senha, Google, ou Passkey (biometria — em beta)
+- Não há mais código de convite: o cadastro é aberto e o acesso é liberado automaticamente
+- Perfil do usuário em /perfil (nome, WhatsApp, foto, gerenciar logins)
+- Administradores têm acesso extra ao Painel Admin em /admin
 
 Seu papel:
-- Responder dúvidas sobre como usar a plataforma de forma clara e acolhedora
-- Se o usuário relatar um BUG técnico que você não tem certeza de como resolver, ou que pareça exigir mudança de código, diga claramente: "Vou encaminhar isso para a equipe técnica revisar" e finalize sua resposta com a tag exata [ESCALATE] em uma linha separada
-- NUNCA invente informações sobre o funcionamento técnico da plataforma se não tiver certeza
-- Seja breve, gentil e direto ao ponto
+- Responder dúvidas sobre como usar a plataforma de forma clara, breve e acolhedora
+- Se o usuário relatar um BUG técnico que você não tem certeza de como resolver, ou que pareça exigir mudança de código/dados, diga: "Vou encaminhar isso para a equipe técnica revisar" e finalize sua resposta com a tag exata [ESCALATE] em uma linha separada
+- NUNCA invente informações técnicas se não tiver certeza
 - Responda sempre em português do Brasil`;
+
 
 Deno.serve(async (req) => {
   const corsHeaders = {
@@ -165,7 +168,50 @@ Deno.serve(async (req) => {
         .from("support_conversations")
         .update({ status: "escalated", updated_at: new Date().toISOString() })
         .eq("id", conversationId);
+
+      // Envia email de escalonamento pro admin via Resend
+      const resendKey = Deno.env.get("RESEND_API_KEY");
+      const adminEmail = Deno.env.get("ADMIN_EMAIL");
+      if (resendKey && adminEmail) {
+        const userEmail = userData.user.email ?? "email desconhecido";
+        const escape = (s: string) =>
+          s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const html = `
+          <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">
+            <h2 style="color:#C9A84C">Escalonamento do agente de suporte</h2>
+            <p><strong>Usuário:</strong> ${escape(profile?.full_name ?? userEmail)} (${escape(userEmail)})</p>
+            <p><strong>Conversa:</strong> #${conversationId}</p>
+            <hr style="border:none;border-top:1px solid #ddd;margin:16px 0" />
+            <p><strong>Última mensagem do usuário:</strong></p>
+            <p style="white-space:pre-wrap;background:#f8f8f8;padding:12px;border-radius:6px">${escape(message)}</p>
+            <p><strong>Resposta do agente:</strong></p>
+            <p style="white-space:pre-wrap;background:#fdf6e3;padding:12px;border-radius:6px">${escape(reply)}</p>
+          </div>
+        `;
+        try {
+          const emailRes = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${resendKey}`,
+            },
+            body: JSON.stringify({
+              from: "Bíblia Estúdios <onboarding@resend.dev>",
+              to: [adminEmail],
+              reply_to: userData.user.email,
+              subject: `[Suporte — Escalado] ${profile?.full_name ?? userEmail}`,
+              html,
+            }),
+          });
+          if (!emailRes.ok) console.error("Resend escalation failed:", emailRes.status, await emailRes.text());
+        } catch (e) {
+          console.error("Erro enviando email de escalonamento:", e);
+        }
+      } else {
+        console.warn("RESEND_API_KEY ou ADMIN_EMAIL não configurados — escalonamento não enviou email.");
+      }
     }
+
 
     return new Response(JSON.stringify({ reply, escalated, model: chosenModel }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

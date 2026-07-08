@@ -18,7 +18,6 @@ function CompleteProfilePage() {
   const navigate = useNavigate();
   const [fullName, setFullName] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
-  const [invite, setInvite] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -31,12 +30,10 @@ function CompleteProfilePage() {
       navigate({ to: "/dashboard" });
       return;
     }
-    // Pré-preenche com o que já existe
     if (profile) {
       setFullName(profile.full_name ?? "");
       setWhatsapp(profile.whatsapp ?? "");
     }
-    // Ou com metadados do Google
     const meta = (user.user_metadata ?? {}) as Record<string, unknown>;
     if (!profile?.full_name) {
       const n = (meta.full_name as string | undefined) ?? (meta.name as string | undefined);
@@ -47,13 +44,10 @@ function CompleteProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
-    const code = invite.trim().toUpperCase();
     if (!fullName.trim()) return toast.error("Informe seu nome completo");
-    if (!code) return toast.error("Informe o código de convite");
 
     setSubmitting(true);
 
-    // 1) Atualiza dados pessoais do perfil
     const meta = (user.user_metadata ?? {}) as Record<string, unknown>;
     const picture =
       (meta.avatar_url as string | undefined) ??
@@ -66,29 +60,20 @@ function CompleteProfilePage() {
         full_name: fullName.trim(),
         whatsapp: whatsapp.trim() || null,
         avatar_url: profile?.avatar_url ?? picture,
+        acesso_liberado: true,
       })
       .eq("id", user.id);
+    setSubmitting(false);
+
     if (upErr) {
-      setSubmitting(false);
       return toast.error("Erro ao salvar perfil: " + upErr.message);
     }
 
-    // 2) Consome o convite via RPC (única forma confiável — RLS-friendly)
-    const { data, error } = await supabase.rpc("consumir_convite", { p_codigo: code });
-    setSubmitting(false);
-
-    if (error) {
-      return toast.error("Erro ao validar convite: " + error.message);
-    }
-    const result = data as { ok?: boolean; error?: string } | null;
-    if (!result?.ok) {
-      return toast.error(result?.error ?? "Código de convite inválido");
-    }
-
     await refreshProfile();
-    toast.success("Acesso liberado! Bem-vindo.");
+    toast.success("Bem-vindo!");
     navigate({ to: "/dashboard" });
   };
+
 
   if (loading) {
     return (
@@ -108,8 +93,9 @@ function CompleteProfilePage() {
         <div className="rounded-xl border border-border/60 bg-card/70 backdrop-blur p-8">
           <h1 className="font-serif text-2xl text-center mb-1">Complete seu cadastro</h1>
           <p className="text-sm text-muted-foreground text-center mb-6">
-            Falta pouco — informe o código de convite para liberar seu acesso.
+            Só falta confirmar seu nome pra continuar.
           </p>
+
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -131,24 +117,14 @@ function CompleteProfilePage() {
                 placeholder="(11) 99999-9999"
               />
             </div>
-            <div>
-              <Label htmlFor="invite">Código de convite *</Label>
-              <Input
-                id="invite"
-                required
-                value={invite}
-                onChange={(e) => setInvite(e.target.value)}
-                placeholder="Ex.: AMOR2026"
-                style={{ textTransform: "uppercase" }}
-              />
-            </div>
             <Button
               type="submit"
               disabled={submitting}
               className="w-full bg-gold text-primary-foreground hover:opacity-90"
             >
-              {submitting ? "Validando..." : "Liberar acesso"}
+              {submitting ? "Salvando..." : "Entrar"}
             </Button>
+
           </form>
 
           <div className="ornament-divider my-6 text-xs">ou</div>

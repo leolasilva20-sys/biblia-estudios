@@ -5,24 +5,20 @@ import { useAuth } from "@/hooks/use-auth";
 import { AppSidebar } from "@/components/app-sidebar";
 
 export const Route = createFileRoute("/audiolivros")({
-  head: () => ({ meta: [{ title: "Áudio Livros — Bíblia Estúdios" }] }),
-  component: AudioLivros,
+  head: () => ({ meta: [{ title: "Áudio Dramas — Bíblia Estúdios" }] }),
+  component: AudioDramas,
 });
 
-function AudioLivros() {
-  const { user, profile, loading } = useAuth();
+function AudioDramas() {
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
-
-  const isAdmin = !!profile?.nivel_admin && profile.nivel_admin !== "nenhum";
 
   useEffect(() => {
     if (loading) return;
     if (!user) { navigate({ to: "/login" }); return; }
-    if (profile && !profile.acesso_liberado) { navigate({ to: "/complete-profile" }); return; }
-    if (profile && !isAdmin) { navigate({ to: "/dashboard" }); return; }
-  }, [user, profile, loading, isAdmin, navigate]);
+  }, [user, loading, navigate]);
 
-  if (loading || !user || !profile?.acesso_liberado || !isAdmin) {
+  if (loading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center text-muted-foreground">
         Carregando...
@@ -37,9 +33,9 @@ function AudioLivros() {
         <div className="max-w-3xl mx-auto">
           <div className="mb-10">
             <p className="text-sm text-gold uppercase tracking-widest">Bíblia Estúdios</p>
-            <h1 className="font-serif text-4xl gold-text-gradient mt-2">Áudio Livros</h1>
+            <h1 className="font-serif text-4xl gold-text-gradient mt-2">Áudio Dramas</h1>
             <p className="text-muted-foreground mt-3 font-serif italic">
-              Acesso restrito — visível apenas para administradores.
+              Dramatizações em áudio das narrativas bíblicas.
             </p>
           </div>
 
@@ -61,3 +57,4 @@ function AudioLivros() {
     </div>
   );
 }
+
