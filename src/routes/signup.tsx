@@ -16,7 +16,6 @@ export const Route = createFileRoute("/signup")({
 function SignupPage() {
   const navigate = useNavigate();
   const { user, profile, loading } = useAuth();
-  const [invite, setInvite] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
@@ -33,8 +32,6 @@ function SignupPage() {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    const code = invite.trim().toUpperCase();
-    if (!code) return toast.error("Informe o código de convite");
     if (!fullName.trim()) return toast.error("Informe seu nome completo");
 
     setSubmitting(true);
@@ -53,7 +50,7 @@ function SignupPage() {
       return toast.error(error.message);
     }
 
-    // 2) Garante perfil (caso o trigger não tenha rodado)
+    // 2) Garante perfil já com acesso liberado (sem convite)
     if (data.user) {
       await supabase.from("profiles").upsert(
         {
@@ -61,44 +58,30 @@ function SignupPage() {
           email,
           full_name: fullName.trim(),
           whatsapp: whatsapp.trim() || null,
+          acesso_liberado: true,
         },
         { onConflict: "id" },
       );
     }
 
-    // 3) Se a sessão já existe (confirmação desativada), consome o convite agora.
-    //    Se exige confirmação por email, redireciona pro login e o /complete-profile pega depois.
     const { data: sess } = await supabase.auth.getSession();
+    setSubmitting(false);
     if (sess.session) {
-      const { data: rpcData, error: rpcErr } = await supabase.rpc("consumir_convite", {
-        p_codigo: code,
-      });
-      setSubmitting(false);
-      if (rpcErr) {
-        toast.error("Conta criada, mas convite falhou: " + rpcErr.message);
-        return navigate({ to: "/complete-profile" });
-      }
-      const result = rpcData as { ok?: boolean; error?: string } | null;
-      if (!result?.ok) {
-        toast.error(result?.error ?? "Código de convite inválido. Tente novamente.");
-        return navigate({ to: "/complete-profile" });
-      }
-      toast.success("Conta criada com acesso liberado!");
+      toast.success("Conta criada!");
       return navigate({ to: "/dashboard" });
     }
 
-    setSubmitting(false);
     toast.success("Conta criada! Verifique seu email para confirmar e depois faça login.");
     navigate({ to: "/login" });
   };
 
   const handleGoogle = async () => {
-    // Google: sem convite aqui. O fluxo continua em /complete-profile após o OAuth.
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: `${window.location.origin}/complete-profile` },
     });
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
