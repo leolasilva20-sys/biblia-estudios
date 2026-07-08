@@ -168,7 +168,50 @@ Deno.serve(async (req) => {
         .from("support_conversations")
         .update({ status: "escalated", updated_at: new Date().toISOString() })
         .eq("id", conversationId);
+
+      // Envia email de escalonamento pro admin via Resend
+      const resendKey = Deno.env.get("RESEND_API_KEY");
+      const adminEmail = Deno.env.get("ADMIN_EMAIL");
+      if (resendKey && adminEmail) {
+        const userEmail = userData.user.email ?? "email desconhecido";
+        const escape = (s: string) =>
+          s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const html = `
+          <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">
+            <h2 style="color:#C9A84C">Escalonamento do agente de suporte</h2>
+            <p><strong>Usuário:</strong> ${escape(profile?.full_name ?? userEmail)} (${escape(userEmail)})</p>
+            <p><strong>Conversa:</strong> #${conversationId}</p>
+            <hr style="border:none;border-top:1px solid #ddd;margin:16px 0" />
+            <p><strong>Última mensagem do usuário:</strong></p>
+            <p style="white-space:pre-wrap;background:#f8f8f8;padding:12px;border-radius:6px">${escape(message)}</p>
+            <p><strong>Resposta do agente:</strong></p>
+            <p style="white-space:pre-wrap;background:#fdf6e3;padding:12px;border-radius:6px">${escape(reply)}</p>
+          </div>
+        `;
+        try {
+          const emailRes = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${resendKey}`,
+            },
+            body: JSON.stringify({
+              from: "Bíblia Estúdios <onboarding@resend.dev>",
+              to: [adminEmail],
+              reply_to: userData.user.email,
+              subject: `[Suporte — Escalado] ${profile?.full_name ?? userEmail}`,
+              html,
+            }),
+          });
+          if (!emailRes.ok) console.error("Resend escalation failed:", emailRes.status, await emailRes.text());
+        } catch (e) {
+          console.error("Erro enviando email de escalonamento:", e);
+        }
+      } else {
+        console.warn("RESEND_API_KEY ou ADMIN_EMAIL não configurados — escalonamento não enviou email.");
+      }
     }
+
 
     return new Response(JSON.stringify({ reply, escalated, model: chosenModel }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
