@@ -13,12 +13,11 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const NAV_ITEMS = [
   { to: "/dashboard", label: "Apostilas", icon: BookOpen },
+  { to: "/audiolivros", label: "Áudio Dramas", icon: Music },
   { to: "/responder", label: "Exercícios", icon: FileText },
 ];
 
-const ADMIN_ONLY_ITEMS = [
-  { to: "/audiolivros", label: "Áudio Livros", icon: Music },
-];
+const ADMIN_ONLY_ITEMS: { to: string; label: string; icon: typeof BookOpen }[] = [];
 
 export function AppSidebar() {
   const { user, profile, signOut } = useAuth();
