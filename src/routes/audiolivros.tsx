@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Play, Pause, SkipBack, SkipForward } from "lucide-react";
+import { ArrowLeft, Play, Pause, SkipBack, SkipForward, BookMarked, Sparkles } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
 import { AppSidebar } from "@/components/app-sidebar";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/audiolivros")({
   head: () => ({ meta: [{ title: "Áudio Dramas — Bíblia Estúdios" }] }),
@@ -125,9 +126,10 @@ function Player({ driveFileId }: { driveFileId: string }) {
 function AudioDramas() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [capitulos, setCapitulos] = useState<Capitulo[]>([]);
-  const [carregandoLista, setCarregandoLista] = useState(true);
+  const [capitulos, setCapitulos] = useState<Capitulo[] | null>(null);
   const [erroLista, setErroLista] = useState<string | null>(null);
+  const [expandido, setExpandido] = useState(false);
+  const [tentativas, setTentativas] = useState(0);
 
   useEffect(() => {
     if (loading) return;
@@ -138,22 +140,41 @@ function AudioDramas() {
 
   useEffect(() => {
     if (loading || !user) return;
+
     let cancelado = false;
-    setCarregandoLista(true);
-    supabase
-      .from("audiobooks")
-      .select("id, title, description, drive_file_id")
-      .order("order_index", { ascending: true })
-      .then(({ data, error }) => {
-        if (cancelado) return;
-        if (error) setErroLista(error.message);
-        if (data) setCapitulos(data as Capitulo[]);
-        setCarregandoLista(false);
-      });
+
+    async function buscar() {
+      const { data, error } = await supabase
+        .from("audiobooks")
+        .select("id, title, description, drive_file_id")
+        .order("order_index", { ascending: true });
+
+      if (cancelado) return;
+
+      if (error) {
+        setErroLista(error.message);
+        return;
+      }
+
+      // Se voltou vazio mas ainda não tentamos várias vezes, tenta de novo
+      // (proteção extra contra timing de sessão em conexões lentas)
+      if ((!data || data.length === 0) && tentativas < 3) {
+        setTentativas((t) => t + 1);
+        setTimeout(() => {
+          if (!cancelado) buscar();
+        }, 600);
+        return;
+      }
+
+      setCapitulos(data ?? []);
+    }
+
+    buscar();
+
     return () => {
       cancelado = true;
     };
-  }, [user, loading]);
+  }, [user, loading, tentativas]);
 
   if (loading || !user) {
     return (
@@ -176,26 +197,71 @@ function AudioDramas() {
             <ArrowLeft className="h-4 w-4" /> Voltar
           </button>
 
-          <h1 className="font-serif text-3xl gold-text-gradient mb-1">Gênesis — A Criação e a Queda</h1>
-          <p className="text-muted-foreground mb-8">Dramatizações em áudio das narrativas bíblicas.</p>
-
-          {carregandoLista && <p className="text-muted-foreground">Carregando capítulos...</p>}
-          {erroLista && <p className="text-destructive">Erro ao carregar: {erroLista}</p>}
-          {!carregandoLista && !erroLista && capitulos.length === 0 && (
-            <p className="text-muted-foreground">Nenhum capítulo disponível ainda.</p>
-          )}
-
-          <div className="space-y-6">
-            {capitulos.map((cap) => (
-              <div key={cap.id} className="p-5 rounded-xl border border-border/50 bg-card/40">
-                <h2 className="font-serif text-xl">{cap.title}</h2>
-                {cap.description && (
-                  <p className="text-sm text-muted-foreground mt-1">{cap.description}</p>
-                )}
-                <Player driveFileId={cap.drive_file_id} />
-              </div>
-            ))}
+          <div className="mb-2 flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-gold" />
+            <p className="text-sm text-gold uppercase tracking-widest">Áudio Dramas</p>
           </div>
+          <h1 className="font-serif text-3xl gold-text-gradient mb-1">
+            Acompanhe as audiodramatizações da Bíblia
+          </h1>
+          <p className="text-muted-foreground mb-8">
+            Uma experiência bíblica com uma pitada de criatividade.
+          </p>
+
+          {capitulos === null && !erroLista && (
+            <p className="text-muted-foreground">Carregando…</p>
+          )}
+          {erroLista && <p className="text-destructive">Erro ao carregar: {erroLista}</p>}
+
+          {capitulos && (
+            <div className="rounded-xl border border-border/50 bg-card/40 p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full border border-gold/40 flex items-center justify-center bg-gold/5">
+                  <BookMarked className="h-5 w-5 text-gold" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <span className="text-xs font-semibold bg-gold/20 text-gold border border-gold/30 px-2 py-0.5 rounded-full">
+                      Novo livro
+                    </span>
+                    <span className="text-xs font-semibold bg-gold/20 text-gold border border-gold/30 px-2 py-0.5 rounded-full">
+                      Novidade
+                    </span>
+                  </div>
+                  <h2 className="font-serif text-xl">Gênesis — A Criação e a Queda</h2>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Um clássico contando a história de Adão e Eva, e de como eles caíram.
+                  </p>
+                </div>
+              </div>
+
+              {!expandido ? (
+                <Button
+                  size="lg"
+                  className="mt-5 w-full sm:w-auto text-base py-6"
+                  onClick={() => setExpandido(true)}
+                >
+                  Ver capítulos
+                </Button>
+              ) : (
+                <div className="mt-6 space-y-6 border-t border-border/40 pt-6">
+                  {capitulos.length === 0 ? (
+                    <p className="text-muted-foreground">Nenhum capítulo disponível ainda.</p>
+                  ) : (
+                    capitulos.map((cap) => (
+                      <div key={cap.id}>
+                        <h3 className="font-serif text-lg">{cap.title}</h3>
+                        {cap.description && (
+                          <p className="text-sm text-muted-foreground mt-1">{cap.description}</p>
+                        )}
+                        <Player driveFileId={cap.drive_file_id} />
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </main>
     </div>
