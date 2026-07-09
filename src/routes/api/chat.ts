@@ -1,4 +1,3 @@
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
 import { createClient } from "@supabase/supabase-js";
 import { createFileRoute } from "@tanstack/react-router";
 import { generateText } from "ai";
@@ -85,6 +84,7 @@ export const Route = createFileRoute("/api/chat")({
             .eq("id", userData.user.id)
             .maybeSingle();
 
+          const { createLovableAiGatewayProvider } = await import("@/lib/ai-gateway.server");
           const gateway = createLovableAiGatewayProvider(lovableKey);
           const { text } = await generateText({
             model: gateway("google/gemini-3-flash-preview"),
