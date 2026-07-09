@@ -3,6 +3,7 @@ import { useState } from "react";
 import {
   BookOpen,
   FileText,
+  LifeBuoy,
   Music,
   Shield,
   X,
@@ -15,6 +16,7 @@ const NAV_ITEMS = [
   { to: "/dashboard", label: "Apostilas", icon: BookOpen },
   { to: "/audiolivros", label: "Áudio Dramas", icon: Music },
   { to: "/responder", label: "Exercícios", icon: FileText },
+  { to: "/suporte", label: "Suporte", icon: LifeBuoy },
 ];
 
 const ADMIN_ONLY_ITEMS: { to: string; label: string; icon: typeof BookOpen }[] = [];
