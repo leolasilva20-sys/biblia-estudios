@@ -137,17 +137,23 @@ function AudioDramas() {
   }, [user, loading, navigate]);
 
   useEffect(() => {
-    if (!user) return;
+    if (loading || !user) return;
+    let cancelado = false;
+    setCarregandoLista(true);
     supabase
       .from("audiobooks")
       .select("id, title, description, drive_file_id")
       .order("order_index", { ascending: true })
       .then(({ data, error }) => {
+        if (cancelado) return;
         if (error) setErroLista(error.message);
         if (data) setCapitulos(data as Capitulo[]);
         setCarregandoLista(false);
       });
-  }, [user]);
+    return () => {
+      cancelado = true;
+    };
+  }, [user, loading]);
 
   if (loading || !user) {
     return (
