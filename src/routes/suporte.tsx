@@ -1,19 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
-import { Send, Bot, User as UserIcon, Settings2, AlertTriangle } from "lucide-react";
+import { Send, Bot, User as UserIcon, AlertTriangle, Sparkles } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 export const Route = createFileRoute("/suporte")({
   head: () => ({ meta: [{ title: "Suporte — Bíblia Estúdios" }] }),
@@ -27,14 +21,7 @@ type ChatMessage = {
   model_used?: string | null;
 };
 
-const MODELOS_DISPONIVEIS = [
-  { id: "meta-llama/llama-3.3-70b-instruct:free", label: "Llama 3.3 70B (padrão)" },
-  { id: "deepseek/deepseek-r1:free", label: "DeepSeek R1 (raciocínio)" },
-  { id: "qwen/qwen3-coder:free", label: "Qwen3 Coder (técnico)" },
-  { id: "google/gemini-2.0-flash-exp:free", label: "Gemini Flash" },
-];
-
-const FUNCTION_URL = "https://phguxgdqwrysvjdkzzxn.supabase.co/functions/v1/support-agent";
+const CHAT_URL = "/api/chat";
 
 function Suporte() {
   const { user, profile, loading } = useAuth();
@@ -45,8 +32,6 @@ function Suporte() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [starting, setStarting] = useState(true);
-  const [modelo, setModelo] = useState(MODELOS_DISPONIVEIS[0].id);
-  const [showSettings, setShowSettings] = useState(false);
   const [escalated, setEscalated] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -113,13 +98,13 @@ function Suporte() {
       const { data: sessionData } = await supabase.auth.getSession();
       const accessToken = sessionData.session?.access_token;
 
-      const res = await fetch(FUNCTION_URL, {
+      const res = await fetch(CHAT_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ conversationId, message: userMessage, model: modelo }),
+        body: JSON.stringify({ conversationId, message: userMessage }),
       });
 
       const data = await res.json();
@@ -140,7 +125,7 @@ function Suporte() {
         toast.info("Encaminhamos sua dúvida para a equipe técnica.");
       }
     } catch {
-      toast.error("Não foi possível conectar ao assistente de suporte.");
+      toast.error("Não foi possível conectar ao agente interno de suporte.");
     } finally {
       setSending(false);
     }
@@ -161,28 +146,12 @@ function Suporte() {
         <div className="border-b border-border/40 px-6 py-4 flex items-center justify-between">
           <div>
             <p className="text-sm text-gold uppercase tracking-widest">Bíblia Estúdios</p>
-            <h1 className="font-serif text-2xl gold-text-gradient">Suporte</h1>
+            <h1 className="font-serif text-2xl gold-text-gradient">Agente de suporte</h1>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => setShowSettings((v) => !v)}>
-            <Settings2 className="h-5 w-5" />
-          </Button>
+          <div className="flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3 py-1.5 text-xs text-gold">
+            <Sparkles className="h-3.5 w-3.5" /> IA interna
+          </div>
         </div>
-
-        {showSettings && (
-          <div className="border-b border-border/40 px-6 py-4 bg-card/40">
-            <label className="text-sm text-muted-foreground mb-2 block">Modelo de IA</label>
-            <Select value={modelo} onValueChange={setModelo}>
-              <SelectTrigger className="w-full max-w-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {MODELOS_DISPONIVEIS.map((m) => (
-                  <SelectItem key={m.id} value={m.id}>{m.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
 
         {escalated && (
           <div className="mx-6 mt-4 p-3 rounded-lg border border-gold/30 bg-gold/10 flex items-center gap-2 text-sm">
@@ -207,13 +176,15 @@ function Suporte() {
                 {msg.role === "user" ? <UserIcon className="h-4 w-4" /> : <Bot className="h-4 w-4 text-gold" />}
               </div>
               <div
-                className={`max-w-[75%] rounded-xl px-4 py-3 text-sm whitespace-pre-line ${
+                className={`max-w-[75%] rounded-xl px-4 py-3 text-sm ${
                   msg.role === "user"
                     ? "bg-gold/20 border border-gold/30"
                     : "bg-card/60 border border-border/40"
                 }`}
               >
-                {msg.content}
+                <div className="prose prose-sm max-w-none text-inherit prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0">
+                  <ReactMarkdown>{msg.content}</ReactMarkdown>
+                </div>
               </div>
             </div>
           ))}
