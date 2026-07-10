@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { ArrowRight, BookOpen, Headphones, Mic2, Music2, Sparkles, UsersRound } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { AppSidebar } from "@/components/app-sidebar";
-import { Button } from "@/components/ui/button";
+
 
 export const Route = createFileRoute("/audiolivros")({
   head: () => ({
@@ -62,29 +62,24 @@ function AudioDramasPage() {
 
             <Link
               to="/audiolivros/genesis"
-              className="group block rounded-xl border border-border/60 bg-card/45 p-6 transition-colors hover:border-gold/50 hover:bg-card/65"
+              aria-label="Ver capítulos de Gênesis — A Criação e a Queda"
+              className="group block rounded-xl border border-border/60 bg-card/45 p-6 transition-colors hover:border-gold/50 hover:bg-card/65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
             >
-              <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <div className="mb-3 flex flex-wrap gap-2">
-                    <span className="rounded-full border border-gold/30 bg-gold/15 px-2.5 py-1 text-xs font-semibold text-gold">
-                      Primeiro livro
-                    </span>
-                    <span className="rounded-full border border-gold/30 bg-gold/15 px-2.5 py-1 text-xs font-semibold text-gold">
-                      Disponível agora
-                    </span>
-                  </div>
-                  <h3 className="font-serif text-2xl text-foreground">Gênesis — A Criação e a Queda</h3>
-                  <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                    A história da criação, de Adão e Eva, e da queda, apresentada em formato áudio dramatizado.
-                  </p>
-                </div>
-                <Button className="w-full sm:w-auto" asChild>
-                  <span>
-                    Ver capítulos <ArrowRight className="ml-2 h-4 w-4" />
-                  </span>
-                </Button>
+              <div className="mb-3 flex flex-wrap gap-2">
+                <span className="rounded-full border border-gold/30 bg-gold/15 px-2.5 py-1 text-xs font-semibold text-gold">
+                  Primeiro livro
+                </span>
+                <span className="rounded-full border border-gold/30 bg-gold/15 px-2.5 py-1 text-xs font-semibold text-gold">
+                  Disponível agora
+                </span>
               </div>
+              <h3 className="font-serif text-2xl text-foreground">Gênesis — A Criação e a Queda</h3>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
+                A história da criação, de Adão e Eva, e da queda, apresentada em formato áudio dramatizado.
+              </p>
+              <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-gold group-hover:underline">
+                Ver capítulos <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </span>
             </Link>
           </div>
         </section>
