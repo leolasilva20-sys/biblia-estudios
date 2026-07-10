@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { ArrowRight, BookOpen, Headphones, Mic2, Music2, Sparkles, UsersRound } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { AppSidebar } from "@/components/app-sidebar";
-import { Button } from "@/components/ui/button";
+
 
 export const Route = createFileRoute("/audiolivros")({
   head: () => ({
