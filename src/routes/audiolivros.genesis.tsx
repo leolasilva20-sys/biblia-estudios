@@ -1,10 +1,22 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, BookMarked, Headphones, Pause, Play, SkipBack, SkipForward, Sparkles } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  ArrowLeft,
+  BookMarked,
+  ChevronDown,
+  Headphones,
+  Mic2,
+  Music2,
+  Pause,
+  Play,
+  SkipBack,
+  SkipForward,
+  Sparkles,
+  UsersRound,
+} from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
 import { AppSidebar } from "@/components/app-sidebar";
-import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/audiolivros/genesis")({
   head: () => ({
@@ -97,10 +109,10 @@ function Player({ driveFileId }: { driveFileId: string }) {
         <p className="py-2 text-center text-sm text-destructive">{error}</p>
       ) : (
         <>
-          <p className="mb-2 text-center text-xs text-muted-foreground">
+          <p className="mb-2 text-center text-xs text-muted-foreground" aria-live="polite">
             {loading ? "Carregando áudio..." : `${format(current)} / ${format(duration)}`}
           </p>
-          <div className="mb-5 h-1.5 w-full overflow-hidden rounded-full bg-border/40">
+          <div className="mb-5 h-1.5 w-full overflow-hidden rounded-full bg-border/40" aria-hidden="true">
             <div className="h-full bg-gold/75 transition-all" style={{ width: `${progress}%` }} />
           </div>
           <div className="flex items-center justify-center gap-6">
@@ -111,7 +123,7 @@ function Player({ driveFileId }: { driveFileId: string }) {
               onClick={() => skip(-15)}
               className="flex h-12 w-12 items-center justify-center rounded-full border border-border/60 disabled:opacity-40"
             >
-              <SkipBack className="h-5 w-5" />
+              <SkipBack className="h-5 w-5" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -120,7 +132,11 @@ function Player({ driveFileId }: { driveFileId: string }) {
               onClick={toggle}
               className="flex h-16 w-16 items-center justify-center rounded-full border border-gold/40 bg-gold/20 disabled:opacity-40"
             >
-              {playing ? <Pause className="h-6 w-6 text-gold" /> : <Play className="ml-0.5 h-6 w-6 text-gold" />}
+              {playing ? (
+                <Pause className="h-6 w-6 text-gold" aria-hidden="true" />
+              ) : (
+                <Play className="ml-0.5 h-6 w-6 text-gold" aria-hidden="true" />
+              )}
             </button>
             <button
               type="button"
@@ -129,7 +145,7 @@ function Player({ driveFileId }: { driveFileId: string }) {
               onClick={() => skip(15)}
               className="flex h-12 w-12 items-center justify-center rounded-full border border-border/60 disabled:opacity-40"
             >
-              <SkipForward className="h-5 w-5" />
+              <SkipForward className="h-5 w-5" aria-hidden="true" />
             </button>
           </div>
         </>
@@ -143,7 +159,7 @@ function GenesisAudioDrama() {
   const navigate = useNavigate();
   const [chapters, setChapters] = useState<Capitulo[] | null>(null);
   const [listError, setListError] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState(false);
+  const [openChapter, setOpenChapter] = useState<string | number | null>(null);
 
   useEffect(() => {
     if (loading) return;
@@ -169,19 +185,15 @@ function GenesisAudioDrama() {
         return;
       }
 
-      console.log("[audio-drama] chapters loaded", data);
       setChapters((data as Capitulo[]) ?? []);
       setListError(null);
     }
 
     loadChapters();
-
     return () => {
       cancelled = true;
     };
   }, [loading, user]);
-
-  const visibleChapters = useMemo(() => chapters ?? [], [chapters]);
 
   if (loading || !user) {
     return <div className="flex min-h-screen items-center justify-center text-muted-foreground">Carregando...</div>;
@@ -197,59 +209,93 @@ function GenesisAudioDrama() {
             onClick={() => navigate({ to: "/audiolivros" })}
             className="mb-8 flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-gold"
           >
-            <ArrowLeft className="h-4 w-4" /> Voltar para Áudio Dramas
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Voltar para Áudio Dramas
           </button>
 
           <div className="mb-3 flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-gold" />
+            <Sparkles className="h-5 w-5 text-gold" aria-hidden="true" />
             <p className="text-sm uppercase tracking-widest text-gold">Livro áudio dramatizado</p>
           </div>
           <h1 className="font-serif text-4xl gold-text-gradient md:text-5xl">Gênesis — A Criação e a Queda</h1>
-          <p className="mt-4 max-w-2xl text-muted-foreground">
-            Uma dramatização bíblica original sobre a criação, Adão e Eva, e os primeiros passos da história humana diante de Deus.
-          </p>
 
-          <section className="mt-8 rounded-xl border border-border/50 bg-card/45 p-6">
+          <section aria-labelledby="sobre-o-livro" className="mt-8 rounded-xl border border-border/50 bg-card/45 p-6">
+            <h2 id="sobre-o-livro" className="font-serif text-2xl">Sobre o livro</h2>
+            <div className="mt-3 space-y-3 text-muted-foreground leading-relaxed">
+              <p>
+                Gênesis — A Criação e a Queda é um livro que conta a queda dos anjos como você nunca viu, a queda do homem e o porquê do próprio evangelho: por que Jesus teria que vir ao mundo mais adiante.
+              </p>
+              <p>
+                Um pouquinho de Bíblia para quem está começando: se você é uma pessoa iniciante, este áudio livro conta com dicionário para você se localizar nos verbos e nas palavras mais profundas.
+              </p>
+            </div>
+
+            <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+              <Feature icon={Mic2} label="Narração original" />
+              <Feature icon={UsersRound} label="Dublagem original" />
+              <Feature icon={Music2} label="Música original" />
+              <Feature icon={Headphones} label="Vozes originais" />
+            </ul>
+          </section>
+
+          <section aria-labelledby="capitulos" className="mt-8 rounded-xl border border-border/50 bg-card/45 p-6">
             <div className="flex items-start gap-4">
               <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border border-gold/40 bg-gold/5">
-                <BookMarked className="h-5 w-5 text-gold" />
+                <BookMarked className="h-5 w-5 text-gold" aria-hidden="true" />
               </div>
               <div>
-                <h2 className="font-serif text-2xl">Capítulos</h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Narração original, dublagem original, vozes originais e música original do Bíblia Estúdios.
-                </p>
+                <h2 id="capitulos" className="font-serif text-2xl">Capítulos disponíveis</h2>
+                <p className="mt-1 text-sm text-muted-foreground">Toque em um capítulo para abrir o player.</p>
               </div>
             </div>
 
-            {!expanded ? (
-              <Button size="lg" className="mt-6 w-full py-6 text-base sm:w-auto" onClick={() => setExpanded(true)}>
-                Ver capítulos
-              </Button>
-            ) : (
-              <div className="mt-6 space-y-6 border-t border-border/40 pt-6">
-                {chapters === null && <p className="text-muted-foreground">Carregando capítulos…</p>}
-                {listError && <p className="text-sm text-destructive">Erro ao carregar capítulos: {listError}</p>}
-                {chapters !== null && visibleChapters.length === 0 && !listError && (
-                  <p className="text-sm text-muted-foreground">
-                    Nenhum capítulo apareceu para sua conta. A consulta voltou vazia; isso normalmente indica policy de acesso ou dados não publicados na tabela de áudio dramas.
-                  </p>
-                )}
-                {visibleChapters.map((chapter, index) => (
+            <div className="mt-6 space-y-4">
+              {chapters === null && <p className="text-muted-foreground">Carregando capítulos…</p>}
+              {listError && <p className="text-sm text-destructive">Erro ao carregar capítulos: {listError}</p>}
+              {chapters !== null && chapters.length === 0 && !listError && (
+                <p className="text-sm text-muted-foreground">Nenhum capítulo disponível no momento.</p>
+              )}
+              {chapters?.map((chapter, index) => {
+                const isOpen = openChapter === chapter.id;
+                return (
                   <article key={chapter.id} className="rounded-lg border border-border/40 bg-background/35 p-4">
-                    <div className="mb-2 flex items-center gap-2 text-xs uppercase tracking-widest text-gold">
-                      <Headphones className="h-4 w-4" /> Capítulo {index + 1}
-                    </div>
-                    <h3 className="font-serif text-xl">{chapter.title}</h3>
-                    {chapter.description && <p className="mt-1 text-sm text-muted-foreground">{chapter.description}</p>}
-                    <Player driveFileId={chapter.drive_file_id} />
+                    <button
+                      type="button"
+                      aria-expanded={isOpen}
+                      aria-label={`Capítulo ${index + 1}: ${chapter.title}. ${isOpen ? "Fechar player" : "Abrir player"}.`}
+                      onClick={() => setOpenChapter(isOpen ? null : chapter.id)}
+                      className="flex w-full items-center justify-between gap-3 text-left"
+                    >
+                      <span>
+                        <span className="flex items-center gap-2 text-xs uppercase tracking-widest text-gold">
+                          <Headphones className="h-4 w-4" aria-hidden="true" /> Capítulo {index + 1}
+                        </span>
+                        <span className="mt-1 block font-serif text-xl text-foreground">{chapter.title}</span>
+                        {chapter.description && (
+                          <span className="mt-1 block text-sm text-muted-foreground">{chapter.description}</span>
+                        )}
+                      </span>
+                      <ChevronDown
+                        className={`h-5 w-5 flex-shrink-0 text-gold transition-transform ${isOpen ? "rotate-180" : ""}`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                    {isOpen && <Player driveFileId={chapter.drive_file_id} />}
                   </article>
-                ))}
-              </div>
-            )}
+                );
+              })}
+            </div>
           </section>
         </div>
       </main>
     </div>
+  );
+}
+
+function Feature({ icon: Icon, label }: { icon: typeof Mic2; label: string }) {
+  return (
+    <li className="flex items-center gap-3 rounded-lg border border-border/40 bg-background/35 px-3 py-3">
+      <Icon className="h-4 w-4 flex-shrink-0 text-gold" aria-hidden="true" />
+      <span className="text-sm text-foreground/85">{label}</span>
+    </li>
   );
 }
