@@ -81,7 +81,7 @@ function AudioDramasPage() {
                 </div>
                 <Button className="w-full sm:w-auto" asChild>
                   <span>
-                    Abrir livro <ArrowRight className="ml-2 h-4 w-4" />
+                    Ver capítulos <ArrowRight className="ml-2 h-4 w-4" />
                   </span>
                 </Button>
               </div>
