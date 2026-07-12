@@ -14,7 +14,6 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const NAV_ITEMS = [
   { to: "/dashboard", label: "Apostilas", icon: BookOpen },
-  { to: "/audiolivros", label: "Áudio Dramas", icon: Music },
   { to: "/responder", label: "Exercícios", icon: FileText },
   { to: "/suporte", label: "Suporte", icon: LifeBuoy },
 ];

@@ -21,11 +21,9 @@ import { Route as ExerciciosRouteImport } from './routes/exercicios'
 import { Route as DocumentacaoRouteImport } from './routes/documentacao'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
-import { Route as AudiolivrosRouteImport } from './routes/audiolivros'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ResponderApostilaIdRouteImport } from './routes/responder.$apostilaId'
-import { Route as AudiolivrosGenesisRouteImport } from './routes/audiolivros.genesis'
 import { Route as ApostilaIdRouteImport } from './routes/apostila.$id'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
@@ -89,11 +87,6 @@ const CompleteProfileRoute = CompleteProfileRouteImport.update({
   path: '/complete-profile',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AudiolivrosRoute = AudiolivrosRouteImport.update({
-  id: '/audiolivros',
-  path: '/audiolivros',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -109,11 +102,6 @@ const ResponderApostilaIdRoute = ResponderApostilaIdRouteImport.update({
   path: '/$apostilaId',
   getParentRoute: () => ResponderRoute,
 } as any)
-const AudiolivrosGenesisRoute = AudiolivrosGenesisRouteImport.update({
-  id: '/genesis',
-  path: '/genesis',
-  getParentRoute: () => AudiolivrosRoute,
-} as any)
 const ApostilaIdRoute = ApostilaIdRouteImport.update({
   id: '/apostila/$id',
   path: '/apostila/$id',
@@ -128,7 +116,6 @@ const ApiChatRoute = ApiChatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/audiolivros': typeof AudiolivrosRouteWithChildren
   '/complete-profile': typeof CompleteProfileRoute
   '/dashboard': typeof DashboardRoute
   '/documentacao': typeof DocumentacaoRoute
@@ -143,13 +130,11 @@ export interface FileRoutesByFullPath {
   '/termos': typeof TermosRoute
   '/api/chat': typeof ApiChatRoute
   '/apostila/$id': typeof ApostilaIdRoute
-  '/audiolivros/genesis': typeof AudiolivrosGenesisRoute
   '/responder/$apostilaId': typeof ResponderApostilaIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/audiolivros': typeof AudiolivrosRouteWithChildren
   '/complete-profile': typeof CompleteProfileRoute
   '/dashboard': typeof DashboardRoute
   '/documentacao': typeof DocumentacaoRoute
@@ -164,14 +149,12 @@ export interface FileRoutesByTo {
   '/termos': typeof TermosRoute
   '/api/chat': typeof ApiChatRoute
   '/apostila/$id': typeof ApostilaIdRoute
-  '/audiolivros/genesis': typeof AudiolivrosGenesisRoute
   '/responder/$apostilaId': typeof ResponderApostilaIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/audiolivros': typeof AudiolivrosRouteWithChildren
   '/complete-profile': typeof CompleteProfileRoute
   '/dashboard': typeof DashboardRoute
   '/documentacao': typeof DocumentacaoRoute
@@ -186,7 +169,6 @@ export interface FileRoutesById {
   '/termos': typeof TermosRoute
   '/api/chat': typeof ApiChatRoute
   '/apostila/$id': typeof ApostilaIdRoute
-  '/audiolivros/genesis': typeof AudiolivrosGenesisRoute
   '/responder/$apostilaId': typeof ResponderApostilaIdRoute
 }
 export interface FileRouteTypes {
@@ -194,7 +176,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
-    | '/audiolivros'
     | '/complete-profile'
     | '/dashboard'
     | '/documentacao'
@@ -209,13 +190,11 @@ export interface FileRouteTypes {
     | '/termos'
     | '/api/chat'
     | '/apostila/$id'
-    | '/audiolivros/genesis'
     | '/responder/$apostilaId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin'
-    | '/audiolivros'
     | '/complete-profile'
     | '/dashboard'
     | '/documentacao'
@@ -230,13 +209,11 @@ export interface FileRouteTypes {
     | '/termos'
     | '/api/chat'
     | '/apostila/$id'
-    | '/audiolivros/genesis'
     | '/responder/$apostilaId'
   id:
     | '__root__'
     | '/'
     | '/admin'
-    | '/audiolivros'
     | '/complete-profile'
     | '/dashboard'
     | '/documentacao'
@@ -251,14 +228,12 @@ export interface FileRouteTypes {
     | '/termos'
     | '/api/chat'
     | '/apostila/$id'
-    | '/audiolivros/genesis'
     | '/responder/$apostilaId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
-  AudiolivrosRoute: typeof AudiolivrosRouteWithChildren
   CompleteProfileRoute: typeof CompleteProfileRoute
   DashboardRoute: typeof DashboardRoute
   DocumentacaoRoute: typeof DocumentacaoRoute
@@ -361,13 +336,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompleteProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/audiolivros': {
-      id: '/audiolivros'
-      path: '/audiolivros'
-      fullPath: '/audiolivros'
-      preLoaderRoute: typeof AudiolivrosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -389,13 +357,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponderApostilaIdRouteImport
       parentRoute: typeof ResponderRoute
     }
-    '/audiolivros/genesis': {
-      id: '/audiolivros/genesis'
-      path: '/genesis'
-      fullPath: '/audiolivros/genesis'
-      preLoaderRoute: typeof AudiolivrosGenesisRouteImport
-      parentRoute: typeof AudiolivrosRoute
-    }
     '/apostila/$id': {
       id: '/apostila/$id'
       path: '/apostila/$id'
@@ -413,18 +374,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AudiolivrosRouteChildren {
-  AudiolivrosGenesisRoute: typeof AudiolivrosGenesisRoute
-}
-
-const AudiolivrosRouteChildren: AudiolivrosRouteChildren = {
-  AudiolivrosGenesisRoute: AudiolivrosGenesisRoute,
-}
-
-const AudiolivrosRouteWithChildren = AudiolivrosRoute._addFileChildren(
-  AudiolivrosRouteChildren,
-)
-
 interface ResponderRouteChildren {
   ResponderApostilaIdRoute: typeof ResponderApostilaIdRoute
 }
@@ -440,7 +389,6 @@ const ResponderRouteWithChildren = ResponderRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
-  AudiolivrosRoute: AudiolivrosRouteWithChildren,
   CompleteProfileRoute: CompleteProfileRoute,
   DashboardRoute: DashboardRoute,
   DocumentacaoRoute: DocumentacaoRoute,
