@@ -187,6 +187,10 @@ function GenesisAudioDrama() {
 
       setChapters((data as Capitulo[]) ?? []);
       setListError(null);
+      // Abre automaticamente o primeiro capítulo (ex: Prólogo), sem precisar de clique extra
+      if (data && data.length > 0) {
+        setOpenChapter((data as Capitulo[])[0].id);
+      }
     }
 
     loadChapters();
