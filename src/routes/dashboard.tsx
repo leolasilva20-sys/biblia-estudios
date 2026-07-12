@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { BookOpen, ChevronRight, FileText, GraduationCap, Crown, Sparkles, Clock, Film } from "lucide-react";
+import { BookOpen, ChevronRight, FileText, GraduationCap, Crown, Sparkles, Clock, Film, Headphones } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { AppSidebar } from "@/components/app-sidebar";
 import { MODULO_1_APOSTILAS, type Nivel } from "@/lib/apostilas";
@@ -84,6 +84,30 @@ function Dashboard() {
               );
             })}
           </div>
+        </section>
+
+        <section className="mb-16">
+          <Link
+            to="/audiolivros/genesis"
+            className="group flex items-center gap-5 rounded-xl border border-gold/40 bg-gradient-to-r from-gold/10 to-transparent p-6 hover:border-gold/70 transition-all"
+          >
+            <div className="flex-shrink-0 w-14 h-14 rounded-full border border-gold/50 flex items-center justify-center bg-gold/10">
+              <Headphones className="h-6 w-6 text-gold" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap mb-1">
+                <span className="text-xs font-semibold bg-gold/20 text-gold border border-gold/30 px-2 py-0.5 rounded-full">
+                  Novidade
+                </span>
+                <span className="text-xs uppercase tracking-widest text-gold">Áudio Drama</span>
+              </div>
+              <h2 className="font-serif text-2xl">Gênesis — A Criação e a Queda</h2>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                Ouça agora o primeiro áudio drama do Bíblia Estúdios.
+              </p>
+            </div>
+            <ChevronRight className="h-5 w-5 text-gold group-hover:translate-x-1 transition-transform flex-shrink-0" />
+          </Link>
         </section>
 
         <section>
