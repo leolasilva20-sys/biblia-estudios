@@ -32,12 +32,21 @@ export type Profile = {
   created_at: string;
 };
 
-export type Apostila = {
+export type Caderno = {
   id: string;
-  module_id: string;
-  nivel: "iniciante" | "intermediario" | "avancado" | "especialista" | "consolidacao";
+  user_id: string;
   titulo: string;
-  drive_id: string;
-  drive_type: "doc" | "pdf";
-  ordem: number;
+  conteudo: string;
+  criado_em: string;
+  atualizado_em: string;
 };
+
+export type CadernoNota = {
+  id: string;
+  caderno_id: string;
+  admin_id: string;
+  observacao: string;
+  criado_em: string;
+  atualizado_em: string;
+};
+
