@@ -23,7 +23,9 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CadernosIndexRouteImport } from './routes/cadernos.index'
 import { Route as ResponderApostilaIdRouteImport } from './routes/responder.$apostilaId'
+import { Route as CadernosIdRouteImport } from './routes/cadernos.$id'
 import { Route as ApostilaIdRouteImport } from './routes/apostila.$id'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
@@ -97,10 +99,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CadernosIndexRoute = CadernosIndexRouteImport.update({
+  id: '/cadernos/',
+  path: '/cadernos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResponderApostilaIdRoute = ResponderApostilaIdRouteImport.update({
   id: '/$apostilaId',
   path: '/$apostilaId',
   getParentRoute: () => ResponderRoute,
+} as any)
+const CadernosIdRoute = CadernosIdRouteImport.update({
+  id: '/cadernos/$id',
+  path: '/cadernos/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApostilaIdRoute = ApostilaIdRouteImport.update({
   id: '/apostila/$id',
@@ -130,7 +142,9 @@ export interface FileRoutesByFullPath {
   '/termos': typeof TermosRoute
   '/api/chat': typeof ApiChatRoute
   '/apostila/$id': typeof ApostilaIdRoute
+  '/cadernos/$id': typeof CadernosIdRoute
   '/responder/$apostilaId': typeof ResponderApostilaIdRoute
+  '/cadernos/': typeof CadernosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -149,7 +163,9 @@ export interface FileRoutesByTo {
   '/termos': typeof TermosRoute
   '/api/chat': typeof ApiChatRoute
   '/apostila/$id': typeof ApostilaIdRoute
+  '/cadernos/$id': typeof CadernosIdRoute
   '/responder/$apostilaId': typeof ResponderApostilaIdRoute
+  '/cadernos': typeof CadernosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -169,7 +185,9 @@ export interface FileRoutesById {
   '/termos': typeof TermosRoute
   '/api/chat': typeof ApiChatRoute
   '/apostila/$id': typeof ApostilaIdRoute
+  '/cadernos/$id': typeof CadernosIdRoute
   '/responder/$apostilaId': typeof ResponderApostilaIdRoute
+  '/cadernos/': typeof CadernosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -190,7 +208,9 @@ export interface FileRouteTypes {
     | '/termos'
     | '/api/chat'
     | '/apostila/$id'
+    | '/cadernos/$id'
     | '/responder/$apostilaId'
+    | '/cadernos/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -209,7 +229,9 @@ export interface FileRouteTypes {
     | '/termos'
     | '/api/chat'
     | '/apostila/$id'
+    | '/cadernos/$id'
     | '/responder/$apostilaId'
+    | '/cadernos'
   id:
     | '__root__'
     | '/'
@@ -228,7 +250,9 @@ export interface FileRouteTypes {
     | '/termos'
     | '/api/chat'
     | '/apostila/$id'
+    | '/cadernos/$id'
     | '/responder/$apostilaId'
+    | '/cadernos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -248,6 +272,8 @@ export interface RootRouteChildren {
   TermosRoute: typeof TermosRoute
   ApiChatRoute: typeof ApiChatRoute
   ApostilaIdRoute: typeof ApostilaIdRoute
+  CadernosIdRoute: typeof CadernosIdRoute
+  CadernosIndexRoute: typeof CadernosIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -350,12 +376,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cadernos/': {
+      id: '/cadernos/'
+      path: '/cadernos'
+      fullPath: '/cadernos/'
+      preLoaderRoute: typeof CadernosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/responder/$apostilaId': {
       id: '/responder/$apostilaId'
       path: '/$apostilaId'
       fullPath: '/responder/$apostilaId'
       preLoaderRoute: typeof ResponderApostilaIdRouteImport
       parentRoute: typeof ResponderRoute
+    }
+    '/cadernos/$id': {
+      id: '/cadernos/$id'
+      path: '/cadernos/$id'
+      fullPath: '/cadernos/$id'
+      preLoaderRoute: typeof CadernosIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/apostila/$id': {
       id: '/apostila/$id'
@@ -403,6 +443,8 @@ const rootRouteChildren: RootRouteChildren = {
   TermosRoute: TermosRoute,
   ApiChatRoute: ApiChatRoute,
   ApostilaIdRoute: ApostilaIdRoute,
+  CadernosIdRoute: CadernosIdRoute,
+  CadernosIndexRoute: CadernosIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
