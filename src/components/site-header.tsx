@@ -35,9 +35,6 @@ export function SiteHeader() {
               <Link to="/responder">
                 <Button variant="ghost" size="sm">Responder</Button>
               </Link>
-              <Link to="/audiolivros">
-                <Button variant="ghost" size="sm">Áudio Dramas</Button>
-              </Link>
               <Link to="/suporte">
                 <Button variant="ghost" size="sm">Suporte</Button>
               </Link>
