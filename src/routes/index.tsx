@@ -67,11 +67,12 @@ function Landing() {
           </div>
         </section>
 
-        <section className="container mx-auto max-w-5xl px-6 pb-24 grid md:grid-cols-3 gap-6">
+        <section className="container mx-auto max-w-5xl px-6 pb-24 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { icon: BookOpen, title: "Cinco níveis", desc: "Do iniciante ao especialista, com consolidação final." },
-            { icon: GraduationCap, title: "Conteúdo curado", desc: "Apostilas escritas e revisadas para estudo sério." },
-            { icon: Scroll, title: "Hebraico e contexto", desc: "Conceitos originais, cosmogonia e teologia bíblica." },
+            { icon: Scroll, title: "Apostilas", desc: "Estudo aprofundado, do iniciante ao especialista, com hebraico e contexto original." },
+            { icon: GraduationCap, title: "Cursos", desc: "Aulas estruturadas para aprender de forma guiada, no seu ritmo." },
+            { icon: BookOpen, title: "Livros", desc: "Obras completas para quem quer se aprofundar ainda mais." },
+            { icon: Sparkles, title: "Áudio livros", desc: "Ouça o conteúdo onde estiver, no seu tempo." },
           ].map((f) => (
             <div key={f.title} className="rounded-xl border border-border/60 bg-card/60 p-6 backdrop-blur">
               <f.icon className="h-6 w-6 text-gold mb-3" />
