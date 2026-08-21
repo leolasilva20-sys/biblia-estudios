@@ -1,35 +1,28 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
-import { BookOpen, ChevronRight, FileText, GraduationCap, Crown, Sparkles, Clock, Film } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { BookOpen, ChevronRight, Sparkles, Clock, Film, NotebookPen } from "lucide-react";
 import { AppSidebar } from "@/components/app-sidebar";
-import { MODULO_1_APOSTILAS, type Nivel } from "@/lib/apostilas";
+import { APOSTILAS } from "@/lib/apostilas";
 import { Button } from "@/components/ui/button";
+import { useRequireAccess } from "@/hooks/use-require-access";
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Bíblia Estúdios" }] }),
+  head: () => ({
+    meta: [
+      { title: "Dashboard — Bíblia Estúdios" },
+      { name: "description", content: "Acesse a Apostila de Gênesis e seus cadernos de estudo bíblico." },
+      { property: "og:title", content: "Dashboard — Bíblia Estúdios" },
+      { property: "og:description", content: "Acesse a Apostila de Gênesis e seus cadernos de estudo bíblico." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: Dashboard,
 });
 
-const NIVEL_META: Record<Nivel, { label: string; icon: typeof BookOpen; color: string }> = {
-  iniciante: { label: "Iniciante", icon: BookOpen, color: "text-emerald-400" },
-  intermediario: { label: "Intermediário", icon: FileText, color: "text-sky-400" },
-  avancado: { label: "Avançado", icon: GraduationCap, color: "text-violet-400" },
-  especialista: { label: "Especialista", icon: Crown, color: "text-amber-400" },
-  consolidacao: { label: "Consolidação", icon: Sparkles, color: "text-gold" },
-};
-
 function Dashboard() {
-  const { user, profile, loading } = useAuth();
-  const navigate = useNavigate();
+  const { ready, profile } = useRequireAccess();
 
-  useEffect(() => {
-    if (loading) return;
-    if (!user) { navigate({ to: "/login" }); return; }
-    if (profile && !profile.acesso_liberado) navigate({ to: "/complete-profile" });
-  }, [user, profile, loading, navigate]);
-
-  if (loading || !user || !profile?.acesso_liberado) {
+  if (!ready) {
     return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Carregando...</div>;
   }
 
@@ -40,78 +33,68 @@ function Dashboard() {
       <AppSidebar />
       <main className="flex-1 px-6 py-12 overflow-y-auto">
         <div className="max-w-5xl mx-auto">
-        <div className="mb-12">
-          <p className="text-sm text-gold uppercase tracking-widest">Bem-vindo</p>
-          <h1 className="font-serif text-4xl md:text-5xl gold-text-gradient mt-2">Olá, {nome}</h1>
-          <p className="text-muted-foreground mt-3 max-w-2xl font-serif italic">
-            Comece sua jornada pelas Escrituras, uma página de cada vez.
-          </p>
-        </div>
-
-        <section className="mb-16">
-          <div className="flex items-baseline justify-between mb-6">
-            <div>
-              <p className="text-xs text-gold uppercase tracking-widest">Módulo 1</p>
-              <h2 className="font-serif text-3xl gold-text-gradient mt-1">Gênesis 1</h2>
-            </div>
-            <span className="text-xs text-muted-foreground">5 apostilas progressivas</span>
+          <div className="mb-12">
+            <p className="text-sm text-gold uppercase tracking-widest">Bem-vindo</p>
+            <h1 className="font-serif text-4xl md:text-5xl gold-text-gradient mt-2">Olá, {nome}</h1>
+            <p className="text-muted-foreground mt-3 max-w-2xl font-serif italic">
+              Comece sua jornada pelas Escrituras, uma página de cada vez.
+            </p>
           </div>
 
-          <div className="grid gap-4">
-            {MODULO_1_APOSTILAS.map((ap, idx) => {
-              const meta = NIVEL_META[ap.nivel];
-              const Icon = meta.icon;
-              return (
+          <section className="mb-16">
+            <div className="flex items-baseline justify-between mb-6">
+              <div>
+                <p className="text-xs text-gold uppercase tracking-widest">Estudo atual</p>
+                <h2 className="font-serif text-3xl gold-text-gradient mt-1">Gênesis</h2>
+              </div>
+            </div>
+
+            <div className="grid gap-4">
+              {APOSTILAS.map((ap) => (
                 <Link
                   key={ap.id}
                   to="/apostila/$id"
                   params={{ id: ap.id }}
-                  className="group rounded-xl border border-border/60 bg-card/60 backdrop-blur p-5 hover:border-gold/60 transition-all flex items-center gap-5"
+                  aria-label={`Abrir ${ap.titulo}`}
+                  className="group rounded-xl border border-border/60 bg-card/60 backdrop-blur p-6 hover:border-gold/60 transition-all flex items-center gap-5"
                 >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full border border-gold/40 flex items-center justify-center font-serif text-gold">
-                    {idx + 1}
-                  </div>
+                  <BookOpen className="h-6 w-6 text-gold flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <Icon className={`h-4 w-4 ${meta.color}`} />
-                      <span className="text-xs uppercase tracking-wider text-muted-foreground">{meta.label}</span>
-                    </div>
-                    <h3 className="font-serif text-xl mt-1 truncate">{ap.titulo}</h3>
-                    <p className="text-sm text-muted-foreground mt-0.5 truncate">{ap.descricao}</p>
+                    <h3 className="font-serif text-2xl">{ap.titulo}</h3>
+                    <p className="text-sm text-muted-foreground mt-1">{ap.descricao}</p>
                   </div>
                   <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-gold transition-colors" />
                 </Link>
-              );
-            })}
-          </div>
-        </section>
+              ))}
 
-        <section>
-          <div className="ornament-divider mb-8 max-w-xs mx-auto"><Clock className="h-4 w-4" /></div>
-          <h2 className="font-serif text-3xl text-center gold-text-gradient mb-2">Em breve</h2>
-          <p className="text-center text-muted-foreground mb-8 font-serif italic">Próximos lançamentos da Bíblia Estúdios</p>
+              <Link
+                to="/cadernos"
+                aria-label="Abrir meus cadernos de anotações"
+                className="group rounded-xl border border-border/60 bg-card/60 backdrop-blur p-6 hover:border-gold/60 transition-all flex items-center gap-5"
+              >
+                <NotebookPen className="h-6 w-6 text-gold flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-serif text-2xl">Meus cadernos</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Escreva suas anotações e receba observações do professor.
+                  </p>
+                </div>
+                <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-gold transition-colors" />
+              </Link>
+            </div>
+          </section>
 
-          <div className="grid sm:grid-cols-2 gap-4">
-            <ComingCard
-              icon={BookOpen}
-              eta="Em breve"
-              title="Módulos 2 a 6 — Gênesis"
-              desc="Continuação completa do livro de Gênesis em cinco níveis."
-            />
-            <ComingCard
-              icon={Film}
-              eta="Em breve"
-              title="Série animada: Gênesis"
-              desc="Adaptação visual da narrativa para todas as idades."
-            />
-            <ComingCard
-              icon={Sparkles}
-              eta="Em breve"
-              title="Lista de espera"
-              desc="Em breve você poderá entrar na fila para cada lançamento."
-            />
-          </div>
-        </section>
+          <section>
+            <div className="ornament-divider mb-8 max-w-xs mx-auto"><Clock className="h-4 w-4" /></div>
+            <h2 className="font-serif text-3xl text-center gold-text-gradient mb-2">Em breve</h2>
+            <p className="text-center text-muted-foreground mb-8 font-serif italic">Próximos lançamentos da Bíblia Estúdios</p>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              <ComingCard icon={BookOpen} eta="Em breve" title="Novas apostilas" desc="Continuação do estudo bíblico em novos livros." />
+              <ComingCard icon={Film} eta="Em breve" title="Série animada: Gênesis" desc="Adaptação visual da narrativa para todas as idades." />
+              <ComingCard icon={Sparkles} eta="Em breve" title="Lista de espera" desc="Em breve você poderá entrar na fila para cada lançamento." />
+            </div>
+          </section>
         </div>
       </main>
     </div>
