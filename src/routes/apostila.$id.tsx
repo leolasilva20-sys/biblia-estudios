@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { getApostila, buildDriveEmbedUrl } from "@/lib/apostilas";
 import { getApostilaTexto } from "@/lib/apostila.functions";
 import { useRequireAccess } from "@/hooks/use-require-access";
+import { useSpeech } from "@/hooks/use-speech";
 
 export const Route = createFileRoute("/apostila/$id")({
   head: () => ({
