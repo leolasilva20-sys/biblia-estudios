@@ -47,22 +47,14 @@ function ApostilaViewer() {
   }, [data]);
 
   const [pagina, setPagina] = useState(0);
-  const [falando, setFalando] = useState(false);
-  const [pausado, setPausado] = useState(false);
   const [velocidade, setVelocidade] = useState(1);
   const topoRef = useRef<HTMLDivElement>(null);
+  const { ouvir: falar, parar, pausarOuContinuar, falando, pausado, erro, suportado } = useSpeech();
 
-  const parar = () => {
-    if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
-    setFalando(false);
-    setPausado(false);
-  };
-
-  useEffect(() => () => parar(), []);
   useEffect(() => {
     parar();
     topoRef.current?.focus();
-  }, [pagina]);
+  }, [pagina, parar]);
 
   if (!ready || !apostila) {
     return (
