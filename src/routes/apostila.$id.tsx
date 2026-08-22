@@ -71,22 +71,7 @@ function ApostilaViewer() {
   const totalPaginas = paginas.length;
 
   const ouvir = () => {
-    if (typeof window === "undefined" || !window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(conteudo.join("\n\n"));
-    u.lang = "pt-BR";
-    u.rate = velocidade;
-    u.onend = () => { setFalando(false); setPausado(false); };
-    u.onerror = () => { setFalando(false); setPausado(false); };
-    window.speechSynthesis.speak(u);
-    setFalando(true);
-    setPausado(false);
-  };
-
-  const pausarOuContinuar = () => {
-    const s = window.speechSynthesis;
-    if (!s) return;
-    if (pausado) { s.resume(); setPausado(false); } else { s.pause(); setPausado(true); }
+    void falar(conteudo.join("\n\n"), velocidade);
   };
 
   return (
