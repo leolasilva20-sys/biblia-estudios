@@ -12,19 +12,16 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as SuporteRouteImport } from './routes/suporte'
 import { Route as SignupRouteImport } from './routes/signup'
-import { Route as ResponderRouteImport } from './routes/responder'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as ExerciciosRouteImport } from './routes/exercicios'
 import { Route as DocumentacaoRouteImport } from './routes/documentacao'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CadernosIndexRouteImport } from './routes/cadernos.index'
-import { Route as ResponderApostilaIdRouteImport } from './routes/responder.$apostilaId'
 import { Route as CadernosIdRouteImport } from './routes/cadernos.$id'
 import { Route as ApostilaIdRouteImport } from './routes/apostila.$id'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
@@ -42,11 +39,6 @@ const SuporteRoute = SuporteRouteImport.update({
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResponderRoute = ResponderRouteImport.update({
-  id: '/responder',
-  path: '/responder',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -67,11 +59,6 @@ const PerfilRoute = PerfilRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExerciciosRoute = ExerciciosRouteImport.update({
-  id: '/exercicios',
-  path: '/exercicios',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocumentacaoRoute = DocumentacaoRouteImport.update({
@@ -104,11 +91,6 @@ const CadernosIndexRoute = CadernosIndexRouteImport.update({
   path: '/cadernos/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResponderApostilaIdRoute = ResponderApostilaIdRouteImport.update({
-  id: '/$apostilaId',
-  path: '/$apostilaId',
-  getParentRoute: () => ResponderRoute,
-} as any)
 const CadernosIdRoute = CadernosIdRouteImport.update({
   id: '/cadernos/$id',
   path: '/cadernos/$id',
@@ -131,19 +113,16 @@ export interface FileRoutesByFullPath {
   '/complete-profile': typeof CompleteProfileRoute
   '/dashboard': typeof DashboardRoute
   '/documentacao': typeof DocumentacaoRoute
-  '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
   '/privacidade': typeof PrivacidadeRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/responder': typeof ResponderRouteWithChildren
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
   '/termos': typeof TermosRoute
   '/api/chat': typeof ApiChatRoute
   '/apostila/$id': typeof ApostilaIdRoute
   '/cadernos/$id': typeof CadernosIdRoute
-  '/responder/$apostilaId': typeof ResponderApostilaIdRoute
   '/cadernos/': typeof CadernosIndexRoute
 }
 export interface FileRoutesByTo {
@@ -152,19 +131,16 @@ export interface FileRoutesByTo {
   '/complete-profile': typeof CompleteProfileRoute
   '/dashboard': typeof DashboardRoute
   '/documentacao': typeof DocumentacaoRoute
-  '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
   '/privacidade': typeof PrivacidadeRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/responder': typeof ResponderRouteWithChildren
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
   '/termos': typeof TermosRoute
   '/api/chat': typeof ApiChatRoute
   '/apostila/$id': typeof ApostilaIdRoute
   '/cadernos/$id': typeof CadernosIdRoute
-  '/responder/$apostilaId': typeof ResponderApostilaIdRoute
   '/cadernos': typeof CadernosIndexRoute
 }
 export interface FileRoutesById {
@@ -174,19 +150,16 @@ export interface FileRoutesById {
   '/complete-profile': typeof CompleteProfileRoute
   '/dashboard': typeof DashboardRoute
   '/documentacao': typeof DocumentacaoRoute
-  '/exercicios': typeof ExerciciosRoute
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
   '/privacidade': typeof PrivacidadeRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/responder': typeof ResponderRouteWithChildren
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
   '/termos': typeof TermosRoute
   '/api/chat': typeof ApiChatRoute
   '/apostila/$id': typeof ApostilaIdRoute
   '/cadernos/$id': typeof CadernosIdRoute
-  '/responder/$apostilaId': typeof ResponderApostilaIdRoute
   '/cadernos/': typeof CadernosIndexRoute
 }
 export interface FileRouteTypes {
@@ -197,19 +170,16 @@ export interface FileRouteTypes {
     | '/complete-profile'
     | '/dashboard'
     | '/documentacao'
-    | '/exercicios'
     | '/login'
     | '/perfil'
     | '/privacidade'
     | '/reset-password'
-    | '/responder'
     | '/signup'
     | '/suporte'
     | '/termos'
     | '/api/chat'
     | '/apostila/$id'
     | '/cadernos/$id'
-    | '/responder/$apostilaId'
     | '/cadernos/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -218,19 +188,16 @@ export interface FileRouteTypes {
     | '/complete-profile'
     | '/dashboard'
     | '/documentacao'
-    | '/exercicios'
     | '/login'
     | '/perfil'
     | '/privacidade'
     | '/reset-password'
-    | '/responder'
     | '/signup'
     | '/suporte'
     | '/termos'
     | '/api/chat'
     | '/apostila/$id'
     | '/cadernos/$id'
-    | '/responder/$apostilaId'
     | '/cadernos'
   id:
     | '__root__'
@@ -239,19 +206,16 @@ export interface FileRouteTypes {
     | '/complete-profile'
     | '/dashboard'
     | '/documentacao'
-    | '/exercicios'
     | '/login'
     | '/perfil'
     | '/privacidade'
     | '/reset-password'
-    | '/responder'
     | '/signup'
     | '/suporte'
     | '/termos'
     | '/api/chat'
     | '/apostila/$id'
     | '/cadernos/$id'
-    | '/responder/$apostilaId'
     | '/cadernos/'
   fileRoutesById: FileRoutesById
 }
@@ -261,12 +225,10 @@ export interface RootRouteChildren {
   CompleteProfileRoute: typeof CompleteProfileRoute
   DashboardRoute: typeof DashboardRoute
   DocumentacaoRoute: typeof DocumentacaoRoute
-  ExerciciosRoute: typeof ExerciciosRoute
   LoginRoute: typeof LoginRoute
   PerfilRoute: typeof PerfilRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
-  ResponderRoute: typeof ResponderRouteWithChildren
   SignupRoute: typeof SignupRoute
   SuporteRoute: typeof SuporteRoute
   TermosRoute: typeof TermosRoute
@@ -299,13 +261,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/responder': {
-      id: '/responder'
-      path: '/responder'
-      fullPath: '/responder'
-      preLoaderRoute: typeof ResponderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -332,13 +287,6 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/exercicios': {
-      id: '/exercicios'
-      path: '/exercicios'
-      fullPath: '/exercicios'
-      preLoaderRoute: typeof ExerciciosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/documentacao': {
@@ -383,13 +331,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CadernosIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/responder/$apostilaId': {
-      id: '/responder/$apostilaId'
-      path: '/$apostilaId'
-      fullPath: '/responder/$apostilaId'
-      preLoaderRoute: typeof ResponderApostilaIdRouteImport
-      parentRoute: typeof ResponderRoute
-    }
     '/cadernos/$id': {
       id: '/cadernos/$id'
       path: '/cadernos/$id'
@@ -414,30 +355,16 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface ResponderRouteChildren {
-  ResponderApostilaIdRoute: typeof ResponderApostilaIdRoute
-}
-
-const ResponderRouteChildren: ResponderRouteChildren = {
-  ResponderApostilaIdRoute: ResponderApostilaIdRoute,
-}
-
-const ResponderRouteWithChildren = ResponderRoute._addFileChildren(
-  ResponderRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   CompleteProfileRoute: CompleteProfileRoute,
   DashboardRoute: DashboardRoute,
   DocumentacaoRoute: DocumentacaoRoute,
-  ExerciciosRoute: ExerciciosRoute,
   LoginRoute: LoginRoute,
   PerfilRoute: PerfilRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   ResetPasswordRoute: ResetPasswordRoute,
-  ResponderRoute: ResponderRouteWithChildren,
   SignupRoute: SignupRoute,
   SuporteRoute: SuporteRoute,
   TermosRoute: TermosRoute,
