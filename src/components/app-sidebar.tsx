@@ -2,9 +2,9 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   BookOpen,
-  FileText,
+  NotebookPen,
+  PenLine,
   LifeBuoy,
-  Music,
   Shield,
   X,
   Menu,
@@ -14,7 +14,8 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const NAV_ITEMS = [
   { to: "/dashboard", label: "Apostilas", icon: BookOpen },
-  { to: "/responder", label: "Exercícios", icon: FileText },
+  { to: "/cadernos", label: "Meus cadernos", icon: NotebookPen },
+  { to: "/rascunhos", label: "Rascunhos", icon: PenLine },
   { to: "/suporte", label: "Suporte", icon: LifeBuoy },
 ];
 

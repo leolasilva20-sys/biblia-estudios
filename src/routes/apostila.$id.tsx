@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { getApostila, buildDriveEmbedUrl } from "@/lib/apostilas";
 import { getApostilaTexto } from "@/lib/apostila.functions";
 import { useRequireAccess } from "@/hooks/use-require-access";
+import { useSpeech } from "@/hooks/use-speech";
 
 export const Route = createFileRoute("/apostila/$id")({
   head: () => ({
@@ -47,22 +48,14 @@ function ApostilaViewer() {
   }, [data]);
 
   const [pagina, setPagina] = useState(0);
-  const [falando, setFalando] = useState(false);
-  const [pausado, setPausado] = useState(false);
   const [velocidade, setVelocidade] = useState(1);
   const topoRef = useRef<HTMLDivElement>(null);
+  const { ouvir: falar, parar, pausarOuContinuar, falando, pausado, erro, suportado } = useSpeech();
 
-  const parar = () => {
-    if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
-    setFalando(false);
-    setPausado(false);
-  };
-
-  useEffect(() => () => parar(), []);
   useEffect(() => {
     parar();
     topoRef.current?.focus();
-  }, [pagina]);
+  }, [pagina, parar]);
 
   if (!ready || !apostila) {
     return (
@@ -79,22 +72,7 @@ function ApostilaViewer() {
   const totalPaginas = paginas.length;
 
   const ouvir = () => {
-    if (typeof window === "undefined" || !window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(conteudo.join("\n\n"));
-    u.lang = "pt-BR";
-    u.rate = velocidade;
-    u.onend = () => { setFalando(false); setPausado(false); };
-    u.onerror = () => { setFalando(false); setPausado(false); };
-    window.speechSynthesis.speak(u);
-    setFalando(true);
-    setPausado(false);
-  };
-
-  const pausarOuContinuar = () => {
-    const s = window.speechSynthesis;
-    if (!s) return;
-    if (pausado) { s.resume(); setPausado(false); } else { s.pause(); setPausado(true); }
+    void falar(conteudo.join("\n\n"), velocidade);
   };
 
   return (
@@ -142,7 +120,11 @@ function ApostilaViewer() {
               {/* Controles de leitura em voz */}
               <div className="mt-6 flex flex-wrap items-center gap-2 rounded-xl border border-gold/30 bg-card/50 p-3">
                 {!falando ? (
-                  <Button onClick={ouvir} className="bg-gold text-primary-foreground hover:opacity-90">
+                  <Button
+                    onClick={ouvir}
+                    disabled={!suportado}
+                    className="bg-gold text-primary-foreground hover:opacity-90"
+                  >
                     <Volume2 className="h-4 w-4 mr-2" /> Ouvir esta página
                   </Button>
                 ) : (
