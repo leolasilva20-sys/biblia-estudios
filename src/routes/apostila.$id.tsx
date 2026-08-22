@@ -120,7 +120,11 @@ function ApostilaViewer() {
               {/* Controles de leitura em voz */}
               <div className="mt-6 flex flex-wrap items-center gap-2 rounded-xl border border-gold/30 bg-card/50 p-3">
                 {!falando ? (
-                  <Button onClick={ouvir} className="bg-gold text-primary-foreground hover:opacity-90">
+                  <Button
+                    onClick={ouvir}
+                    disabled={!suportado}
+                    className="bg-gold text-primary-foreground hover:opacity-90"
+                  >
                     <Volume2 className="h-4 w-4 mr-2" /> Ouvir esta página
                   </Button>
                 ) : (
