@@ -41,6 +41,15 @@ export type Caderno = {
   atualizado_em: string;
 };
 
+export type CadernoPagina = {
+  id: string;
+  caderno_id: string;
+  numero_pagina: number;
+  conteudo: string;
+  criado_em: string;
+  atualizado_em: string;
+};
+
 export type CadernoNota = {
   id: string;
   caderno_id: string;
