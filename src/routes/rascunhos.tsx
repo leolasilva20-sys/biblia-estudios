@@ -71,7 +71,7 @@ function RascunhosPage() {
 
   useEffect(() => setLocais(lerLocais()), []);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["rascunhos", user?.id],
     enabled: ready,
     queryFn: async () => {
@@ -179,12 +179,29 @@ function RascunhosPage() {
             </Button>
           </div>
 
-          {!isLoading && !usandoKeep && (
-            <p className="mb-6 text-sm text-amber-400 rounded-lg border border-amber-400/30 bg-amber-400/5 p-3">
-              O Google Keep ainda não está conectado. Por enquanto os rascunhos ficam salvos
-              apenas neste aparelho. Assim que a chave do Keep for adicionada nos segredos do
-              site, eles passam a ser salvos no bloco de notas do Google automaticamente.
+          {error && (
+            <p className="mb-6 text-sm text-red-400 rounded-lg border border-red-400/30 bg-red-400/5 p-3">
+              {error instanceof Error ? error.message : "Não consegui carregar os rascunhos do Google Keep."}
             </p>
+          )}
+
+          {!isLoading && !error && (
+            <div className="mb-6 flex items-center justify-between gap-3 rounded-lg border border-gold/20 bg-gold/5 p-3">
+              <p className="text-sm text-gold">
+                {usandoKeep
+                  ? "Google Keep conectado. Seus rascunhos estão sincronizados na nuvem."
+                  : "Google Keep ainda não está conectado. Por enquanto os rascunhos ficam salvos apenas neste aparelho."}
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => refetch()}
+                disabled={isLoading}
+                className="shrink-0"
+              >
+                {isLoading ? "Verificando..." : "Verificar conexão"}
+              </Button>
+            </div>
           )}
 
           {criando && (
