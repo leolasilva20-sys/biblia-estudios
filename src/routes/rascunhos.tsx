@@ -71,7 +71,7 @@ function RascunhosPage() {
 
   useEffect(() => setLocais(lerLocais()), []);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["rascunhos", user?.id],
     enabled: ready,
     queryFn: async () => {
