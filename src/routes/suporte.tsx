@@ -38,6 +38,39 @@ function Suporte() {
   const [escalated, setEscalated] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const [mode, setMode] = useState<"ia" | "email">("email");
+  const [mailNome, setMailNome] = useState("");
+  const [mailEmail, setMailEmail] = useState("");
+  const [mailMsg, setMailMsg] = useState("");
+  const [mailSending, setMailSending] = useState(false);
+  const [mailSent, setMailSent] = useState(false);
+
+  useEffect(() => {
+    if (profile?.full_name) setMailNome((v) => v || profile.full_name!);
+    if (profile?.email ?? user?.email) setMailEmail((v) => v || profile?.email || user?.email || "");
+  }, [profile, user]);
+
+  const handleSendEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!mailNome.trim() || !mailEmail.trim() || !mailMsg.trim()) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+    setMailSending(true);
+    try {
+      await sendSupportEmail({
+        data: { nome: mailNome.trim(), email: mailEmail.trim(), mensagem: mailMsg.trim() },
+      });
+      setMailSent(true);
+      setMailMsg("");
+      toast.success("Mensagem enviada! Responderemos por email.");
+    } catch {
+      toast.error("Não foi possível enviar sua mensagem agora.");
+    } finally {
+      setMailSending(false);
+    }
+  };
+
   useEffect(() => {
     if (loading) return;
     if (!user) { navigate({ to: "/login" }); return; }
