@@ -31,73 +31,107 @@ function Dashboard() {
   return (
     <div className="min-h-screen flex">
       <AppSidebar />
-      <main className="flex-1 px-6 py-12 overflow-y-auto">
-        <div className="max-w-5xl mx-auto">
-          <div className="mb-12">
-            <p className="text-sm text-gold uppercase tracking-widest">Bem-vindo</p>
-            <h1 className="font-serif text-4xl md:text-5xl gold-text-gradient mt-2">Olá, {nome}</h1>
-            <p className="text-muted-foreground mt-3 max-w-2xl font-serif italic">
+      <main className="flex-1 px-6 py-10 overflow-y-auto">
+        <div className="max-w-5xl mx-auto space-y-10">
+          <header>
+            <p className="text-xs text-gold uppercase tracking-widest">Bem-vindo</p>
+            <h1 className="font-serif text-3xl md:text-4xl gold-text-gradient mt-1">Olá, {nome}</h1>
+            <p className="text-muted-foreground mt-2 font-serif italic">
               Comece sua jornada pelas Escrituras, uma página de cada vez.
             </p>
-          </div>
+          </header>
 
-          <section className="mb-16">
-            <div className="flex items-baseline justify-between mb-6">
-              <div>
-                <p className="text-xs text-gold uppercase tracking-widest">Estudo atual</p>
-                <h2 className="font-serif text-3xl gold-text-gradient mt-1">Gênesis</h2>
+          <Link
+            to="/premium"
+            aria-label="Conhecer o Premium por tempo limitado"
+            className="block rounded-xl border border-gold/40 bg-gold/10 p-5 hover:bg-gold/15 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <Sparkles className="h-5 w-5 text-gold flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="font-serif text-lg text-gold">Premium — tempo limitado</p>
+                <p className="text-sm text-muted-foreground">
+                  Áudio dramas, curso de religiosidade e sorteios. Cadastro gratuito.
+                </p>
               </div>
+              <ChevronRight className="h-5 w-5 text-gold" />
             </div>
+          </Link>
 
-            <div className="grid gap-4">
+          <section>
+            <h2 className="text-xs text-gold uppercase tracking-widest mb-4">Estudo atual</h2>
+            <div className="grid gap-4 sm:grid-cols-2">
               {APOSTILAS.map((ap) => (
-                <Link
+                <ActionCard
                   key={ap.id}
                   to="/apostila/$id"
                   params={{ id: ap.id }}
-                  aria-label={`Abrir ${ap.titulo}`}
-                  className="group rounded-xl border border-border/60 bg-card/60 backdrop-blur p-6 hover:border-gold/60 transition-all flex items-center gap-5"
-                >
-                  <BookOpen className="h-6 w-6 text-gold flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-serif text-2xl">{ap.titulo}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">{ap.descricao}</p>
-                  </div>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-gold transition-colors" />
-                </Link>
+                  icon={BookOpen}
+                  title={ap.titulo}
+                  desc={ap.descricao}
+                />
               ))}
-
-              <Link
+              <ActionCard
                 to="/cadernos"
-                aria-label="Abrir meus cadernos de anotações"
-                className="group rounded-xl border border-border/60 bg-card/60 backdrop-blur p-6 hover:border-gold/60 transition-all flex items-center gap-5"
-              >
-                <NotebookPen className="h-6 w-6 text-gold flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-serif text-2xl">Meus cadernos</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Escreva suas anotações e receba observações do professor.
-                  </p>
-                </div>
-                <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-gold transition-colors" />
-              </Link>
+                icon={NotebookPen}
+                title="Meus cadernos"
+                desc="Anotações por página e observações do professor."
+              />
+              <ActionCard
+                to="/rascunhos"
+                icon={PenLine}
+                title="Rascunhos"
+                desc="Ideias rápidas antes de passar a limpo."
+              />
+              <ActionCard
+                to="/suporte"
+                icon={LifeBuoy}
+                title="Suporte"
+                desc="Fale com a equipe ou com o agente de IA."
+              />
             </div>
           </section>
 
           <section>
-            <div className="ornament-divider mb-8 max-w-xs mx-auto"><Clock className="h-4 w-4" /></div>
-            <h2 className="font-serif text-3xl text-center gold-text-gradient mb-2">Em breve</h2>
-            <p className="text-center text-muted-foreground mb-8 font-serif italic">Próximos lançamentos da Bíblia Estúdios</p>
-
-            <div className="grid sm:grid-cols-2 gap-4">
-              <ComingCard icon={BookOpen} eta="Em breve" title="Novas apostilas" desc="Continuação do estudo bíblico em novos livros." />
-              <ComingCard icon={Film} eta="Em breve" title="Série animada: Gênesis" desc="Adaptação visual da narrativa para todas as idades." />
-              <ComingCard icon={Sparkles} eta="Em breve" title="Lista de espera" desc="Em breve você poderá entrar na fila para cada lançamento." />
+            <div className="ornament-divider mb-6 max-w-xs mx-auto"><Clock className="h-4 w-4" /></div>
+            <h2 className="font-serif text-2xl text-center gold-text-gradient mb-6">Em breve</h2>
+            <div className="grid sm:grid-cols-3 gap-4">
+              <ComingCard icon={BookOpen} eta="Em breve" title="Novas apostilas" desc="Continuação do estudo em novos livros." />
+              <ComingCard icon={Film} eta="Em breve" title="Série animada" desc="Gênesis em adaptação visual." />
+              <ComingCard icon={Sparkles} eta="Em breve" title="Lista de espera" desc="Entre na fila de cada lançamento." />
             </div>
           </section>
         </div>
       </main>
     </div>
+  );
+}
+
+function ActionCard({
+  to, params, icon: Icon, title, desc,
+}: {
+  to: string;
+  params?: Record<string, string>;
+  icon: typeof BookOpen;
+  title: string;
+  desc: string;
+}) {
+  return (
+    <Link
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      to={to as any}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      params={params as any}
+      aria-label={`Abrir ${title}`}
+      className="group rounded-xl border border-border/60 bg-card/60 backdrop-blur p-5 hover:border-gold/60 transition-all flex items-start gap-4"
+    >
+      <Icon className="h-5 w-5 text-gold flex-shrink-0 mt-1" />
+      <div className="flex-1 min-w-0">
+        <h3 className="font-serif text-xl">{title}</h3>
+        <p className="text-sm text-muted-foreground mt-1">{desc}</p>
+      </div>
+      <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-gold transition-colors mt-1.5" />
+    </Link>
   );
 }
 
