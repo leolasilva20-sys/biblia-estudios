@@ -6,6 +6,7 @@ import {
   PenLine,
   LifeBuoy,
   Shield,
+  Crown,
   X,
   Menu,
 } from "lucide-react";
