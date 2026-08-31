@@ -323,6 +323,8 @@ function Suporte() {
             <Send className="h-4 w-4" />
           </Button>
         </div>
+        </>
+        )}
       </main>
     </div>
   );
