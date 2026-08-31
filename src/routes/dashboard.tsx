@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, ChevronRight, Sparkles, Clock, Film, NotebookPen } from "lucide-react";
+import { BookOpen, ChevronRight, Sparkles, Clock, Film, NotebookPen, PenLine, LifeBuoy } from "lucide-react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { APOSTILAS } from "@/lib/apostilas";
 import { Button } from "@/components/ui/button";
