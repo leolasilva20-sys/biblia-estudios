@@ -184,11 +184,80 @@ function Suporte() {
             <p className="text-sm text-gold uppercase tracking-widest">Bíblia Estúdios</p>
             <h1 className="font-serif text-2xl gold-text-gradient">Agente de suporte</h1>
           </div>
-          <div className="flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3 py-1.5 text-xs text-gold">
-            <Sparkles className="h-3.5 w-3.5" /> IA interna
+          <div className="flex items-center gap-1 rounded-full border border-border/60 p-1">
+            <button
+              onClick={() => setMode("email")}
+              aria-pressed={mode === "email"}
+              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs transition-colors ${
+                mode === "email" ? "bg-gold/20 text-gold" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Mail className="h-3.5 w-3.5" /> Falar com a equipe
+            </button>
+            <button
+              onClick={() => setMode("ia")}
+              aria-pressed={mode === "ia"}
+              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs transition-colors ${
+                mode === "ia" ? "bg-gold/20 text-gold" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Sparkles className="h-3.5 w-3.5" /> Modo IA
+            </button>
           </div>
         </div>
 
+        {mode === "email" ? (
+          <div className="flex-1 overflow-y-auto px-6 py-8">
+            <div className="max-w-xl mx-auto rounded-2xl border border-border/60 bg-card/60 p-6">
+              <h2 className="font-serif text-2xl gold-text-gradient mb-1">Enviar mensagem</h2>
+              <p className="text-sm text-muted-foreground mb-6">
+                Sua mensagem chega direto no email da equipe da Bíblia Estúdios.
+              </p>
+
+              {mailSent ? (
+                <div className="text-center py-6">
+                  <Mail className="h-8 w-8 text-gold mx-auto mb-3" />
+                  <p className="font-serif text-lg">Mensagem enviada!</p>
+                  <p className="text-sm text-muted-foreground mt-1">Responderemos no seu email.</p>
+                  <Button variant="outline" className="mt-5" onClick={() => setMailSent(false)}>
+                    Enviar outra
+                  </Button>
+                </div>
+              ) : (
+                <form onSubmit={handleSendEmail} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="mail-nome">Nome</Label>
+                    <Input id="mail-nome" value={mailNome} onChange={(e) => setMailNome(e.target.value)} required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="mail-email">Email para resposta</Label>
+                    <Input
+                      id="mail-email"
+                      type="email"
+                      value={mailEmail}
+                      onChange={(e) => setMailEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="mail-msg">Mensagem</Label>
+                    <Textarea
+                      id="mail-msg"
+                      value={mailMsg}
+                      onChange={(e) => setMailMsg(e.target.value)}
+                      rows={6}
+                      required
+                    />
+                  </div>
+                  <Button type="submit" className="w-full h-11" disabled={mailSending}>
+                    {mailSending ? "Enviando..." : "Enviar para a equipe"}
+                  </Button>
+                </form>
+              )}
+            </div>
+          </div>
+        ) : (
+        <>
         {escalated && (
           <div className="mx-6 mt-4 p-3 rounded-lg border border-gold/30 bg-gold/10 flex items-center gap-2 text-sm">
             <AlertTriangle className="h-4 w-4 text-gold flex-shrink-0" />
