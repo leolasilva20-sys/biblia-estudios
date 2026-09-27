@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, ChevronRight, Sparkles, Clock, Film, NotebookPen, PenLine, LifeBuoy } from "lucide-react";
+import { BookOpen, ChevronRight, Sparkles, Clock, Film, NotebookPen, LifeBuoy } from "lucide-react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { APOSTILAS } from "@/lib/apostilas";
 import { Button } from "@/components/ui/button";
@@ -41,23 +41,6 @@ function Dashboard() {
             </p>
           </header>
 
-          <Link
-            to="/premium"
-            aria-label="Conhecer o Premium por tempo limitado"
-            className="block rounded-xl border border-gold/40 bg-gold/10 p-5 hover:bg-gold/15 transition-colors"
-          >
-            <div className="flex items-center gap-4">
-              <Sparkles className="h-5 w-5 text-gold flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="font-serif text-lg text-gold">Premium — tempo limitado</p>
-                <p className="text-sm text-muted-foreground">
-                  Áudio dramas, curso de religiosidade e sorteios. Cadastro gratuito.
-                </p>
-              </div>
-              <ChevronRight className="h-5 w-5 text-gold" />
-            </div>
-          </Link>
-
           <section>
             <h2 className="text-xs text-gold uppercase tracking-widest mb-4">Estudo atual</h2>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -76,12 +59,6 @@ function Dashboard() {
                 icon={NotebookPen}
                 title="Meus cadernos"
                 desc="Anotações por página e observações do professor."
-              />
-              <ActionCard
-                to="/rascunhos"
-                icon={PenLine}
-                title="Rascunhos"
-                desc="Ideias rápidas antes de passar a limpo."
               />
               <ActionCard
                 to="/suporte"

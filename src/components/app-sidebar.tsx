@@ -4,10 +4,8 @@ import {
   BookOpen,
   Headphones,
   NotebookPen,
-  PenLine,
   LifeBuoy,
   Shield,
-  Crown,
   X,
   Menu,
 } from "lucide-react";
@@ -18,7 +16,6 @@ const NAV_ITEMS: { to: string; label: string; icon: typeof BookOpen; isNew?: boo
   { to: "/dashboard", label: "Apostilas", icon: BookOpen },
   { to: "/audio-dramas", label: "Áudio Dramas", icon: Headphones, isNew: true },
   { to: "/cadernos", label: "Meus cadernos", icon: NotebookPen },
-  { to: "/rascunhos", label: "Rascunhos", icon: PenLine },
   { to: "/suporte", label: "Suporte", icon: LifeBuoy },
 ];
 
@@ -82,22 +79,6 @@ export function AppSidebar() {
           <NavLink to="/admin" label="Painel Admin" icon={Shield} />
         )}
 
-        <div className="pt-3 mt-3 border-t border-border/40">
-          <Link
-            to="/premium"
-            onClick={() => setMobileOpen(false)}
-            aria-label="Premium — tempo limitado, cadastro gratuito"
-            className="flex items-center gap-3 px-4 py-3.5 rounded-lg border border-gold/40 bg-gold/10 text-gold hover:bg-gold/20 transition-colors"
-          >
-            <Crown className="h-5 w-5 flex-shrink-0" />
-            <span className="flex flex-col leading-tight">
-              <span className="text-base font-medium">Premium</span>
-              <span className="text-[11px] uppercase tracking-widest opacity-80">
-                Tempo limitado
-              </span>
-            </span>
-          </Link>
-        </div>
       </nav>
 
       <div className="px-2 pb-3 border-t border-border/40 pt-3">
