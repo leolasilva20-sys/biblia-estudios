@@ -9,7 +9,7 @@ type Capitulo = { id: string; title: string; description: string | null; drive_f
 
 const SUPABASE_URL =
   (import.meta.env.VITE_SUPABASE_URL as string | undefined) ?? "https://phguxgdqwrysvjdkzzxn.supabase.co";
-const streamUrl = (id: string) => `${SUPABASE_URL}/functions/v1/get-audio-stream?fileId=${encodeURIComponent(id)}`;
+const streamUrl = (id: string) => `${SUPABASE_URL}/functions/v1/audio-stream?fileId=${encodeURIComponent(id)}`;
 
 export const Route = createFileRoute("/audio-dramas/genesis")({
   head: () => ({
