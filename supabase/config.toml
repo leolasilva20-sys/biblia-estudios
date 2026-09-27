@@ -1,0 +1,2 @@
+[functions.audio-stream]
+verify_jwt = false

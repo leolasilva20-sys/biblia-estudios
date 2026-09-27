@@ -24,7 +24,9 @@ import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CadernosIndexRouteImport } from './routes/cadernos.index'
+import { Route as AudioDramasIndexRouteImport } from './routes/audio-dramas.index'
 import { Route as CadernosIdRouteImport } from './routes/cadernos.$id'
+import { Route as AudioDramasGenesisRouteImport } from './routes/audio-dramas.genesis'
 import { Route as ApostilaIdRouteImport } from './routes/apostila.$id'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
@@ -103,9 +105,19 @@ const CadernosIndexRoute = CadernosIndexRouteImport.update({
   path: '/cadernos/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AudioDramasIndexRoute = AudioDramasIndexRouteImport.update({
+  id: '/audio-dramas/',
+  path: '/audio-dramas/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CadernosIdRoute = CadernosIdRouteImport.update({
   id: '/cadernos/$id',
   path: '/cadernos/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AudioDramasGenesisRoute = AudioDramasGenesisRouteImport.update({
+  id: '/audio-dramas/genesis',
+  path: '/audio-dramas/genesis',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApostilaIdRoute = ApostilaIdRouteImport.update({
@@ -136,7 +148,9 @@ export interface FileRoutesByFullPath {
   '/termos': typeof TermosRoute
   '/api/chat': typeof ApiChatRoute
   '/apostila/$id': typeof ApostilaIdRoute
+  '/audio-dramas/genesis': typeof AudioDramasGenesisRoute
   '/cadernos/$id': typeof CadernosIdRoute
+  '/audio-dramas/': typeof AudioDramasIndexRoute
   '/cadernos/': typeof CadernosIndexRoute
 }
 export interface FileRoutesByTo {
@@ -156,7 +170,9 @@ export interface FileRoutesByTo {
   '/termos': typeof TermosRoute
   '/api/chat': typeof ApiChatRoute
   '/apostila/$id': typeof ApostilaIdRoute
+  '/audio-dramas/genesis': typeof AudioDramasGenesisRoute
   '/cadernos/$id': typeof CadernosIdRoute
+  '/audio-dramas': typeof AudioDramasIndexRoute
   '/cadernos': typeof CadernosIndexRoute
 }
 export interface FileRoutesById {
@@ -177,7 +193,9 @@ export interface FileRoutesById {
   '/termos': typeof TermosRoute
   '/api/chat': typeof ApiChatRoute
   '/apostila/$id': typeof ApostilaIdRoute
+  '/audio-dramas/genesis': typeof AudioDramasGenesisRoute
   '/cadernos/$id': typeof CadernosIdRoute
+  '/audio-dramas/': typeof AudioDramasIndexRoute
   '/cadernos/': typeof CadernosIndexRoute
 }
 export interface FileRouteTypes {
@@ -199,7 +217,9 @@ export interface FileRouteTypes {
     | '/termos'
     | '/api/chat'
     | '/apostila/$id'
+    | '/audio-dramas/genesis'
     | '/cadernos/$id'
+    | '/audio-dramas/'
     | '/cadernos/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -219,7 +239,9 @@ export interface FileRouteTypes {
     | '/termos'
     | '/api/chat'
     | '/apostila/$id'
+    | '/audio-dramas/genesis'
     | '/cadernos/$id'
+    | '/audio-dramas'
     | '/cadernos'
   id:
     | '__root__'
@@ -239,7 +261,9 @@ export interface FileRouteTypes {
     | '/termos'
     | '/api/chat'
     | '/apostila/$id'
+    | '/audio-dramas/genesis'
     | '/cadernos/$id'
+    | '/audio-dramas/'
     | '/cadernos/'
   fileRoutesById: FileRoutesById
 }
@@ -260,7 +284,9 @@ export interface RootRouteChildren {
   TermosRoute: typeof TermosRoute
   ApiChatRoute: typeof ApiChatRoute
   ApostilaIdRoute: typeof ApostilaIdRoute
+  AudioDramasGenesisRoute: typeof AudioDramasGenesisRoute
   CadernosIdRoute: typeof CadernosIdRoute
+  AudioDramasIndexRoute: typeof AudioDramasIndexRoute
   CadernosIndexRoute: typeof CadernosIndexRoute
 }
 
@@ -371,11 +397,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CadernosIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/audio-dramas/': {
+      id: '/audio-dramas/'
+      path: '/audio-dramas'
+      fullPath: '/audio-dramas/'
+      preLoaderRoute: typeof AudioDramasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cadernos/$id': {
       id: '/cadernos/$id'
       path: '/cadernos/$id'
       fullPath: '/cadernos/$id'
       preLoaderRoute: typeof CadernosIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/audio-dramas/genesis': {
+      id: '/audio-dramas/genesis'
+      path: '/audio-dramas/genesis'
+      fullPath: '/audio-dramas/genesis'
+      preLoaderRoute: typeof AudioDramasGenesisRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/apostila/$id': {
@@ -412,7 +452,9 @@ const rootRouteChildren: RootRouteChildren = {
   TermosRoute: TermosRoute,
   ApiChatRoute: ApiChatRoute,
   ApostilaIdRoute: ApostilaIdRoute,
+  AudioDramasGenesisRoute: AudioDramasGenesisRoute,
   CadernosIdRoute: CadernosIdRoute,
+  AudioDramasIndexRoute: AudioDramasIndexRoute,
   CadernosIndexRoute: CadernosIndexRoute,
 }
 export const routeTree = rootRouteImport
