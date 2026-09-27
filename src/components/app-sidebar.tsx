@@ -2,6 +2,7 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   BookOpen,
+  Headphones,
   NotebookPen,
   PenLine,
   LifeBuoy,
@@ -13,8 +14,9 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
-const NAV_ITEMS = [
+const NAV_ITEMS: { to: string; label: string; icon: typeof BookOpen; isNew?: boolean }[] = [
   { to: "/dashboard", label: "Apostilas", icon: BookOpen },
+  { to: "/audio-dramas", label: "Áudio Dramas", icon: Headphones, isNew: true },
   { to: "/cadernos", label: "Meus cadernos", icon: NotebookPen },
   { to: "/rascunhos", label: "Rascunhos", icon: PenLine },
   { to: "/suporte", label: "Suporte", icon: LifeBuoy },
@@ -40,11 +42,11 @@ export function AppSidebar() {
 
   const isActive = (path: string) => currentPath === path || currentPath.startsWith(path + "/");
 
-  const NavLink = ({ to, label, icon: Icon }: { to: string; label: string; icon: typeof BookOpen }) => (
+  const NavLink = ({ to, label, icon: Icon, isNew }: { to: string; label: string; icon: typeof BookOpen; isNew?: boolean }) => (
     <Link
       to={to}
       onClick={() => setMobileOpen(false)}
-      aria-label={label}
+      aria-label={isNew ? `${label} — novo` : label}
       className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-base transition-colors ${
         isActive(to)
           ? "bg-gold/15 text-gold font-medium"
@@ -53,6 +55,11 @@ export function AppSidebar() {
     >
       <Icon className="h-5 w-5 flex-shrink-0" />
       {label}
+      {isNew && (
+        <span className="ml-auto rounded bg-gold px-1.5 py-0.5 text-[10px] font-semibold uppercase text-background">
+          Novo
+        </span>
+      )}
     </Link>
   );
 
