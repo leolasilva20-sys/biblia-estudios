@@ -13,9 +13,7 @@ import { Route as TermosRouteImport } from './routes/termos'
 import { Route as SuporteRouteImport } from './routes/suporte'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as RascunhosRouteImport } from './routes/rascunhos'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
-import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DocumentacaoRouteImport } from './routes/documentacao'
@@ -50,19 +48,9 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RascunhosRoute = RascunhosRouteImport.update({
-  id: '/rascunhos',
-  path: '/rascunhos',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PrivacidadeRoute = PrivacidadeRouteImport.update({
   id: '/privacidade',
   path: '/privacidade',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PremiumRoute = PremiumRouteImport.update({
-  id: '/premium',
-  path: '/premium',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PerfilRoute = PerfilRouteImport.update({
@@ -139,9 +127,7 @@ export interface FileRoutesByFullPath {
   '/documentacao': typeof DocumentacaoRoute
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
-  '/premium': typeof PremiumRoute
   '/privacidade': typeof PrivacidadeRoute
-  '/rascunhos': typeof RascunhosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
@@ -161,9 +147,7 @@ export interface FileRoutesByTo {
   '/documentacao': typeof DocumentacaoRoute
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
-  '/premium': typeof PremiumRoute
   '/privacidade': typeof PrivacidadeRoute
-  '/rascunhos': typeof RascunhosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
@@ -184,9 +168,7 @@ export interface FileRoutesById {
   '/documentacao': typeof DocumentacaoRoute
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
-  '/premium': typeof PremiumRoute
   '/privacidade': typeof PrivacidadeRoute
-  '/rascunhos': typeof RascunhosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/suporte': typeof SuporteRoute
@@ -208,9 +190,7 @@ export interface FileRouteTypes {
     | '/documentacao'
     | '/login'
     | '/perfil'
-    | '/premium'
     | '/privacidade'
-    | '/rascunhos'
     | '/reset-password'
     | '/signup'
     | '/suporte'
@@ -230,9 +210,7 @@ export interface FileRouteTypes {
     | '/documentacao'
     | '/login'
     | '/perfil'
-    | '/premium'
     | '/privacidade'
-    | '/rascunhos'
     | '/reset-password'
     | '/signup'
     | '/suporte'
@@ -252,9 +230,7 @@ export interface FileRouteTypes {
     | '/documentacao'
     | '/login'
     | '/perfil'
-    | '/premium'
     | '/privacidade'
-    | '/rascunhos'
     | '/reset-password'
     | '/signup'
     | '/suporte'
@@ -275,9 +251,7 @@ export interface RootRouteChildren {
   DocumentacaoRoute: typeof DocumentacaoRoute
   LoginRoute: typeof LoginRoute
   PerfilRoute: typeof PerfilRoute
-  PremiumRoute: typeof PremiumRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
-  RascunhosRoute: typeof RascunhosRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
   SuporteRoute: typeof SuporteRoute
@@ -320,25 +294,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/rascunhos': {
-      id: '/rascunhos'
-      path: '/rascunhos'
-      fullPath: '/rascunhos'
-      preLoaderRoute: typeof RascunhosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/privacidade': {
       id: '/privacidade'
       path: '/privacidade'
       fullPath: '/privacidade'
       preLoaderRoute: typeof PrivacidadeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/premium': {
-      id: '/premium'
-      path: '/premium'
-      fullPath: '/premium'
-      preLoaderRoute: typeof PremiumRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/perfil': {
@@ -443,9 +403,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocumentacaoRoute: DocumentacaoRoute,
   LoginRoute: LoginRoute,
   PerfilRoute: PerfilRoute,
-  PremiumRoute: PremiumRoute,
   PrivacidadeRoute: PrivacidadeRoute,
-  RascunhosRoute: RascunhosRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
   SuporteRoute: SuporteRoute,
