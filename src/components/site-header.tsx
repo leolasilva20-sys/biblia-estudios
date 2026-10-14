@@ -62,7 +62,7 @@ export function SiteHeader() {
               </Link>
               <Link to="/signup">
                 <Button size="sm" className="bg-gold text-primary-foreground hover:opacity-90">
-                  Começar
+                  Criar conta
                 </Button>
               </Link>
             </>
