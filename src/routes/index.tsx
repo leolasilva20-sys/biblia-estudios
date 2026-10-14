@@ -1,9 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { BookOpen, Scroll, GraduationCap, Sparkles } from "lucide-react";
+import { BookOpen, Scroll, GraduationCap, Sparkles, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/site-header";
 import { useAuth } from "@/hooks/use-auth";
+import heroManuscript from "@/assets/hero-manuscript.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -40,7 +41,16 @@ function Landing() {
     <div className="min-h-screen flex flex-col">
       <SiteHeader />
       <main className="flex-1">
-        <section className="container mx-auto max-w-4xl px-6 py-24 md:py-32 text-center">
+        <section className="relative overflow-hidden">
+          <img
+            src={heroManuscript}
+            alt=""
+            width={1600}
+            height={912}
+            className="absolute inset-0 h-full w-full object-cover opacity-40"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
+          <div className="relative container mx-auto max-w-4xl px-6 py-24 md:py-32 text-center">
           <div className="ornament-divider mb-8 max-w-xs mx-auto">
             <Scroll className="h-4 w-4" />
           </div>
@@ -65,6 +75,7 @@ function Landing() {
           <div className="ornament-divider mt-16 max-w-xs mx-auto">
             <Sparkles className="h-4 w-4" />
           </div>
+          </div>
         </section>
 
         <section className="container mx-auto max-w-5xl px-6 pb-24 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -72,7 +83,7 @@ function Landing() {
             { icon: Scroll, title: "Apostilas", desc: "Estudo aprofundado, do iniciante ao especialista, com hebraico e contexto original." },
             { icon: GraduationCap, title: "Cursos", desc: "Aulas estruturadas para aprender de forma guiada, no seu ritmo." },
             { icon: BookOpen, title: "Livros", desc: "Obras completas para quem quer se aprofundar ainda mais." },
-            { icon: Sparkles, title: "Áudio livros", desc: "Ouça o conteúdo onde estiver, no seu tempo." },
+            { icon: Headphones, title: "Áudio dramas", desc: "Narração, dublagem e trilha original para ouvir onde estiver." },
           ].map((f) => (
             <div key={f.title} className="rounded-xl border border-border/60 bg-card/60 p-6 backdrop-blur">
               <f.icon className="h-6 w-6 text-gold mb-3" />
