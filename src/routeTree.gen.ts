@@ -9,73 +9,28 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TermosRouteImport } from './routes/termos'
-import { Route as SuporteRouteImport } from './routes/suporte'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as PrivacidadeRouteImport } from './routes/privacidade'
-import { Route as PerfilRouteImport } from './routes/perfil'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as DocumentacaoRouteImport } from './routes/documentacao'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as CadernosIndexRouteImport } from './routes/cadernos.index'
-import { Route as AudioDramasIndexRouteImport } from './routes/audio-dramas.index'
-import { Route as CadernosIdRouteImport } from './routes/cadernos.$id'
-import { Route as AudioDramasGenesisRouteImport } from './routes/audio-dramas.genesis'
-import { Route as ApostilaIdRouteImport } from './routes/apostila.$id'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DocumentacaoRouteImport } from './routes/documentacao'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SuporteRouteImport } from './routes/suporte'
+import { Route as TermosRouteImport } from './routes/termos'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as ApostilaIdRouteImport } from './routes/apostila.$id'
+import { Route as AudioDramasIndexRouteImport } from './routes/audio-dramas.index'
+import { Route as AudioDramasGenesisRouteImport } from './routes/audio-dramas.genesis'
+import { Route as CadernosIndexRouteImport } from './routes/cadernos.index'
+import { Route as CadernosIdRouteImport } from './routes/cadernos.$id'
 
-const TermosRoute = TermosRouteImport.update({
-  id: '/termos',
-  path: '/termos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SuporteRoute = SuporteRouteImport.update({
-  id: '/suporte',
-  path: '/suporte',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacidadeRoute = PrivacidadeRouteImport.update({
-  id: '/privacidade',
-  path: '/privacidade',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PerfilRoute = PerfilRouteImport.update({
-  id: '/perfil',
-  path: '/perfil',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DocumentacaoRoute = DocumentacaoRouteImport.update({
-  id: '/documentacao',
-  path: '/documentacao',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CompleteProfileRoute = CompleteProfileRouteImport.update({
-  id: '/complete-profile',
-  path: '/complete-profile',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -83,29 +38,59 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const CompleteProfileRoute = CompleteProfileRouteImport.update({
+  id: '/complete-profile',
+  path: '/complete-profile',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CadernosIndexRoute = CadernosIndexRouteImport.update({
-  id: '/cadernos/',
-  path: '/cadernos/',
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AudioDramasIndexRoute = AudioDramasIndexRouteImport.update({
-  id: '/audio-dramas/',
-  path: '/audio-dramas/',
+const DocumentacaoRoute = DocumentacaoRouteImport.update({
+  id: '/documentacao',
+  path: '/documentacao',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CadernosIdRoute = CadernosIdRouteImport.update({
-  id: '/cadernos/$id',
-  path: '/cadernos/$id',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AudioDramasGenesisRoute = AudioDramasGenesisRouteImport.update({
-  id: '/audio-dramas/genesis',
-  path: '/audio-dramas/genesis',
+const PerfilRoute = PerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuporteRoute = SuporteRouteImport.update({
+  id: '/suporte',
+  path: '/suporte',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermosRoute = TermosRouteImport.update({
+  id: '/termos',
+  path: '/termos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApostilaIdRoute = ApostilaIdRouteImport.update({
@@ -113,9 +98,24 @@ const ApostilaIdRoute = ApostilaIdRouteImport.update({
   path: '/apostila/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiChatRoute = ApiChatRouteImport.update({
-  id: '/api/chat',
-  path: '/api/chat',
+const AudioDramasIndexRoute = AudioDramasIndexRouteImport.update({
+  id: '/audio-dramas/',
+  path: '/audio-dramas/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AudioDramasGenesisRoute = AudioDramasGenesisRouteImport.update({
+  id: '/audio-dramas/genesis',
+  path: '/audio-dramas/genesis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CadernosIndexRoute = CadernosIndexRouteImport.update({
+  id: '/cadernos/',
+  path: '/cadernos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CadernosIdRoute = CadernosIdRouteImport.update({
+  id: '/cadernos/$id',
+  path: '/cadernos/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -266,74 +266,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/termos': {
-      id: '/termos'
-      path: '/termos'
-      fullPath: '/termos'
-      preLoaderRoute: typeof TermosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/suporte': {
-      id: '/suporte'
-      path: '/suporte'
-      fullPath: '/suporte'
-      preLoaderRoute: typeof SuporteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacidade': {
-      id: '/privacidade'
-      path: '/privacidade'
-      fullPath: '/privacidade'
-      preLoaderRoute: typeof PrivacidadeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/perfil': {
-      id: '/perfil'
-      path: '/perfil'
-      fullPath: '/perfil'
-      preLoaderRoute: typeof PerfilRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/documentacao': {
-      id: '/documentacao'
-      path: '/documentacao'
-      fullPath: '/documentacao'
-      preLoaderRoute: typeof DocumentacaoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/complete-profile': {
-      id: '/complete-profile'
-      path: '/complete-profile'
-      fullPath: '/complete-profile'
-      preLoaderRoute: typeof CompleteProfileRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -343,39 +280,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/complete-profile': {
+      id: '/complete-profile'
+      path: '/complete-profile'
+      fullPath: '/complete-profile'
+      preLoaderRoute: typeof CompleteProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/cadernos/': {
-      id: '/cadernos/'
-      path: '/cadernos'
-      fullPath: '/cadernos/'
-      preLoaderRoute: typeof CadernosIndexRouteImport
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/audio-dramas/': {
-      id: '/audio-dramas/'
-      path: '/audio-dramas'
-      fullPath: '/audio-dramas/'
-      preLoaderRoute: typeof AudioDramasIndexRouteImport
+    '/documentacao': {
+      id: '/documentacao'
+      path: '/documentacao'
+      fullPath: '/documentacao'
+      preLoaderRoute: typeof DocumentacaoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/cadernos/$id': {
-      id: '/cadernos/$id'
-      path: '/cadernos/$id'
-      fullPath: '/cadernos/$id'
-      preLoaderRoute: typeof CadernosIdRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/audio-dramas/genesis': {
-      id: '/audio-dramas/genesis'
-      path: '/audio-dramas/genesis'
-      fullPath: '/audio-dramas/genesis'
-      preLoaderRoute: typeof AudioDramasGenesisRouteImport
+    '/perfil': {
+      id: '/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/suporte': {
+      id: '/suporte'
+      path: '/suporte'
+      fullPath: '/suporte'
+      preLoaderRoute: typeof SuporteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/termos': {
+      id: '/termos'
+      path: '/termos'
+      fullPath: '/termos'
+      preLoaderRoute: typeof TermosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/apostila/$id': {
@@ -385,11 +364,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApostilaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/chat': {
-      id: '/api/chat'
-      path: '/api/chat'
-      fullPath: '/api/chat'
-      preLoaderRoute: typeof ApiChatRouteImport
+    '/audio-dramas/': {
+      id: '/audio-dramas/'
+      path: '/audio-dramas'
+      fullPath: '/audio-dramas/'
+      preLoaderRoute: typeof AudioDramasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/audio-dramas/genesis': {
+      id: '/audio-dramas/genesis'
+      path: '/audio-dramas/genesis'
+      fullPath: '/audio-dramas/genesis'
+      preLoaderRoute: typeof AudioDramasGenesisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cadernos/': {
+      id: '/cadernos/'
+      path: '/cadernos'
+      fullPath: '/cadernos/'
+      preLoaderRoute: typeof CadernosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cadernos/$id': {
+      id: '/cadernos/$id'
+      path: '/cadernos/$id'
+      fullPath: '/cadernos/$id'
+      preLoaderRoute: typeof CadernosIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
