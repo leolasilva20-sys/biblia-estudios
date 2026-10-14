@@ -51,14 +51,14 @@ function Landing() {
             Tudo que você precisa para entender a Bíblia em profundidade.
           </p>
           <div className="mt-10 flex flex-wrap gap-4 justify-center">
-            <Link to="/signup">
+            <Link to="/login">
               <Button size="lg" className="bg-gold text-primary-foreground hover:opacity-90 font-medium px-8">
-                Começar gratuitamente
+                Entrar
               </Button>
             </Link>
             <Link to="/login">
               <Button size="lg" variant="outline" className="border-gold/40 text-foreground hover:bg-accent px-8">
-                Já tenho conta
+                Continuar com o Google
               </Button>
             </Link>
           </div>
