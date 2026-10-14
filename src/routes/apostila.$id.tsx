@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { getApostila, buildDriveEmbedUrl } from "@/lib/apostilas";
 import { getApostilaTexto } from "@/lib/apostila.functions";
 import { useRequireAccess } from "@/hooks/use-require-access";
-import { useSpeech } from "@/hooks/use-speech";
+import { useNarracao } from "@/hooks/use-narracao";
 
 export const Route = createFileRoute("/apostila/$id")({
   head: () => ({
@@ -50,7 +50,7 @@ function ApostilaViewer() {
   const [pagina, setPagina] = useState(0);
   const [velocidade, setVelocidade] = useState(1);
   const topoRef = useRef<HTMLDivElement>(null);
-  const { ouvir: falar, parar, pausarOuContinuar, falando, pausado, erro, suportado } = useSpeech();
+  const { ouvir: falar, parar, pausarOuContinuar, mudarVelocidade, falando, pausado, carregando, erro } = useNarracao();
 
   useEffect(() => {
     parar();
@@ -122,14 +122,13 @@ function ApostilaViewer() {
                 {!falando ? (
                   <Button
                     onClick={ouvir}
-                    disabled={!suportado}
                     className="bg-gold text-primary-foreground hover:opacity-90"
                   >
                     <Volume2 className="h-4 w-4 mr-2" /> Ouvir esta página
                   </Button>
                 ) : (
                   <>
-                    <Button variant="outline" onClick={pausarOuContinuar}>
+                    <Button variant="outline" onClick={pausarOuContinuar} disabled={carregando}>
                       {pausado ? <><Play className="h-4 w-4 mr-2" /> Continuar</> : <><Pause className="h-4 w-4 mr-2" /> Pausar</>}
                     </Button>
                     <Button variant="outline" onClick={parar}>
@@ -142,7 +141,11 @@ function ApostilaViewer() {
                   <select
                     aria-label="Velocidade da narração"
                     value={velocidade}
-                    onChange={(e) => setVelocidade(Number(e.target.value))}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      setVelocidade(v);
+                      mudarVelocidade(v);
+                    }}
                     className="bg-background border border-border/60 rounded-md px-2 py-1 text-foreground"
                   >
                     <option value={0.75}>0,75x</option>
@@ -152,6 +155,11 @@ function ApostilaViewer() {
                   </select>
                 </label>
               </div>
+
+              <p aria-live="polite" className="mt-2 text-sm text-muted-foreground">
+                {carregando && "Gerando o áudio da narração..."}
+                {erro && <span className="text-amber-400">{erro}</span>}
+              </p>
 
               <p aria-live="polite" className="mt-4 text-sm text-muted-foreground">
                 Página {pagina + 1} de {totalPaginas}
