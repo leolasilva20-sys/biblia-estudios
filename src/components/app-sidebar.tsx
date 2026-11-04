@@ -8,6 +8,7 @@ import {
   Shield,
   X,
   Menu,
+  GraduationCap,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -15,6 +16,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 const NAV_ITEMS: { to: string; label: string; icon: typeof BookOpen; isNew?: boolean }[] = [
   { to: "/dashboard", label: "Apostilas", icon: BookOpen },
   { to: "/audio-dramas", label: "Áudio Dramas", icon: Headphones, isNew: true },
+  { to: "/cursos", label: "Cursos", icon: GraduationCap },
   { to: "/cadernos", label: "Meus cadernos", icon: NotebookPen },
   { to: "/suporte", label: "Suporte", icon: LifeBuoy },
 ];

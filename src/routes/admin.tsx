@@ -4,19 +4,20 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   Shield, Users, FileQuestion, LifeBuoy, LogOut, CheckCircle2,
-  ArrowLeft, MessageSquare, BookOpen,
+  ArrowLeft, MessageSquare, BookOpen, Newspaper,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { AdminNews } from "@/components/admin-news";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Painel Admin — Bíblia Estúdios" }] }),
   component: AdminPanel,
 });
 
-type TabKey = "overview" | "usuarios" | "respostas" | "suporte";
+type TabKey = "overview" | "usuarios" | "respostas" | "suporte" | "noticias";
 
 function AdminPanel() {
   const { user, profile, loading, signOut } = useAuth();
@@ -58,6 +59,7 @@ function AdminPanel() {
     { k: "usuarios" as TabKey, label: "Usuários", icon: Users },
     { k: "respostas" as TabKey, label: "Respostas", icon: FileQuestion },
     { k: "suporte" as TabKey, label: "Suporte", icon: LifeBuoy },
+    { k: "noticias" as TabKey, label: "Bíblia Estúdios News", icon: Newspaper },
   ];
   const visibleTabs = isFullAdmin
     ? allTabs
@@ -112,6 +114,7 @@ function AdminPanel() {
           {tab === "usuarios" && isFullAdmin && <UsuariosList />}
           {tab === "respostas" && <RespostasList readOnly={!isFullAdmin} />}
           {tab === "suporte" && isFullAdmin && <SuporteList />}
+          {tab === "noticias" && isFullAdmin && <AdminNews />}
         </main>
       </div>
     </div>
