@@ -50,7 +50,7 @@ function SignupPage() {
       return toast.error(error.message);
     }
 
-    // 2) Garante perfil já com acesso liberado (sem convite)
+    // 2) Garante perfil já com acesso liberado
     if (data.user) {
       await supabase.from("profiles").upsert(
         {

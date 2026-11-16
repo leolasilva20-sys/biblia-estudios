@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Fingerprint, LogOut, ChevronDown, ChevronUp, FileCheck, ScrollText, ShieldCheck } from "lucide-react";
+import { LogOut, FileCheck, ScrollText, ShieldCheck } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
 import { AppSidebar } from "@/components/app-sidebar";
@@ -20,9 +20,6 @@ function Perfil() {
   const [fullName, setFullName] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [saving, setSaving] = useState(false);
-  const [loginsOpen, setLoginsOpen] = useState(false);
-  const [passkeyLoading, setPasskeyLoading] = useState(false);
-  const [passkeyErrorDetail, setPasskeyErrorDetail] = useState<string | null>(null);
 
   useEffect(() => {
     if (loading) return;
@@ -50,120 +47,6 @@ function Perfil() {
     refreshProfile();
   };
 
-  const describeError = (e: unknown) => {
-    if (!e || typeof e !== "object") return { raw: String(e) };
-    const anyErr = e as Record<string, unknown>;
-    return {
-      name: anyErr.name,
-      code: anyErr.code,
-      message: anyErr.message,
-      status: anyErr.status,
-      cause: anyErr.cause,
-      stack: anyErr.stack,
-      raw: e,
-    };
-  };
-
-  // Traduz os erros mais comuns de WebAuthn/Passkey do inglês técnico para português simples.
-  const traduzirErroPasskey = (name?: string, message?: string): string => {
-    const msgLower = (message || "").toLowerCase();
-
-    if (name === "NotAllowedError" || msgLower.includes("not allowed")) {
-      return "O cadastro foi cancelado ou não foi permitido pelo navegador. Isso costuma acontecer quando você fecha a janela de biometria antes de confirmar, ou quando o navegador nega a operação por segurança (por exemplo, se a página não estiver no formato esperado).";
-    }
-    if (name === "SecurityError" || msgLower.includes("security")) {
-      return "Erro de segurança: o site precisa estar em uma conexão segura (https) e não pode estar dentro de outra página (iframe) para cadastrar a passkey.";
-    }
-    if (name === "NotSupportedError" || msgLower.includes("not supported")) {
-      return "Este navegador ou dispositivo não tem suporte para passkeys no momento.";
-    }
-    if (name === "AbortError" || msgLower.includes("abort")) {
-      return "A operação foi interrompida antes de terminar. Tente novamente.";
-    }
-    if (name === "InvalidStateError" || msgLower.includes("invalid state")) {
-      return "Este dispositivo já possui uma passkey cadastrada para esta conta.";
-    }
-    if (name === "ConstraintError" || msgLower.includes("constraint")) {
-      return "O dispositivo não conseguiu atender aos requisitos de segurança pedidos pelo servidor.";
-    }
-    if (msgLower.includes("relying party") || msgLower.includes("rpid") || msgLower.includes("origin")) {
-      return "O endereço deste site não bate com o endereço configurado para passkeys no servidor (Relying Party ID/Origem). É preciso ajustar essa configuração no painel do Supabase.";
-    }
-    if (msgLower.includes("not a function") || msgLower.includes("undefined")) {
-      return "A função de passkey não foi encontrada nesta versão do sistema. Pode ser necessário atualizar a página ou o aplicativo.";
-    }
-
-    // Se não reconhecer o erro, mostra o texto original em inglês como apoio.
-    return `Erro não reconhecido automaticamente. Texto original: ${name ? name + ": " : ""}${message || "sem mensagem"}`;
-  };
-
-  const handleAddPasskey = async () => {
-    setPasskeyErrorDetail(null);
-    // Pre-flight: contexto seguro / iframe / suporte a WebAuthn
-    if (typeof window === "undefined") return;
-    if (!window.isSecureContext) {
-      const msg = "Bloqueado: contexto não é HTTPS seguro.";
-      console.error(msg);
-      toast.error(msg);
-      setPasskeyErrorDetail(msg);
-      return;
-    }
-    if (window.top !== window.self) {
-      const msg = "Bloqueado: a página está sendo carregada dentro de um iframe (não é uma aba de navegador normal).";
-      console.error(msg);
-      toast.error(msg);
-      setPasskeyErrorDetail(msg);
-      return;
-    }
-    if (!("credentials" in navigator) || typeof window.PublicKeyCredential === "undefined") {
-      const msg = "Bloqueado: este navegador não tem suporte a passkeys (WebAuthn/PublicKeyCredential ausente).";
-      console.error(msg, {
-        hasCredentials: "credentials" in navigator,
-        hasPublicKeyCredential: typeof window.PublicKeyCredential,
-        userAgent: navigator.userAgent,
-      });
-      toast.error(msg);
-      setPasskeyErrorDetail(msg);
-      return;
-    }
-    console.log("[passkey] pre-flight OK", {
-      origin: window.location.origin,
-      host: window.location.host,
-      isSecureContext: window.isSecureContext,
-      isTopLevel: window.top === window.self,
-      userAgent: navigator.userAgent,
-    });
-
-    setPasskeyLoading(true);
-    try {
-      const auth = supabase.auth as unknown as {
-        registerPasskey: () => Promise<{ data: unknown; error: unknown }>;
-      };
-      const { data, error } = await auth.registerPasskey();
-      console.log("[passkey] resultado:", { data, error });
-      if (error) {
-        console.error("[passkey] erro detalhado:", describeError(error));
-        const errObj = error as { message?: string; name?: string; code?: string | number; status?: number };
-        const msgTraduzida = traduzirErroPasskey(errObj?.name, errObj?.message);
-        const detail = `${msgTraduzida}\n\n(Detalhe técnico: Nome: ${errObj?.name ?? "—"} | Código: ${errObj?.code ?? "—"} | Status: ${errObj?.status ?? "—"} | Mensagem original: ${errObj?.message ?? "—"})`;
-        toast.error(msgTraduzida);
-        setPasskeyErrorDetail(detail);
-        return;
-      }
-      toast.success("Passkey cadastrada com sucesso!");
-      setPasskeyErrorDetail(null);
-    } catch (err) {
-      console.error("[passkey] exceção detalhada:", describeError(err));
-      const errObj = err as { name?: string; message?: string; code?: string | number };
-      const msgTraduzida = traduzirErroPasskey(errObj?.name, errObj?.message || String(err));
-      const detail = `${msgTraduzida}\n\n(Detalhe técnico: Nome: ${errObj?.name ?? "—"} | Código: ${errObj?.code ?? "—"} | Mensagem original: ${errObj?.message ?? String(err)})`;
-      toast.error(msgTraduzida);
-      setPasskeyErrorDetail(detail);
-    } finally {
-      setPasskeyLoading(false);
-    }
-  };
-
   const handleLogout = async () => {
     await signOut();
     navigate({ to: "/" });
@@ -188,7 +71,7 @@ function Perfil() {
         <div className="max-w-lg mx-auto">
           <h1 className="font-serif text-3xl gold-text-gradient mb-2">Meu Perfil</h1>
           <p className="text-muted-foreground text-sm mb-8">
-            Gerencie suas informações pessoais, seus logins e sua conta.
+            Gerencie suas informações pessoais e sua conta.
           </p>
 
           <div className="rounded-xl border border-border/60 bg-card/60 p-6 mb-6">
@@ -225,51 +108,6 @@ function Perfil() {
               {saving ? "Salvando..." : "Salvar alterações"}
             </Button>
           </form>
-
-          <div className="rounded-xl border border-border/60 bg-card/60 overflow-hidden mb-6">
-            <button
-              onClick={() => setLoginsOpen((v) => !v)}
-              className="w-full flex items-center justify-between p-6 hover:bg-muted/20 transition-colors"
-            >
-              <span className="font-serif text-lg">Gerenciar Logins</span>
-              {loginsOpen ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
-            </button>
-
-            {loginsOpen && (
-              <div className="px-6 pb-6 border-t border-border/40 pt-5">
-                <div className="flex items-center gap-3 mb-3">
-                  <Fingerprint className="h-4 w-4 text-gold" />
-                  <h3 className="font-serif text-base">Passkey</h3>
-                  <span className="text-[10px] bg-gold/10 text-gold border border-gold/30 px-1.5 py-0.5 rounded">beta</span>
-                </div>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Cadastre este dispositivo para entrar com biometria (digital, rosto ou PIN),
-                  sem precisar digitar sua senha da próxima vez.
-                </p>
-                <Button variant="outline" onClick={handleAddPasskey} disabled={passkeyLoading} className="w-full">
-                  {passkeyLoading ? "Cadastrando..." : "Cadastrar passkey neste dispositivo"}
-                </Button>
-                {passkeyErrorDetail && (
-                  <div
-                    role="alert"
-                    aria-live="assertive"
-                    className="mt-4 p-4 rounded-lg border border-destructive/40 bg-destructive/10 text-sm whitespace-pre-line"
-                  >
-                    <p className="font-medium text-destructive mb-1">Não foi possível cadastrar a passkey:</p>
-                    <p>{passkeyErrorDetail}</p>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="mt-2"
-                      onClick={() => setPasskeyErrorDetail(null)}
-                    >
-                      Fechar mensagem
-                    </Button>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
 
           <div className="space-y-2 mb-8">
             <Link

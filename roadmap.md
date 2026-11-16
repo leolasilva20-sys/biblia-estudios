@@ -10,3 +10,6 @@
 - [x] Login: remover passkey e qualquer referência a convite
 - [x] Modernizar menu lateral, página inicial e login
 - [x] Validar URLs de CCO, testes automatizados e páginas públicas no navegador
+- [x] Varrer todos os envios e garantir CCO somente nas notícias para vários destinatários
+- [x] Remover passkey e convite também do perfil, termos e orientações do suporte
+- [x] Revalidar testes, TypeScript e build após a varredura

@@ -24,16 +24,16 @@ function Termos() {
             <h2 className="font-serif text-lg text-gold mb-2">1. Sobre a plataforma</h2>
             <p>
               O Bíblia Estúdios é uma plataforma educacional independente dedicada ao estudo
-              aprofundado das Escrituras, oferecendo apostilas, áudio livros e conteúdo
-              complementar. O acesso está atualmente em fase beta, disponível por convite.
+              aprofundado das Escrituras, oferecendo apostilas, cursos, áudio dramas e conteúdo
+              complementar. O cadastro é gratuito e aberto a todos.
             </p>
           </section>
 
           <section>
             <h2 className="font-serif text-lg text-gold mb-2">2. Cadastro e conta</h2>
             <p>
-              Para usar a plataforma, você deve fornecer um endereço de e-mail válido e, quando
-              aplicável, um código de convite. Você é responsável por manter a confidencialidade
+              Para usar a plataforma, você deve fornecer um endereço de e-mail válido ou entrar
+              com sua conta Google. Você é responsável por manter a confidencialidade
               da sua senha e por todas as atividades realizadas em sua conta.
             </p>
           </section>
