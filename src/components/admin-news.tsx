@@ -2,12 +2,13 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Sparkles, Send, Link2, X, Newspaper } from "lucide-react";
+import { Sparkles, Mail, Link2, X, Newspaper, Copy, ExternalLink, ShieldCheck } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { melhorarNoticia, enviarNoticia } from "@/lib/news.functions";
+import { melhorarNoticia } from "@/lib/news.functions";
+import { buildGmailComposeUrl, buildMailtoUrl } from "@/lib/email-compose";
 
 const PAGINAS = [
   { titulo: "Página inicial", url: "https://biblia-estudios.lovable.app/" },
@@ -20,7 +21,6 @@ const PAGINAS = [
 
 export function AdminNews() {
   const melhorar = useServerFn(melhorarNoticia);
-  const enviar = useServerFn(enviarNoticia);
   const [sel, setSel] = useState<Set<string>>(new Set());
   const [busca, setBusca] = useState("");
   const [assunto, setAssunto] = useState("");
@@ -28,7 +28,7 @@ export function AdminNews() {
   const [links, setLinks] = useState<{ titulo: string; url: string }[]>([]);
   const [novoTitulo, setNovoTitulo] = useState("");
   const [novoUrl, setNovoUrl] = useState("");
-  const [busy, setBusy] = useState<"ia" | "env" | null>(null);
+  const [melhorando, setMelhorando] = useState(false);
 
   const { data: pessoas = [] } = useQuery({
     queryKey: ["admin", "emails"],
@@ -67,41 +67,76 @@ export function AdminNews() {
 
   const onMelhorar = async () => {
     if (!texto.trim()) return toast.error("Escreva a notícia primeiro");
-    setBusy("ia");
+    setMelhorando(true);
     try {
       const r = await melhorar({ data: { token: await token(), assunto, texto, links } });
       if (r.ok) { setTexto(r.texto); toast.success("Texto melhorado com IA"); }
       else toast.error(r.erro);
     } catch (e) { toast.error((e as Error).message); }
-    setBusy(null);
+    setMelhorando(false);
   };
 
-  const onEnviar = async () => {
-    if (!assunto.trim() || !texto.trim()) return toast.error("Preencha assunto e notícia");
+  const validar = () => {
+    if (!assunto.trim() || !texto.trim()) {
+      toast.error("Preencha assunto e notícia");
+      return false;
+    }
+    if (sel.size === 0) {
+      toast.error("Selecione ao menos um e-mail");
+      return false;
+    }
+    return true;
+  };
+
+  const corpoEmail = () => links.length && !links.every((l) => texto.includes(l.url))
+    ? `${texto}\n\n${links.map((l) => `[${l.titulo || l.url}](${l.url})`).join("\n")}`
+    : texto;
+
+  const abrirGmail = () => {
+    if (!validar()) return;
+    const url = buildGmailComposeUrl(assunto, corpoEmail(), [...sel]);
+    const janela = window.open(url, "_blank");
+    if (janela) janela.opener = null;
+    else window.location.href = url;
+    toast.success("Mensagem preparada no Gmail. Revise e toque em Enviar.");
+  };
+
+  const abrirAplicativo = () => {
+    if (!validar()) return;
+    window.location.href = buildMailtoUrl(assunto, corpoEmail(), [...sel]);
+    toast.success("Mensagem preparada no seu aplicativo de e-mail.");
+  };
+
+  const copiarEmails = async () => {
     if (sel.size === 0) return toast.error("Selecione ao menos um e-mail");
-    if (!confirm(`Enviar para ${sel.size} pessoa(s)?`)) return;
-    setBusy("env");
     try {
-      const corpo = links.length && !links.every((l) => texto.includes(l.url))
-        ? `${texto}\n\n${links.map((l) => `[${l.titulo || l.url}](${l.url})`).join("\n")}`
-        : texto;
-      const r = await enviar({ data: { token: await token(), assunto, texto: corpo, emails: [...sel] } });
-      if (r.falhas.length) toast.warning(`${r.enviados} enviados, ${r.falhas.length} falharam`);
-      else toast.success(`Notícia enviada para ${r.enviados} pessoa(s)`);
-    } catch (e) { toast.error((e as Error).message); }
-    setBusy(null);
+      await navigator.clipboard.writeText([...sel].join(", "));
+      toast.success(`${sel.size} endereço(s) copiado(s) para cópia oculta`);
+    } catch {
+      toast.error("Não foi possível copiar. Tente abrir diretamente no Gmail.");
+    }
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-2">
-        <Newspaper className="h-6 w-6 text-gold" />
-        <h2 className="font-serif text-2xl gold-text-gradient">Bíblia Estúdios Notícias</h2>
+      <div className="flex items-center gap-3">
+        <div className="rounded-xl border border-gold/30 bg-gold/10 p-2.5">
+          <Newspaper className="h-6 w-6 text-gold" />
+        </div>
+        <div>
+          <h2 className="font-serif text-2xl gold-text-gradient">Bíblia Estúdios Notícias</h2>
+          <p className="text-sm text-muted-foreground">Escreva uma vez e prepare o envio para quem você escolher.</p>
+        </div>
+      </div>
+
+      <div className="flex gap-3 rounded-xl border border-gold/25 bg-gold/5 p-4 text-sm text-muted-foreground">
+        <ShieldCheck className="h-5 w-5 shrink-0 text-gold" />
+        <p>Todos entram em <strong className="text-foreground">cópia oculta (CCO/BCC)</strong>: ninguém verá o endereço dos outros. O Gmail abrirá a mensagem pronta e você só precisará confirmar o envio.</p>
       </div>
 
       <section className="rounded-xl border border-border/60 bg-card/40 p-5 space-y-3">
         <div className="flex items-center justify-between gap-3 flex-wrap">
-          <h3 className="font-serif text-gold">Destinatários ({sel.size} de {pessoas.length})</h3>
+          <h3 className="font-serif text-lg text-gold">Destinatários ({sel.size} de {pessoas.length})</h3>
           <Button size="sm" variant="outline" onClick={() => setSel(todos ? new Set() : new Set(pessoas.map((p) => p.email)))}>
             {todos ? "Desmarcar todos" : "Selecionar todos"}
           </Button>
@@ -149,14 +184,23 @@ export function AdminNews() {
           )}
         </div>
 
-        <div className="flex gap-2 flex-wrap pt-2">
-          <Button variant="outline" onClick={onMelhorar} disabled={busy !== null}>
-            <Sparkles className="h-4 w-4 mr-1" /> {busy === "ia" ? "Melhorando..." : "Deixar profissional com IA"}
+        <div className="flex gap-2 flex-wrap border-t border-border/40 pt-4">
+          <Button variant="outline" onClick={onMelhorar} disabled={melhorando}>
+            <Sparkles className="h-4 w-4 mr-1" /> {melhorando ? "Melhorando..." : "Deixar profissional com IA"}
           </Button>
-          <Button onClick={onEnviar} disabled={busy !== null} className="bg-gold text-primary-foreground hover:opacity-90">
-            <Send className="h-4 w-4 mr-1" /> {busy === "env" ? "Enviando..." : `Enviar para ${sel.size}`}
+          <Button variant="outline" onClick={copiarEmails}>
+            <Copy className="h-4 w-4 mr-1" /> Copiar e-mails
           </Button>
         </div>
+        <div className="flex gap-2 flex-wrap">
+          <Button onClick={abrirGmail} className="bg-gold text-primary-foreground hover:opacity-90">
+            <ExternalLink className="h-4 w-4 mr-1" /> Abrir Gmail com {sel.size} em CCO
+          </Button>
+          <Button variant="outline" onClick={abrirAplicativo}>
+            <Mail className="h-4 w-4 mr-1" /> Abrir app de e-mail
+          </Button>
+        </div>
+        <p className="text-xs text-muted-foreground">Se houver muitos destinatários e o aplicativo não abrir a mensagem completa, use “Copiar e-mails” e cole no campo CCO/BCC do Gmail.</p>
       </section>
     </div>
   );

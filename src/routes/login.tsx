@@ -1,15 +1,25 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { BookOpen, Fingerprint } from "lucide-react";
+import { BookOpen, LockKeyhole, LogIn, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import heroManuscript from "@/assets/hero-manuscript.jpg";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Entrar — Bíblia Estúdios" }] }),
+  head: () => ({
+    meta: [
+      { title: "Entrar — Bíblia Estúdios" },
+      { name: "description", content: "Entre na sua conta do Bíblia Estúdios com Google, e-mail e senha." },
+      { property: "og:title", content: "Entrar — Bíblia Estúdios" },
+      { property: "og:description", content: "Acesse seus estudos bíblicos, cursos, cadernos e áudio dramas." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: LoginPage,
 });
 
@@ -20,9 +30,6 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // Quando o auth state estiver carregado e tiver sessão, roteia:
-  // - acesso_liberado=true → dashboard
-  // - acesso_liberado=false → /complete-profile (item C do fluxo)
   useEffect(() => {
     if (loading) return;
     if (!user) return;
@@ -37,7 +44,6 @@ function LoginPage() {
     setSubmitting(false);
     if (error) return toast.error(error.message);
     toast.success("Bem-vindo de volta!");
-    // o useEffect cuida do redirect
   };
 
   const handleGoogle = async () => {
@@ -45,24 +51,6 @@ function LoginPage() {
       provider: "google",
       options: { redirectTo: `${window.location.origin}/login` },
     });
-  };
-
-  const [passkeyLoading, setPasskeyLoading] = useState(false);
-
-  const handlePasskey = async () => {
-    setPasskeyLoading(true);
-    try {
-      const { error } = await (supabase.auth as any).signInWithPasskey();
-      if (error) {
-        toast.error("Não foi possível entrar com passkey. Tente e-mail e senha.");
-        return;
-      }
-      toast.success("Bem-vindo de volta!");
-    } catch {
-      toast.error("Passkey não disponível neste dispositivo.");
-    } finally {
-      setPasskeyLoading(false);
-    }
   };
 
   const handleReset = async () => {
@@ -75,49 +63,45 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-          <BookOpen className="h-6 w-6 text-gold" />
-          <span className="font-serif text-2xl gold-text-gradient">Bíblia Estúdios</span>
+    <div className="relative min-h-screen overflow-hidden flex items-center justify-center px-4 py-12">
+      <img src={heroManuscript} alt="" className="absolute inset-0 h-full w-full object-cover opacity-20" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/90 to-background" />
+      <div className="relative w-full max-w-md">
+        <Link to="/" className="flex items-center justify-center gap-3 mb-8">
+          <span className="rounded-xl border border-gold/30 bg-gold/10 p-2.5">
+            <BookOpen className="h-6 w-6 text-gold" />
+          </span>
+          <span className="font-serif text-3xl gold-text-gradient">Bíblia Estúdios</span>
         </Link>
-        <div className="rounded-xl border border-border/60 bg-card/70 backdrop-blur p-8">
-          <h1 className="font-serif text-2xl text-center mb-1">Entrar</h1>
-          <p className="text-sm text-muted-foreground text-center mb-6">Acesse sua conta para continuar</p>
+        <div className="rounded-2xl border border-gold/20 bg-card/85 shadow-2xl backdrop-blur-xl p-6 sm:p-8">
+          <div className="text-center mb-7">
+            <p className="text-xs font-medium uppercase tracking-[0.25em] text-gold">Bem-vindo de volta</p>
+            <h1 className="font-serif text-3xl mt-2">Entrar na sua conta</h1>
+            <p className="text-sm text-muted-foreground mt-2">Continue sua jornada de estudo.</p>
+          </div>
 
-          <Button variant="outline" onClick={handleGoogle} className="w-full mb-3">
+          <Button variant="outline" onClick={handleGoogle} className="w-full h-11 border-border/80 bg-background/40">
             <GoogleIcon /> Continuar com Google
           </Button>
 
-          <Button
-            variant="outline"
-            onClick={handlePasskey}
-            disabled={passkeyLoading}
-            className="w-full mb-4 border-gold/30 hover:border-gold/60"
-          >
-            <Fingerprint className="h-4 w-4 mr-2 text-gold" />
-            {passkeyLoading ? "Verificando..." : "Continuar com Passkey"}
-            <span className="text-[10px] ml-1.5 text-muted-foreground">(beta)</span>
-          </Button>
-
-          <div className="ornament-divider my-6 text-xs">ou</div>
+          <div className="ornament-divider my-6 text-xs">ou use seu e-mail</div>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Label htmlFor="email" className="flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-gold" /> Email</Label>
+              <Input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1.5 h-11" />
             </div>
             <div>
               <div className="flex justify-between items-center">
-                <Label htmlFor="password">Senha</Label>
+                <Label htmlFor="password" className="flex items-center gap-2"><LockKeyhole className="h-3.5 w-3.5 text-gold" /> Senha</Label>
                 <button type="button" onClick={handleReset} className="text-xs text-gold hover:underline">
                   Esqueci minha senha
                 </button>
               </div>
-              <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+              <Input id="password" type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} className="mt-1.5 h-11" />
             </div>
-            <Button type="submit" disabled={submitting} className="w-full bg-gold text-primary-foreground hover:opacity-90">
-              {submitting ? "Entrando..." : "Entrar"}
+            <Button type="submit" disabled={submitting} className="w-full h-11 bg-gold text-primary-foreground hover:opacity-90">
+              <LogIn className="h-4 w-4 mr-2" /> {submitting ? "Entrando..." : "Entrar"}
             </Button>
           </form>
 
@@ -138,7 +122,7 @@ function LoginPage() {
 
 function GoogleIcon() {
   return (
-    <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24">
+    <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24" aria-hidden="true">
       <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
       <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
       <path fill="currentColor" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.83z"/>

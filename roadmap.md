@@ -6,3 +6,7 @@
 - [x] Trocar botão "Ouvir" da apostila por narração com IA (Lovable AI TTS)
 - [x] Landing: "Entrar" / "Continuar com Google" + imagem de capa
 - [x] Atualização de segurança dos pacotes TanStack
+- [x] Notícias: abrir Gmail/app de e-mail com destinatários em cópia oculta
+- [x] Login: remover passkey e qualquer referência a convite
+- [x] Modernizar menu lateral, página inicial e login
+- [x] Validar URLs de CCO, testes automatizados e páginas públicas no navegador

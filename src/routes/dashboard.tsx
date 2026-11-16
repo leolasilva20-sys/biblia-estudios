@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, ChevronRight, Sparkles, Clock, Film, NotebookPen, LifeBuoy } from "lucide-react";
+import { BookOpen, ChevronRight, Sparkles, Clock, Film, NotebookPen, LifeBuoy, Headphones, GraduationCap } from "lucide-react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { APOSTILAS } from "@/lib/apostilas";
 import { Button } from "@/components/ui/button";
@@ -61,6 +61,18 @@ function Dashboard() {
                 desc="Anotações por página e observações do professor."
               />
               <ActionCard
+                to="/audio-dramas"
+                icon={Headphones}
+                title="Áudio Dramas"
+                desc="Ouça os capítulos de Gênesis com vozes e trilha."
+              />
+              <ActionCard
+                to="/cursos"
+                icon={GraduationCap}
+                title="Cursos"
+                desc="Assista às aulas publicadas sem sair do site."
+              />
+              <ActionCard
                 to="/suporte"
                 icon={LifeBuoy}
                 title="Suporte"
@@ -102,7 +114,9 @@ function ActionCard({
       aria-label={`Abrir ${title}`}
       className="group rounded-xl border border-border/60 bg-card/60 backdrop-blur p-5 hover:border-gold/60 transition-all flex items-start gap-4"
     >
-      <Icon className="h-5 w-5 text-gold flex-shrink-0 mt-1" />
+      <span className="rounded-xl border border-gold/25 bg-gold/10 p-2.5">
+        <Icon className="h-5 w-5 text-gold flex-shrink-0" />
+      </span>
       <div className="flex-1 min-w-0">
         <h3 className="font-serif text-xl">{title}</h3>
         <p className="text-sm text-muted-foreground mt-1">{desc}</p>

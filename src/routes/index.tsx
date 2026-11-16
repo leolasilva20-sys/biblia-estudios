@@ -10,7 +10,11 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Bíblia Estúdios — Estudo bíblico em profundidade" },
-      { name: "description", content: "Tudo que você precisa para entender a Bíblia em profundidade." },
+      { name: "description", content: "Apostilas, cursos, cadernos e áudio dramas para entender a Bíblia em profundidade." },
+      { property: "og:title", content: "Bíblia Estúdios — Estudo bíblico em profundidade" },
+      { property: "og:description", content: "Uma jornada cristã de estudo com apostilas, cursos e experiências em áudio." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Landing,
@@ -51,8 +55,8 @@ function Landing() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
           <div className="relative container mx-auto max-w-4xl px-6 py-24 md:py-32 text-center">
-          <div className="ornament-divider mb-8 max-w-xs mx-auto">
-            <Scroll className="h-4 w-4" />
+          <div className="mx-auto mb-7 flex w-fit items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] text-gold backdrop-blur">
+            <Sparkles className="h-3.5 w-3.5" /> Sua jornada nas Escrituras
           </div>
           <h1 className="font-serif text-5xl md:text-7xl gold-text-gradient leading-tight">
             Bíblia Estúdios
@@ -78,19 +82,27 @@ function Landing() {
           </div>
         </section>
 
-        <section className="container mx-auto max-w-5xl px-6 pb-24 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            { icon: Scroll, title: "Apostilas", desc: "Estudo aprofundado, do iniciante ao especialista, com hebraico e contexto original." },
-            { icon: GraduationCap, title: "Cursos", desc: "Aulas estruturadas para aprender de forma guiada, no seu ritmo." },
-            { icon: BookOpen, title: "Livros", desc: "Obras completas para quem quer se aprofundar ainda mais." },
-            { icon: Headphones, title: "Áudio dramas", desc: "Narração, dublagem e trilha original para ouvir onde estiver." },
-          ].map((f) => (
-            <div key={f.title} className="rounded-xl border border-border/60 bg-card/60 p-6 backdrop-blur">
-              <f.icon className="h-6 w-6 text-gold mb-3" />
-              <h3 className="font-serif text-xl mb-2">{f.title}</h3>
-              <p className="text-sm text-muted-foreground">{f.desc}</p>
-            </div>
-          ))}
+        <section className="container mx-auto max-w-6xl px-6 pb-24">
+          <div className="mb-8 text-center">
+            <p className="text-xs font-medium uppercase tracking-[0.22em] text-gold">Tudo em um só lugar</p>
+            <h2 className="mt-2 font-serif text-3xl">Aprenda, anote e ouça</h2>
+          </div>
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              { icon: Scroll, title: "Apostilas", desc: "Estudo aprofundado, do iniciante ao especialista, com hebraico e contexto original." },
+              { icon: GraduationCap, title: "Cursos", desc: "Aulas estruturadas para aprender de forma guiada, no seu ritmo." },
+              { icon: BookOpen, title: "Livros", desc: "Obras completas para quem quer se aprofundar ainda mais." },
+              { icon: Headphones, title: "Áudio dramas", desc: "Narração, dublagem e trilha original para ouvir onde estiver." },
+            ].map((f) => (
+              <div key={f.title} className="group rounded-2xl border border-border/60 bg-card/60 p-6 backdrop-blur transition-all hover:-translate-y-1 hover:border-gold/40 hover:bg-card/80">
+                <div className="mb-4 w-fit rounded-xl border border-gold/25 bg-gold/10 p-3">
+                  <f.icon className="h-6 w-6 text-gold" />
+                </div>
+                <h3 className="font-serif text-xl mb-2">{f.title}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
+              </div>
+            ))}
+          </div>
         </section>
       </main>
       <footer className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground space-x-3">
