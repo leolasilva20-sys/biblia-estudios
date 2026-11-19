@@ -15,6 +15,7 @@ import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
 import { Route as CursosRouteImport } from './routes/cursos'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DocumentacaoRouteImport } from './routes/documentacao'
+import { Route as LivrosRouteImport } from './routes/livros'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
@@ -28,6 +29,8 @@ import { Route as AudioDramasIndexRouteImport } from './routes/audio-dramas.inde
 import { Route as AudioDramasGenesisRouteImport } from './routes/audio-dramas.genesis'
 import { Route as CadernosIndexRouteImport } from './routes/cadernos.index'
 import { Route as CadernosIdRouteImport } from './routes/cadernos.$id'
+import { Route as LivrosIndexRouteImport } from './routes/livros.index'
+import { Route as LivrosIdRouteImport } from './routes/livros.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -57,6 +60,11 @@ const DashboardRoute = DashboardRouteImport.update({
 const DocumentacaoRoute = DocumentacaoRouteImport.update({
   id: '/documentacao',
   path: '/documentacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LivrosRoute = LivrosRouteImport.update({
+  id: '/livros',
+  path: '/livros',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -124,6 +132,16 @@ const CadernosIdRoute = CadernosIdRouteImport.update({
   path: '/cadernos/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LivrosIndexRoute = LivrosIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LivrosRoute,
+} as any)
+const LivrosIdRoute = LivrosIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => LivrosRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -132,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/cursos': typeof CursosRoute
   '/dashboard': typeof DashboardRoute
   '/documentacao': typeof DocumentacaoRoute
+  '/livros': typeof LivrosRouteWithChildren
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -143,8 +162,10 @@ export interface FileRoutesByFullPath {
   '/apostila/$id': typeof ApostilaIdRoute
   '/audio-dramas/genesis': typeof AudioDramasGenesisRoute
   '/cadernos/$id': typeof CadernosIdRoute
+  '/livros/$id': typeof LivrosIdRoute
   '/audio-dramas/': typeof AudioDramasIndexRoute
   '/cadernos/': typeof CadernosIndexRoute
+  '/livros/': typeof LivrosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -164,8 +185,10 @@ export interface FileRoutesByTo {
   '/apostila/$id': typeof ApostilaIdRoute
   '/audio-dramas/genesis': typeof AudioDramasGenesisRoute
   '/cadernos/$id': typeof CadernosIdRoute
+  '/livros/$id': typeof LivrosIdRoute
   '/audio-dramas': typeof AudioDramasIndexRoute
   '/cadernos': typeof CadernosIndexRoute
+  '/livros': typeof LivrosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -175,6 +198,7 @@ export interface FileRoutesById {
   '/cursos': typeof CursosRoute
   '/dashboard': typeof DashboardRoute
   '/documentacao': typeof DocumentacaoRoute
+  '/livros': typeof LivrosRouteWithChildren
   '/login': typeof LoginRoute
   '/perfil': typeof PerfilRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -186,8 +210,10 @@ export interface FileRoutesById {
   '/apostila/$id': typeof ApostilaIdRoute
   '/audio-dramas/genesis': typeof AudioDramasGenesisRoute
   '/cadernos/$id': typeof CadernosIdRoute
+  '/livros/$id': typeof LivrosIdRoute
   '/audio-dramas/': typeof AudioDramasIndexRoute
   '/cadernos/': typeof CadernosIndexRoute
+  '/livros/': typeof LivrosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -198,6 +224,7 @@ export interface FileRouteTypes {
     | '/cursos'
     | '/dashboard'
     | '/documentacao'
+    | '/livros'
     | '/login'
     | '/perfil'
     | '/privacidade'
@@ -209,8 +236,10 @@ export interface FileRouteTypes {
     | '/apostila/$id'
     | '/audio-dramas/genesis'
     | '/cadernos/$id'
+    | '/livros/$id'
     | '/audio-dramas/'
     | '/cadernos/'
+    | '/livros/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -230,8 +259,10 @@ export interface FileRouteTypes {
     | '/apostila/$id'
     | '/audio-dramas/genesis'
     | '/cadernos/$id'
+    | '/livros/$id'
     | '/audio-dramas'
     | '/cadernos'
+    | '/livros'
   id:
     | '__root__'
     | '/'
@@ -240,6 +271,7 @@ export interface FileRouteTypes {
     | '/cursos'
     | '/dashboard'
     | '/documentacao'
+    | '/livros'
     | '/login'
     | '/perfil'
     | '/privacidade'
@@ -251,8 +283,10 @@ export interface FileRouteTypes {
     | '/apostila/$id'
     | '/audio-dramas/genesis'
     | '/cadernos/$id'
+    | '/livros/$id'
     | '/audio-dramas/'
     | '/cadernos/'
+    | '/livros/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -262,6 +296,7 @@ export interface RootRouteChildren {
   CursosRoute: typeof CursosRoute
   DashboardRoute: typeof DashboardRoute
   DocumentacaoRoute: typeof DocumentacaoRoute
+  LivrosRoute: typeof LivrosRouteWithChildren
   LoginRoute: typeof LoginRoute
   PerfilRoute: typeof PerfilRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
@@ -319,6 +354,13 @@ declare module '@tanstack/react-router' {
       path: '/documentacao'
       fullPath: '/documentacao'
       preLoaderRoute: typeof DocumentacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/livros': {
+      id: '/livros'
+      path: '/livros'
+      fullPath: '/livros'
+      preLoaderRoute: typeof LivrosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -412,8 +454,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CadernosIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/livros/': {
+      id: '/livros/'
+      path: '/'
+      fullPath: '/livros/'
+      preLoaderRoute: typeof LivrosIndexRouteImport
+      parentRoute: typeof LivrosRoute
+    }
+    '/livros/$id': {
+      id: '/livros/$id'
+      path: '/$id'
+      fullPath: '/livros/$id'
+      preLoaderRoute: typeof LivrosIdRouteImport
+      parentRoute: typeof LivrosRoute
+    }
   }
 }
+
+interface LivrosRouteChildren {
+  LivrosIdRoute: typeof LivrosIdRoute
+  LivrosIndexRoute: typeof LivrosIndexRoute
+}
+
+const LivrosRouteChildren: LivrosRouteChildren = {
+  LivrosIdRoute: LivrosIdRoute,
+  LivrosIndexRoute: LivrosIndexRoute,
+}
+
+const LivrosRouteWithChildren =
+  LivrosRoute._addFileChildren(LivrosRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -422,6 +491,7 @@ const rootRouteChildren: RootRouteChildren = {
   CursosRoute: CursosRoute,
   DashboardRoute: DashboardRoute,
   DocumentacaoRoute: DocumentacaoRoute,
+  LivrosRoute: LivrosRouteWithChildren,
   LoginRoute: LoginRoute,
   PerfilRoute: PerfilRoute,
   PrivacidadeRoute: PrivacidadeRoute,

@@ -20,6 +20,7 @@ const NAV_GROUPS: { label: string; items: { to: string; label: string; icon: typ
     label: "Conteúdo",
     items: [
       { to: "/dashboard", label: "Apostilas", icon: BookOpen },
+      { to: "/livros", label: "Livros", icon: BookOpen },
       { to: "/audio-dramas", label: "Áudio Dramas", icon: Headphones, isNew: true },
       { to: "/cursos", label: "Cursos", icon: GraduationCap },
     ],

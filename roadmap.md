@@ -13,3 +13,5 @@
 - [x] Varrer todos os envios e garantir CCO somente nas notícias para vários destinatários
 - [x] Remover passkey e convite também do perfil, termos e orientações do suporte
 - [x] Revalidar testes, TypeScript e build após a varredura
+- [x] Criar lista Livros e leitor acessível com paginação, sumário e preferências
+- [x] Testar parser e navegação com respostas simuladas; dados reais e TalkBack no aparelho não verificáveis sem sessão
