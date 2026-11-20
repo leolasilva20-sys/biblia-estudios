@@ -11,6 +11,7 @@ import { supabase, type Caderno, type CadernoNota, type CadernoPagina } from "@/
 import { useRequireAccess } from "@/hooks/use-require-access";
 
 export const Route = createFileRoute("/cadernos/$id")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Caderno — Bíblia Estúdios" },

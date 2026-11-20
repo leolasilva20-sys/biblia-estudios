@@ -9,7 +9,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/signup")({
-  head: () => ({ meta: [{ title: "Criar conta — Bíblia Estúdios" }] }),
+  staticData: { sitemap: false },
+  head: () => ({ meta: [
+    { title: "Criar conta — Bíblia Estúdios" },
+    { name: "description", content: "Crie sua conta no Bíblia Estúdios para acessar seus estudos bíblicos." },
+    { property: "og:title", content: "Criar conta — Bíblia Estúdios" },
+    { property: "og:description", content: "Crie sua conta no Bíblia Estúdios para acessar seus estudos bíblicos." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: SignupPage,
 });
 

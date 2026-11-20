@@ -12,6 +12,7 @@ import { useRequireAccess } from "@/hooks/use-require-access";
 import { useNarracao } from "@/hooks/use-narracao";
 
 export const Route = createFileRoute("/apostila/$id")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Apostila de Gênesis — Bíblia Estúdios" },

@@ -4,6 +4,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { useRequireAccess } from "@/hooks/use-require-access";
 
 export const Route = createFileRoute("/audio-dramas/")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Áudio Dramas — Bíblia Estúdios" },

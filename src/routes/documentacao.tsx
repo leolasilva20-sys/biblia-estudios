@@ -4,7 +4,15 @@ import { BookOpen } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/documentacao")({
-  head: () => ({ meta: [{ title: "Documentação — Bíblia Estúdios" }] }),
+  staticData: { sitemap: true },
+  head: () => ({ meta: [
+    { title: "Documentação — Bíblia Estúdios" },
+    { name: "description", content: "Informações sobre os conteúdos, a autenticação, o suporte e a privacidade no Bíblia Estúdios." },
+    { property: "og:title", content: "Documentação — Bíblia Estúdios" },
+    { property: "og:description", content: "Informações sobre os conteúdos, a autenticação, o suporte e a privacidade no Bíblia Estúdios." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: Documentacao,
 });
 

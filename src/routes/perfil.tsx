@@ -10,7 +10,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/perfil")({
-  head: () => ({ meta: [{ title: "Meu Perfil — Bíblia Estúdios" }] }),
+  staticData: { sitemap: false },
+  head: () => ({ meta: [
+    { title: "Meu Perfil — Bíblia Estúdios" },
+    { name: "description", content: "Gerencie seu perfil e suas informações no Bíblia Estúdios." },
+    { property: "og:title", content: "Meu Perfil — Bíblia Estúdios" },
+    { property: "og:description", content: "Gerencie seu perfil e suas informações no Bíblia Estúdios." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: Perfil,
 });
 

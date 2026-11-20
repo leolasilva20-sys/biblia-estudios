@@ -9,7 +9,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/complete-profile")({
-  head: () => ({ meta: [{ title: "Complete seu cadastro — Bíblia Estúdios" }] }),
+  staticData: { sitemap: false },
+  head: () => ({ meta: [
+    { title: "Complete seu cadastro — Bíblia Estúdios" },
+    { name: "description", content: "Complete seu cadastro no Bíblia Estúdios." },
+    { property: "og:title", content: "Complete seu cadastro — Bíblia Estúdios" },
+    { property: "og:description", content: "Complete seu cadastro no Bíblia Estúdios." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: CompleteProfilePage,
 });
 

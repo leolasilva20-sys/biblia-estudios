@@ -5,6 +5,7 @@ import { BookReader } from "@/components/book-reader";
 import { bookContentQuery } from "@/lib/books.queries";
 
 export const Route = createFileRoute("/livros/$id")({
+  staticData: { sitemap: false },
   head: ({ params }) => ({ meta: [
     { title: `Leitura do livro ${params.id} — Bíblia Estúdios` },
     { name: "description", content: "Leia seu livro com sumário, páginas e ajustes de leitura acessíveis." },

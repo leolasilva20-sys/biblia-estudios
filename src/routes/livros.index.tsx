@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { BooksListPage } from "@/routes/livros";
 
 export const Route = createFileRoute("/livros/")({
+  staticData: { sitemap: false },
   head: () => ({ meta: [
     { title: "Livros — Bíblia Estúdios" },
     { name: "description", content: "Livros do Bíblia Estúdios em um leitor acessível com páginas e sumário." },

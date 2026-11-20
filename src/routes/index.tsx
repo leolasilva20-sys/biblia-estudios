@@ -7,15 +7,31 @@ import { useAuth } from "@/hooks/use-auth";
 import heroManuscript from "@/assets/hero-manuscript.jpg";
 
 export const Route = createFileRoute("/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Bíblia Estúdios — Estudo bíblico em profundidade" },
-      { name: "description", content: "Apostilas, cursos, cadernos e áudio dramas para entender a Bíblia em profundidade." },
+      { name: "description", content: "Estude a Bíblia em profundidade com apostilas, contexto original e hebraico, cursos, livros e áudio dramas no Bíblia Estúdios." },
       { property: "og:title", content: "Bíblia Estúdios — Estudo bíblico em profundidade" },
-      { property: "og:description", content: "Uma jornada cristã de estudo com apostilas, cursos e experiências em áudio." },
+      { property: "og:description", content: "Estude a Bíblia em profundidade com apostilas, contexto original e hebraico, cursos, livros e áudio dramas no Bíblia Estúdios." },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://biblia-estudios.lovable.app/" },
+      { property: "og:site_name", content: "Bíblia Estúdios" },
+      { property: "og:locale", content: "pt_BR" },
       { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: "https://biblia-estudios.lovable.app/" }],
+    scripts: [{
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "Bíblia Estúdios",
+        url: "https://biblia-estudios.lovable.app/",
+        inLanguage: "pt-BR",
+        description: "Plataforma cristã gratuita para estudo bíblico em profundidade com apostilas, cursos, livros e áudio dramas.",
+      }),
+    }],
   }),
   component: Landing,
 });

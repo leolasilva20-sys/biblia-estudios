@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://biblia-estudios.lovable.app/sitemap.xml

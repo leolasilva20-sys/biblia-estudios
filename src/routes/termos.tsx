@@ -2,7 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookOpen } from "lucide-react";
 
 export const Route = createFileRoute("/termos")({
-  head: () => ({ meta: [{ title: "Termos de Serviço — Bíblia Estúdios" }] }),
+  staticData: { sitemap: true },
+  head: () => ({ meta: [
+    { title: "Termos de Serviço — Bíblia Estúdios" },
+    { name: "description", content: "Conheça os termos de uso, as regras de cadastro e as condições de uso dos conteúdos do Bíblia Estúdios." },
+    { property: "og:title", content: "Termos de Serviço — Bíblia Estúdios" },
+    { property: "og:description", content: "Conheça os termos de uso, as regras de cadastro e as condições de uso dos conteúdos do Bíblia Estúdios." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: Termos,
 });
 

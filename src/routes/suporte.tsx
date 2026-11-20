@@ -13,7 +13,15 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/suporte")({
-  head: () => ({ meta: [{ title: "Suporte — Bíblia Estúdios" }] }),
+  staticData: { sitemap: false },
+  head: () => ({ meta: [
+    { title: "Suporte — Bíblia Estúdios" },
+    { name: "description", content: "Entre em contato com o suporte do Bíblia Estúdios." },
+    { property: "og:title", content: "Suporte — Bíblia Estúdios" },
+    { property: "og:description", content: "Entre em contato com o suporte do Bíblia Estúdios." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: Suporte,
 });
 

@@ -23,6 +23,7 @@ Como responder:
 - Não invente dados, links, preços, políticas ou prazos.`;
 
 export const Route = createFileRoute("/api/chat")({
+  staticData: { sitemap: false },
   server: {
     handlers: {
       POST: async ({ request }) => {

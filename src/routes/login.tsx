@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import heroManuscript from "@/assets/hero-manuscript.jpg";
 
 export const Route = createFileRoute("/login")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Entrar — Bíblia Estúdios" },

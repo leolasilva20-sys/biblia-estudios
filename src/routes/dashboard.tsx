@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useRequireAccess } from "@/hooks/use-require-access";
 
 export const Route = createFileRoute("/dashboard")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Dashboard — Bíblia Estúdios" },

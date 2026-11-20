@@ -8,7 +8,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/reset-password")({
-  head: () => ({ meta: [{ title: "Nova senha — Bíblia Estúdios" }] }),
+  staticData: { sitemap: false },
+  head: () => ({ meta: [
+    { title: "Nova senha — Bíblia Estúdios" },
+    { name: "description", content: "Defina uma nova senha para sua conta do Bíblia Estúdios." },
+    { property: "og:title", content: "Nova senha — Bíblia Estúdios" },
+    { property: "og:description", content: "Defina uma nova senha para sua conta do Bíblia Estúdios." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex" },
+  ] }),
   component: ResetPasswordPage,
 });
 

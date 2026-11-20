@@ -2,7 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookOpen } from "lucide-react";
 
 export const Route = createFileRoute("/privacidade")({
-  head: () => ({ meta: [{ title: "Política de Privacidade — Bíblia Estúdios" }] }),
+  staticData: { sitemap: true },
+  head: () => ({ meta: [
+    { title: "Política de Privacidade — Bíblia Estúdios" },
+    { name: "description", content: "Saiba como o Bíblia Estúdios coleta e utiliza seus dados e conheça seus direitos de privacidade." },
+    { property: "og:title", content: "Política de Privacidade — Bíblia Estúdios" },
+    { property: "og:description", content: "Saiba como o Bíblia Estúdios coleta e utiliza seus dados e conheça seus direitos de privacidade." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: Privacidade,
 });
 

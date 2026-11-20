@@ -1,5 +1,11 @@
 # Tarefas
 
+- [ ] Conectar e verificar Google Search Console (aguarda conta autorizada, se indisponível)
+- [x] Criar sitemap somente com páginas públicas e robots.txt
+- [x] Revisar SEO e corrigir metadados da landing sem mudar visual (validação publicada pendente)
+- [ ] Publicar alterações e enviar sitemap: aguarda créditos e autorização Google
+- [x] Pesquisar três palavras-chave com Semrush e explicar visitantes na resposta
+
 - [x] Remover página Premium (site todo grátis)
 - [x] Remover página Rascunhos
 - [x] Limpar menu lateral e dashboard (sem Premium/Rascunhos)

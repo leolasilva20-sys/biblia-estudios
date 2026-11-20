@@ -13,7 +13,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { AdminNews } from "@/components/admin-news";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Painel Admin — Bíblia Estúdios" }] }),
+  staticData: { sitemap: false },
+  head: () => ({ meta: [
+    { title: "Painel Admin — Bíblia Estúdios" },
+    { name: "description", content: "Painel de administração do Bíblia Estúdios." },
+    { property: "og:title", content: "Painel Admin — Bíblia Estúdios" },
+    { property: "og:description", content: "Painel de administração do Bíblia Estúdios." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: AdminPanel,
 });
 

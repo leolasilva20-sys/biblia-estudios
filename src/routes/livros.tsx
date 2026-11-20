@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { booksQuery } from "@/lib/books.queries";
 import { visibleBooks } from "@/lib/books";
 
-export const Route = createFileRoute("/livros")({ component: () => <Outlet /> });
+export const Route = createFileRoute("/livros")({
+  staticData: { sitemap: "exclude-subtree" }, component: () => <Outlet /> });
 
 export function BooksList({ userId, isAdmin }: { userId: string; isAdmin: boolean }) {
   const { data } = useSuspenseQuery(booksQuery(userId));

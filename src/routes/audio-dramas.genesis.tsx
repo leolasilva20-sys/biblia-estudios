@@ -12,6 +12,7 @@ const SUPABASE_URL =
 const streamUrl = (id: string) => `${SUPABASE_URL}/functions/v1/audio-stream?fileId=${encodeURIComponent(id)}`;
 
 export const Route = createFileRoute("/audio-dramas/genesis")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Gênesis — A Criação e a Queda | Áudio Dramas" },
